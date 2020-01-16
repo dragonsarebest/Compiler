@@ -1,4 +1,4 @@
-class Grammar
+export class Grammar
 {
 
     constructor(input: string)
