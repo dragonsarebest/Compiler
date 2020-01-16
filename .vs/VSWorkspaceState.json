@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\CompilerDesign"
   ],
-  "SelectedNode": "\\README.md",
+  "SelectedNode": "\\CompilerDesign\\Typescript1.ts",
   "PreviewInSolutionExplorer": false
 }
