@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\CompilerDesign"
+    "\\CompilerDesign",
+    "\\CompilerDesign\\CompilerBoyo",
+    "\\CompilerDesign\\CompilerBoyo\\CompilerBoyo"
   ],
-  "SelectedNode": "\\CompilerDesign\\testharness.ts",
+  "SelectedNode": "\\CompilerDesign\\CompilerBoyo\\CompilerBoyo.sln",
   "PreviewInSolutionExplorer": false
 }
