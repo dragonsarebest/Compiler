@@ -1,6 +1,19 @@
+class terminal
+{
+    sym: string;
+    rex: RegExp;
+
+    constructor(sym: string, rex: RegExp)
+    {
+        this.sym = sym;
+        this.rex = rex;
+    }
+}
+
 export class Grammar
 {
-    //likewise her
+    terminals = []
+
     constructor(input: string)
     {
         let lines = input.split("\n");
@@ -9,10 +22,10 @@ export class Grammar
 
         let s: Set<string> = new Set();
 
-        console.log("---------------------------------------------------");
+        this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
+
         lines.forEach(element =>
         {
-            console.log("\n" + element);
             let match = expression.exec(element);
             if (match) {
                 let left = match[1].trim();
@@ -20,8 +33,10 @@ export class Grammar
                 //console.log("middle:" + match[2]);
                 //console.log("right:" + match[3]);
 
+                let regex: RegExp;
+
                 try {
-                    let regex = new RegExp(match[3]);
+                    regex = new RegExp(match[3], "gy");
 
                 }
                 catch
@@ -36,17 +51,20 @@ export class Grammar
                     s.add(left);
                 }
 
+                this.terminals.push(new terminal(left, regex))
 
             }
-            else
-            {
-                if (element.length > 0)
-                {
+            else {
+                if (element.length > 0) {
                     //console.log("WRONG:::" + element);
                     throw "Grammar is impropperly formatted!";
-                }                
+                }
             }
-        })
+        });
+
+
+        console.log(this.terminals);
+
     }
 
 }
