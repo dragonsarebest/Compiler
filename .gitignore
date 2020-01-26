@@ -1,2 +1,9 @@
 /PleaseWork/.vs/PleaseWork/v16/*.suo
 /PleaseWork/.vs/PleaseWork/config
+.vs
+app.js.map
+PleaseWork.njsproj
+bin
+node_modules
+obj
+app.js
