@@ -17,7 +17,7 @@ export class Tokenizer
         this.currentLine = 1;
         this.idx = 0;
 
-        console.log("got this data for tokenization: " + inputData);
+        //console.log("got this data for tokenization: " + inputData);
     }
 
     next() : Token
@@ -47,11 +47,11 @@ export class Tokenizer
                 if (sym !== "WHITESPACE" && sym !== "COMMENT") {
                     //return new Token using sym, lexeme, and line number
                     let token = new Token(sym, lexeme, this.currentLine);
-                    console.log("created token: " + token);
+                    //console.log("created token: " + token);
                     return token;
                 } else {
                     //skip whitespace and get next real token
-                    console.log("Whitespace found!");
+                    //console.log("Whitespace found!");
                     return this.next();
                 }
             }

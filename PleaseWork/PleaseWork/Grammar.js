@@ -42,7 +42,7 @@ class Grammar {
                 }
             }
         });
-        console.log(this.terminals);
+        //console.log(this.terminals);
     }
 }
 exports.Grammar = Grammar;
