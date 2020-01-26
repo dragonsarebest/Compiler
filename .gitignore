@@ -1,2 +1,10 @@
 /PleaseWork/.vs/PleaseWork/v16/*.suo
 /PleaseWork/.vs/PleaseWork/config
+README.md
+bin
+node_modules
+obj
+app.js
+app.js.map
+PleaseWork.njsproj
+.vs
