@@ -1,4 +1,0 @@
-C:\Users\Joshua Byron\source\repos\dragonsarebest\tstest\CompilerDesign\CompilerBoyo\PleaseWork\PleaseWork\obj\Debug\PleaseWork.njsprojAssemblyReference.cache
-C:\Users\Joshua Byron\source\repos\dragonsarebest\tstest\CompilerDesign\CompilerBoyo\PleaseWork\PleaseWork\bin\Microsoft.NodejsTools.WebRole.dll
-C:\Users\Joshua Byron\source\repos\dragonsarebest\tstest\PleaseWork\PleaseWork\obj\Debug\PleaseWork.njsprojAssemblyReference.cache
-C:\Users\Joshua Byron\source\repos\dragonsarebest\tstest\PleaseWork\PleaseWork\bin\Microsoft.NodejsTools.WebRole.dll
