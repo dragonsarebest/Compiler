@@ -32,15 +32,12 @@ class Grammar {
         let startNodeName = "";
         let switchToNon = false;
         let firstNode = false;
-        this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
+        //this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
         //console.log("--------------------\nRAW INPUT: \n", input);
         lines.forEach(element => {
             let match = expression.exec(element);
             if (match) {
                 let left = match[1].trim();
-                //console.log("left:" + left);
-                //console.log("middle:" + match[2]);
-                //console.log("right:" + match[3]);
                 let regex;
                 if (!switchToNon) {
                     try {
@@ -115,7 +112,7 @@ class Grammar {
             rightHandSide.forEach(right => {
                 let temp2 = globalNodes.get(right);
                 if (temp2 == undefined) {
-                    console.log("Error:", right);
+                    //console.log("Error:", right);
                     throw new Error("Referencing a undefined production!");
                 }
                 temp.neighbors.push(temp2);
@@ -129,14 +126,14 @@ class Grammar {
             if (!graph.has(element)) {
                 //if there's an item in our terminals / nontermianls that's not in the graph then you cannot
                 //reach it from the start state therefore this grammar is invalid!
-                console.log("error: ", element);
+                //console.log("error: ", element);
                 throw new Error("Grammar contains a useless production rule!");
             }
         });
         graph.forEach(element => {
             if (!totality.includes(element)) {
                 //if we have an item in graph that isn't in terminals or nonterminals then we have an undefined symbol
-                console.log("error: ", element);
+                //console.log("error: ", element);
                 throw new Error("Grammar contains an undefined symbol!");
             }
         });

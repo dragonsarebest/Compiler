@@ -154,7 +154,7 @@ export class Grammar
 
                 let temp2 = globalNodes.get(right);
                 if (temp2 == undefined) {
-                    console.log("Error:", right);
+                    //console.log("Error:", right);
                     throw new Error("Referencing a undefined production!");
                 }
 
@@ -174,7 +174,7 @@ export class Grammar
             {
                  //if there's an item in our terminals / nontermianls that's not in the graph then you cannot
                 //reach it from the start state therefore this grammar is invalid!
-                console.log("error: ", element);
+                //console.log("error: ", element);
                 throw new Error("Grammar contains a useless production rule!");
             }
         });
@@ -182,7 +182,7 @@ export class Grammar
         graph.forEach(element => {
             if (!totality.includes(element)) {
                 //if we have an item in graph that isn't in terminals or nonterminals then we have an undefined symbol
-                console.log("error: ", element);
+                //console.log("error: ", element);
                 throw new Error("Grammar contains an undefined symbol!");
             }
         });
