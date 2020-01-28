@@ -4,3 +4,14 @@ node_modules
 obj
 PleaseWork.njsproj
 .vs
+/PleaseWork/PleaseWork/tsconfig.json
+/PleaseWork/PleaseWork/Grammar.js
+/PleaseWork/PleaseWork/Grammar.js.map
+/PleaseWork/PleaseWork/Grammar.ts
+/PleaseWork/PleaseWork/package.json
+/PleaseWork/PleaseWork/package-lock.json
+/PleaseWork/PleaseWork/PleaseWork.njsproj
+/PleaseWork/PleaseWork/testharness.js
+/PleaseWork/PleaseWork/testharness.js.map
+/PleaseWork/PleaseWork/testharness.ts
+/PleaseWork/PleaseWork/tests.txt
