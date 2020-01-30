@@ -40,7 +40,8 @@ function testWithFile(fname: string): boolean {
         console.log("Testing " + inp + " ...");
         ++testCount;
         let expected = JSON.parse(expectedStr);
-        let actual = new parse(inp);
+        let a = new parse(inp);
+        let actual = a.operandStack[0];
 
         if (!treesAreSame(actual, expected)) {
             console.log("BAD!")

@@ -35,19 +35,21 @@ class parse {
         };
         //higher number means higher priority
         this.arity = {
-            "LP": 1,
-            "CMA": 1,
-            "ADDOP": 1,
-            "MULOP": 1,
-            "NEGATE": 2,
-            "POWOP": 1,
-            "FUNCCALL": 1
+            "LP": 2,
+            "CMA": 2,
+            "ADDOP": 2,
+            "MULOP": 2,
+            "NEGATE": 1,
+            "POWOP": 2,
+            "FUNCCALL": 2
         };
         console.log(input);
         let data = this.fs.readFileSync("myGrammar.txt", "utf8");
         let gg = new Grammar_1.Grammar(data);
         let tokenizer = new Tokenizer_1.Tokenizer(gg);
         tokenizer.setInput(input);
+        this.operatorStack = Array();
+        this.operandStack = Array();
         do {
             let t = tokenizer.next();
             let pt = new Token_1.Token("nothing", "nothing", -1);
@@ -64,6 +66,7 @@ class parse {
                 this.operandStack.push(new TreeNode(t.sym, t));
             }
             else {
+                console.log("not a num or id or negate");
                 if (this.associativity[sym] == "left") {
                     while (true) {
                         if (this.operatorStack.length == 0)
@@ -96,6 +99,13 @@ class parse {
                 }
             }
         } while (true);
+        while (this.operatorStack.length > 0) {
+            this.doOperation();
+        }
+        console.log(this.operandStack[0]);
+        this.operandStack[0].children.forEach(element => {
+            console.log(element);
+        });
     }
     //all unary opperations become 2 in arity
     doOperation() {

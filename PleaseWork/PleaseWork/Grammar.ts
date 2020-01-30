@@ -52,7 +52,7 @@ export class Grammar
         let switchToNon = false;
         let firstNode = false;
 
-        //this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
+        this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
 
         //console.log("--------------------\nRAW INPUT: \n", input);
 
@@ -65,7 +65,7 @@ export class Grammar
                 if (!switchToNon) {
 
                     try {
-                        regex = new RegExp(match[3], "gy");
+                        regex = new RegExp(match[3].trim(), "gy");
                     }
                     catch
                     {
