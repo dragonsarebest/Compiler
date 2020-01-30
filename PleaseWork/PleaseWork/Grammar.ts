@@ -16,6 +16,8 @@ export class Grammar
 
     constructor(input: string)
     {
+        console.log(input);
+
         let lines = input.split("\n");
        
         let expression = new RegExp("([^ ]*)( -> )(.*)", "i");

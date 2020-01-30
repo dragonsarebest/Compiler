@@ -1,0 +1,1 @@
+POWOP (**), NEGATE (-), MULOP (*/), ADDOP (+-), ID, NUM, MODULO, COMMA, LP, RP, Function call -> ID, LP
