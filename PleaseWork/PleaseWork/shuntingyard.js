@@ -1,31 +1,22 @@
-import { Token } from "./Token"
-import { Tokenizer } from "./Tokenizer"
-import { Grammar } from "./Grammar"
-
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Token_1 = require("./Token");
+const Tokenizer_1 = require("./Tokenizer");
+const Grammar_1 = require("./Grammar");
 class TreeNode {
-    sym: string;
-    token: Token;
-    children: TreeNode[];
-    constructor(sym: string, token: Token) {
+    constructor(sym, token) {
         this.sym = sym;
         this.token = token;
         this.children = [];
     }
-
-    addChild(baby: TreeNode) {
+    addChild(baby) {
         this.children.push(baby);
     }
 }
-
-
-export class parse {
-    operatorStack: Array<TreeNode>;
-    operandStack: Array<TreeNode>;
-    fs = require("fs");
-
-    associativity =
-        {
+class parse {
+    constructor(input) {
+        this.fs = require("fs");
+        this.associativity = {
             "LP": "left",
             "CMA": "right",
             "ADDOP": "left",
@@ -33,21 +24,17 @@ export class parse {
             "NEGATE": "right",
             "POWOP": "right",
             "FUNCCALL": "left"
-        }
-
-    operators =
-        {
+        };
+        this.operators = {
             "LP": 1,
             "CMA": 2,
             "ADDOP": 3,
             "NEGATE": 4,
             "POWOP": 5,
             "FUNCCALL": 6
-        }
-    //higher number means higher priority
-
-    arity =
-        {
+        };
+        //higher number means higher priority
+        this.arity = {
             "LP": 1,
             "CMA": 1,
             "ADDOP": 1,
@@ -55,32 +42,15 @@ export class parse {
             "NEGATE": 2,
             "POWOP": 1,
             "FUNCCALL": 1
-        }
-    //all unary opperations become 2 in arity
-
-    doOperation() {
-        let opNode = this.operatorStack.pop();
-        let c1 = this.operandStack.pop();
-        if (this.arity[opNode.sym] == 2) {
-            let c2 = this.operandStack.pop();
-            opNode.addChild(c2);
-        }
-        opNode.addChild(c1);
-        this.operandStack.push(opNode);
-    }
-
-    constructor(input: string) {
-
+        };
         console.log(input);
-
-        let data: string = this.fs.readFileSync("myGrammar.txt", "utf8");
-        let gg = new Grammar(data);
-        let tokenizer = new Tokenizer(gg);
+        let data = this.fs.readFileSync("myGrammar.txt", "utf8");
+        let gg = new Grammar_1.Grammar(data);
+        let tokenizer = new Tokenizer_1.Tokenizer(gg);
         tokenizer.setInput(input);
-
         do {
             let t = tokenizer.next();
-            let pt = new Token("nothing", "nothing", -1);
+            let pt = new Token_1.Token("nothing", "nothing", -1);
             if (t.sym == "$")
                 break;
             if (t.lexeme == "-") {
@@ -120,18 +90,24 @@ export class parse {
                         this.doOperation();
                     }
                     this.operatorStack.push(new TreeNode(t.sym, t));
-
                     while (this.operatorStack.length > 0) {
                         this.doOperation();
                     }
                 }
             }
-
         } while (true);
-
     }
-
-
-
+    //all unary opperations become 2 in arity
+    doOperation() {
+        let opNode = this.operatorStack.pop();
+        let c1 = this.operandStack.pop();
+        if (this.arity[opNode.sym] == 2) {
+            let c2 = this.operandStack.pop();
+            opNode.addChild(c2);
+        }
+        opNode.addChild(c1);
+        this.operandStack.push(opNode);
+    }
 }
-
+exports.parse = parse;
+//# sourceMappingURL=shuntingyard.js.map

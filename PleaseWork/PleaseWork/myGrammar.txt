@@ -1,0 +1,18 @@
+ID -> [A-Za-z_]+
+NUM -> \\d+
+TYPE -> \\b(int|double)\\b
+WHILE -> \\bwhile\\b
+IF -> \\bif\\b
+ELSE -> \\belse\\b
+CMA -> ,
+EQ -> =
+RP -> [)]
+LP -> [(]
+RBR -> [}]
+LBR -> [{]
+SEMI -> ;
+MULOP -> [*/%]
+ADDOP -> [-+]
+POWOP -> [*/*/]
+
+FUNCCALL -> ID LP

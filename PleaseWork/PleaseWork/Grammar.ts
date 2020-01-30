@@ -168,7 +168,7 @@ export class Grammar
         this.depthFirstSearch(startNode, graph);
 
         let totality = Array.from(globalNodes.keys());
-        
+        /*
         totality.forEach(element => {
             if (!graph.has(element))
             {
@@ -186,7 +186,11 @@ export class Grammar
                 throw new Error("Grammar contains an undefined symbol!");
             }
         });
-        
+        */
+
+        console.log("GRAMMAR");
+        console.log(this.terminals);
+        console.log(this.nonterminals);
     }
 
     depthFirstSearch(node: NodeType, visited: Set<string>)
