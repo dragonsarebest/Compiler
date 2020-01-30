@@ -10,6 +10,7 @@ export class Tokenizer
 
     constructor(grammar: Grammar) {
         this.grammar = grammar;
+        this.previous = undefined;
     }
 
     setInput(inputData: string) {
@@ -18,6 +19,16 @@ export class Tokenizer
         this.idx = 0;
 
         //console.log("got this data for tokenization: " + inputData);
+    }
+
+    previous() : Token
+    {
+        let tempIDX = this.idx;
+        let tempCurrentLine = this.currentLine;
+        let prev = this.next();
+        this.idx = tempIDX;
+        this.currentLine = tempCurrentLine;
+        return prev;
     }
 
     next() : Token
