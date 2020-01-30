@@ -1,44 +1,74 @@
-"use strict";
 
-//This test harness doesn't output many diagnostics when things break.
-//If you want to, you can instrument it accordingly to help you debug.
-
-declare var require:any;
-
-import {Grammar} from "./Grammar"
+declare var require: any;
 let fs = require("fs");
 
+import { parse } from "./shuntingyard"
 
-function main(){
-    let teststr : string = fs.readFileSync("tests.txt","utf8");
-    let tests = JSON.parse(teststr);
-    let G: Grammar;
+let testCount = 0;
 
-    for(let i=0;i<tests.length;++i){
-        console.log("Test "+i);
-        let spec = tests[i]["spec"];
-        let valid = tests[i]["valid"];
-        let name = tests[i]["name"];
-        
-        try{
-            let G = new Grammar(spec);
-            if( valid ){
-            } else {
-                console.log("Reported grammar "+name+" as valid, but it's not.");
-                return;
-            }
-        } catch(e){
-            if( valid ){
-                console.log("Reported grammar "+name+" as invalid, but it's valid.");
-                console.log(e);
-                return;
-            }
-            else{
-            }
-        }
-    }
-    
-    console.log(tests.length+" tests OK");
+function main() {
+    let ok = testWithFile("basictests.txt");
+    if (ok)
+        console.log("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Basic tests OK-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    else
+        return;
+
+    ok = testWithFile("bonus1tests.txt");
+    if (ok)
+        console.log("-=-=-=-=-=-=-=-=-=-=-Bonus 1 tests (1+ argument functions) OK-=-=-=-=-=-=-=-=-=-=-");
+    else
+        return;
+
+    ok = testWithFile("bonus2tests.txt");
+    if (ok)
+        console.log("-=-=-=-=-=-=-=-=-=-=-Bonus 2 tests (0+ argument functions) OK-=-=-=-=-=-=-=-=-=-=-");
+    else
+        return;
+    console.log(testCount + " tests OK");
 }
 
-main()
+function testWithFile(fname: string): boolean {
+    let data: string = fs.readFileSync(fname, "utf8");
+    let lst = data.split(/\n/g);
+    for (let i = 0; i < lst.length; ++i) {
+        let line = lst[i].trim();
+        if (line.length === 0)
+            continue;
+        let idx = line.indexOf("\t");
+        let inp = line.substring(0, idx);
+        let expectedStr = line.substring(idx);
+        console.log("Testing " + inp + " ...");
+        ++testCount;
+        let expected = JSON.parse(expectedStr);
+        let actual = parse(inp);
+
+        if (!treesAreSame(actual, expected)) {
+            console.log("BAD!")
+            return false;
+        } else {
+        }
+    }
+    return true;
+}
+
+function treesAreSame(n1: any, n2: any) {
+    if (n1 === undefined && n2 !== undefined)
+        return false;
+    if (n2 === undefined && n1 !== undefined)
+        return false;
+    if (n1["sym"] != n2["sym"])
+        return false;
+    if (n1["children"].length != n2["children"].length)
+        return false;
+    for (let i = 0; i < n1["children"].length; ++i) {
+        if (!treesAreSame(n1["children"][i], n2["children"][i]))
+            return false;
+    }
+    return true;
+}
+
+
+
+
+
+main();
