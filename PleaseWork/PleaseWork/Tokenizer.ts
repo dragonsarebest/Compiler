@@ -30,6 +30,7 @@ export class Tokenizer {
     }
 
     next(): Token {
+        //console.log("next");
         if (this.idx >= this.inputData.length - 1) {
             //special "end of file" metatoken
             return new Token("$", undefined, this.currentLine);
@@ -42,20 +43,20 @@ export class Tokenizer {
 
             rex.lastIndex = this.idx;   //tell where to start searching
             let m = rex.exec(this.inputData);   //do the search
+
+
             if (m) {
 
                 //m[0] contains matched text as string
                 let lexeme = m[0];
                 this.idx += lexeme.length;
 
+                let temp = this.currentLine;
                 let i = lexeme.split("\n");
                 this.currentLine += i.length - 1;
 
-
                 if (sym !== "WHITESPACE" && sym !== "COMMENT") {
-                    //return new Token using sym, lexeme, and line number
-                    let token = new Token(sym, lexeme, this.currentLine);
-                    //console.log("created token: " + token);
+                    let token = new Token(sym, lexeme, temp);
                     return token;
                 } else {
                     //skip whitespace and get next real token
