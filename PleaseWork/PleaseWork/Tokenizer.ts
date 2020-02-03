@@ -1,8 +1,7 @@
 import { Token } from "./Token"
 import { Grammar } from "./Grammar"
 
-export class Tokenizer
-{
+export class Tokenizer {
     grammar: Grammar;
     inputData: string;
     currentLine: number;
@@ -10,6 +9,7 @@ export class Tokenizer
 
     constructor(grammar: Grammar) {
         this.grammar = grammar;
+        this.previous = undefined;
     }
 
     setInput(inputData: string) {
@@ -17,12 +17,21 @@ export class Tokenizer
         this.currentLine = 1;
         this.idx = 0;
 
-        console.log("got this data for tokenization: " + inputData);
+        //console.log("got this data for tokenization: " + inputData);
     }
 
-    next() : Token
-    {
-        if (this.idx >= this.inputData.length-1) {
+    previous(): Token {
+        let tempIDX = this.idx;
+        let tempCurrentLine = this.currentLine;
+        let prev = this.next();
+        this.idx = tempIDX;
+        this.currentLine = tempCurrentLine;
+        return prev;
+    }
+
+    next(): Token {
+        //console.log("next");
+        if (this.idx >= this.inputData.length - 1) {
             //special "end of file" metatoken
             return new Token("$", undefined, this.currentLine);
         }
@@ -34,24 +43,24 @@ export class Tokenizer
 
             rex.lastIndex = this.idx;   //tell where to start searching
             let m = rex.exec(this.inputData);   //do the search
+
+
             if (m) {
 
                 //m[0] contains matched text as string
                 let lexeme = m[0];
                 this.idx += lexeme.length;
 
+                let temp = this.currentLine;
                 let i = lexeme.split("\n");
-                this.currentLine += i.length-1;
-                
+                this.currentLine += i.length - 1;
 
                 if (sym !== "WHITESPACE" && sym !== "COMMENT") {
-                    //return new Token using sym, lexeme, and line number
-                    let token = new Token(sym, lexeme, this.currentLine);
-                    console.log("created token: " + token);
+                    let token = new Token(sym, lexeme, temp);
                     return token;
                 } else {
                     //skip whitespace and get next real token
-                    console.log("Whitespace found!");
+                    //console.log("Whitespace found!");
                     return this.next();
                 }
             }
