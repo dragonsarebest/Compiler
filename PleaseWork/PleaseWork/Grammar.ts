@@ -34,8 +34,17 @@ class nonterminal {
 export class Grammar
 {
     terminals = []
+    //list of termina class
     terminalProductions = []
+    // is typeNode list
+
+    nonTerminalProductions: Map<string, string[]> = new Map<string, string[]>();
+    //contains nonterminal lhs and rhs as a list
     nonterminals = []
+    //list of nonterminal class
+
+    first: Map<string, Set<string>> = new Map();
+    nullableSet: Set<string> = new Set<string>();
 
     constructor(input: string)
     {
@@ -84,12 +93,13 @@ export class Grammar
                     let node = new NodeType(left);
                     let right = match[3].trim();
                     this.terminalProductions.push(node);
+                    this.nonTerminalProductions[left] = [];
                 }
                 else {
                     let right = match[3].trim();
 
                     if (setOfNon.has(left)) {
-                        //throw new Error("Lefthandside has been defined more than once!");
+                        ;
                     }
                     else {
                         if (setOfTerminals.has(left))
@@ -129,27 +139,39 @@ export class Grammar
         this.nonterminals.forEach(element => {
             let tempNode = new NodeType(element.sym);
             globalNodes.set(tempNode.label, tempNode);
+            this.first[element.sym] = new Set<string[]>();
         });
         this.terminalProductions.forEach(element => {
             globalNodes.set(element.label, element);
+            let tset = new Set<string[]>();
+            tset.add([element.sym]);
+            this.first[element.sym] = tset;
         });
 
         this.nonterminals.forEach(element => {
             let temp = globalNodes.get(element.sym);
+            let nonterminalSet = new Set<string[]>();
 
             let tempRight = [];
             let rightHandSide = element.eq.split("|");
             rightHandSide.forEach(right => {
+                let tempList = []
                 let temp = right.split(" ");
                 temp.forEach(element => {
                     element = element.trim();
                     if (element.length > 0)
+                    {
+                        tempList.push(element);
                         tempRight.push(element);
+                    }
                 });
+                nonterminalSet.add(tempList);
+                this.nonTerminalProductions[element.sym] = Array.from(nonterminalSet);
             });
-
+            this.first[element.sym] = nonterminalSet;
             rightHandSide = tempRight;
-
+            
+            /*
             rightHandSide.forEach(right => {
 
                 let temp2 = globalNodes.get(right);
@@ -161,14 +183,18 @@ export class Grammar
                 temp.neighbors.push(temp2);
                 globalNodes.set(element.sym, temp);
             });
+            */
         });
 
+        //console.log(this.nonTerminalProductions);
+
+        /*
         startNode = globalNodes.get(startNodeName);
 
         this.depthFirstSearch(startNode, graph);
 
         let totality = Array.from(globalNodes.keys());
-        /*
+        
         totality.forEach(element => {
             if (!graph.has(element))
             {
@@ -188,9 +214,8 @@ export class Grammar
         });
         */
 
-        console.log("GRAMMAR");
-        console.log(this.terminals);
-        console.log(this.nonterminals);
+        this.nullableSet = this.calculateNullable();
+
     }
 
     depthFirstSearch(node: NodeType, visited: Set<string>)
@@ -202,6 +227,59 @@ export class Grammar
             }
         });
         
+    }
+
+    calculateNullable()
+    {
+        //console.log("\n\n\n\n\n\n\n\n\n\n");
+        let tempSet = new Set<string>();
+        while (true) {
+            let change = false;
+            this.nonterminals.forEach(symbol => {
+                if (!tempSet.has(symbol.sym)) {
+                    let count = 0;
+                    //console.log("symbol:", symbol.sym, "\n");
+                    //console.log(this.nonTerminalProductions[symbol.sym]);
+                    this.nonTerminalProductions[symbol.sym].forEach(production => {
+                       // console.log("testing production: ", production, "\n")
+                        let lambdaInHere = true;
+                        production.every(sub => {
+                            if (sub != "lambda" && !tempSet.has(sub)) {
+                                lambdaInHere = false;
+                                return false;
+                            }
+                            return true;
+                        });
+                        if (lambdaInHere)
+                        {
+                            //console.log("new nullable!", symbol.sym);
+                            tempSet.add(symbol.sym);
+                            change = true;
+                            count++;
+                        }
+                        
+                    });
+                    if (count >= this.nonTerminalProductions[symbol.sym].length)
+                    {
+                        if (!tempSet.has(symbol.sym))
+                        {
+                            //console.log("new nullable!");
+                            tempSet.add(symbol.sym);
+                            change = true;
+                        }
+                    }
+                }
+            });
+
+            if (change == false)
+                break;
+        }
+        return tempSet;
+    }
+
+    getNullable()
+    {
+        return this.nullableSet;
     }
 
 
