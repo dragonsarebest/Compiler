@@ -22,16 +22,6 @@ export class Tokenizer {
 
         //console.log("got this data for tokenization: " + inputData);
     }
-    /*
-    previous(): Token {
-        let tempIDX = this.idx;
-        let tempCurrentLine = this.currentLine;
-        let prev = this.next();
-        this.idx = tempIDX;
-        this.currentLine = tempCurrentLine;
-        return prev;
-    }
-    */
 
     next(): Token {
         //console.log("next");

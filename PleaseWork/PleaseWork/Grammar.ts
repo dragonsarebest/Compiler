@@ -1,3 +1,5 @@
+const CHECK_GRAMMAR_ERRORS: boolean = false;
+
 class NodeType
 {
     label: string;
@@ -34,12 +36,12 @@ class nonterminal {
 export class Grammar
 {
     terminals = []
-    //list of termina class
+    //list of terminal class
     terminalProductions = []
     // is typeNode list
 
     nonTerminalProductions: Map<string, string[]> = new Map<string, string[]>();
-    //contains nonterminal lhs and rhs as a list
+    //contains nonterminal lhs and rhs as a map
     nonterminals = []
     //list of nonterminal class
 
@@ -171,48 +173,47 @@ export class Grammar
             this.first[element.sym] = nonterminalSet;
             rightHandSide = tempRight;
             
-            /*
-            rightHandSide.forEach(right => {
+            if (CHECK_GRAMMAR_ERRORS) {
+                rightHandSide.forEach(right => {
 
-                let temp2 = globalNodes.get(right);
-                if (temp2 == undefined) {
-                    //console.log("Error:", right);
-                    throw new Error("Referencing a undefined production!");
-                }
+                    let temp2 = globalNodes.get(right);
+                    if (temp2 == undefined) {
+                        //console.log("Error:", right);
+                        throw new Error("Referencing a undefined production!");
+                    }
 
-                temp.neighbors.push(temp2);
-                globalNodes.set(element.sym, temp);
-            });
-            */
+                    temp.neighbors.push(temp2);
+                    globalNodes.set(element.sym, temp);
+                });
+            }
         });
 
         //console.log(this.nonTerminalProductions);
 
-        /*
-        startNode = globalNodes.get(startNodeName);
+        if (CHECK_GRAMMAR_ERRORS) {
+            startNode = globalNodes.get(startNodeName);
 
-        this.depthFirstSearch(startNode, graph);
+            this.depthFirstSearch(startNode, graph);
 
-        let totality = Array.from(globalNodes.keys());
-        
-        totality.forEach(element => {
-            if (!graph.has(element))
-            {
-                 //if there's an item in our terminals / nontermianls that's not in the graph then you cannot
-                //reach it from the start state therefore this grammar is invalid!
-                //console.log("error: ", element);
-                throw new Error("Grammar contains a useless production rule!");
-            }
-        });
+            let totality = Array.from(globalNodes.keys());
 
-        graph.forEach(element => {
-            if (!totality.includes(element)) {
-                //if we have an item in graph that isn't in terminals or nonterminals then we have an undefined symbol
-                //console.log("error: ", element);
-                throw new Error("Grammar contains an undefined symbol!");
-            }
-        });
-        */
+            totality.forEach(element => {
+                if (!graph.has(element)) {
+                    //if there's an item in our terminals / nontermianls that's not in the graph then you cannot
+                    //reach it from the start state therefore this grammar is invalid!
+                    //console.log("error: ", element);
+                    throw new Error("Grammar contains a useless production rule!");
+                }
+            });
+
+            graph.forEach(element => {
+                if (!totality.includes(element)) {
+                    //if we have an item in graph that isn't in terminals or nonterminals then we have an undefined symbol
+                    //console.log("error: ", element);
+                    throw new Error("Grammar contains an undefined symbol!");
+                }
+            });
+        }
 
         this.nullableSet = this.calculateNullable();
 
@@ -252,6 +253,7 @@ export class Grammar
                         });
                         if (lambdaInHere)
                         {
+                            //this means that every single subproduction was nullable
                             //console.log("new nullable!", symbol.sym);
                             tempSet.add(symbol.sym);
                             change = true;
@@ -263,6 +265,7 @@ export class Grammar
                     {
                         if (!tempSet.has(symbol.sym))
                         {
+                            //this means that every single production was nullable
                             //console.log("new nullable!");
                             tempSet.add(symbol.sym);
                             change = true;
