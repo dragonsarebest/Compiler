@@ -38,8 +38,8 @@ function dictionariesAreSame(s1: { [key: string]: string[] }, s2: Map<string, Se
     let k2: string[] = [];
     for (let k of M1.keys())
         k1.push(k);
-    for (const [key, value] of Object.entries(s2)) 
-        k2.push(key);
+    for (let k of M2.keys())
+        k2.push(k);
     k1.sort();
     k2.sort();
 

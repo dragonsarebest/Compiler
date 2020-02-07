@@ -1,4 +1,5 @@
 import { copyFileSync } from "fs";
+import { stringify } from "querystring";
 
 const CHECK_GRAMMAR_ERRORS: boolean = false;
 
@@ -37,14 +38,14 @@ class nonterminal {
 
 export class Grammar
 {
-    terminals = []
+    terminals: Array<terminal> = []
     //list of terminal class
-    terminalProductions = []
+    terminalProductions: Array<NodeType> = []
     // is typeNode list
 
-    nonTerminalProductions: Map<string, string[]> = new Map<string, string[]>();
+    nonTerminalProductions: Map<string, Set<string[]>> = new Map<string, Set<string[]>>();
     //contains nonterminal lhs and rhs as a map
-    nonterminals = []
+    nonterminals: Array<nonterminal> = []
     //list of nonterminal class
 
     first: Map<string, Set<string>> = new Map();
@@ -96,7 +97,7 @@ export class Grammar
                     let node = new NodeType(left);
                     let right = match[3].trim();
                     this.terminalProductions.push(node);
-                    this.nonTerminalProductions[left] = [];
+                    this.nonTerminalProductions.set(left, new Set<string[]>());
                     
                 }
                 else {
@@ -138,29 +139,30 @@ export class Grammar
         this.nonterminals.forEach(element => {
             let tempNode = new NodeType(element.sym);
             globalNodes.set(tempNode.label, tempNode);
-            if (element.label != undefined && element.label != 'undefined')
-                this.first[element.label] = new Set();     
+            if (element.sym != undefined && element.sym != 'undefined')
+                this.first.set(element.sym, new Set<string>());   
         });
         this.terminalProductions.forEach(element => {
             globalNodes.set(element.label, element);
             if (element.label != undefined && element.label != 'undefined') {
-                this.first[element.label] = new Set();
-                this.first[element.label].add(element.label);
+                let tempSetforOneUse = new Set<string>();
+                tempSetforOneUse.add(element.label);
+                this.first.set(element.label, tempSetforOneUse);
             }
         });
 
         this.nonterminals.forEach(element => {
             let temp = globalNodes.get(element.sym);
-            let nonterminalSet = new Set<string[]>();
+            //let nonterminalSet = new Set<string[]>();
 
             //set up first with empty sets
-            this.first[element.sym] = new Set();
+            this.first.set(element.sym, new Set<string>());
 
-            let tempRight = [];
+            let tempRight = new Array();
             let rightHandSide = element.eq.split("|");
             rightHandSide.forEach(right => {
-                let tempList = []
                 let temp = right.split(" ");
+                let tempList = new Array();
                 temp.forEach(subelement => {
                     subelement = subelement.trim();
                     if (subelement.length > 0) {
@@ -170,8 +172,11 @@ export class Grammar
                         tempList.push(subelement);
                     }
                 });
-                nonterminalSet.add(tempList);
-                this.nonTerminalProductions[element.sym] = Array.from(nonterminalSet);
+                let tempSet = this.nonTerminalProductions.get(element.sym);
+                if (tempSet == undefined)
+                    tempSet = new Set<string[]>();
+                tempSet.add(tempList);
+                this.nonTerminalProductions.set(element.sym, tempSet);
             });
             rightHandSide = tempRight;
 
@@ -218,26 +223,7 @@ export class Grammar
         }
 
         this.nullableSet = this.calculateNullable();
-        console.log("Nullable: ", this.nullableSet);
-        console.log("First: ");
-        for (const [key, value] of Object.entries(this.first)){
-            console.log(key, "::", value);
-        }
         this.calculateFirst();
-        /*
-        let k2: string[] = [];
-        console.log("First calculated: ")
-        for (const [key, value] of Object.entries(this.first)) {
-            console.log(key, "::", value);
-            k2.push(key)
-        }
-        
-        let k1: string[] = [];
-        for (let k of this.first.keys())
-            k1.push(k);
-        console.log("keys! ", k1);
-        console.log("keys2! ", k2);
-        */
     }
 
     depthFirstSearch(node: NodeType, visited: Set<string>)
@@ -253,17 +239,13 @@ export class Grammar
 
     calculateNullable()
     {
-        //console.log("\n\n\n\n\n\n\n\n\n\n");
         let tempSet = new Set<string>();
         while (true) {
             let change = false;
             this.nonterminals.forEach(symbol => {
                 if (!tempSet.has(symbol.sym)) {
                     let count = 0;
-                    //console.log("symbol:", symbol.sym, "\n");
-                    //console.log(this.nonTerminalProductions[symbol.sym]);
-                    this.nonTerminalProductions[symbol.sym].forEach(production => {
-                       // console.log("testing production: ", production, "\n")
+                    this.nonTerminalProductions.get(symbol.sym).forEach(production => {
                         let lambdaInHere = true;
                         production.every(sub => {
                             if (sub != "" && !tempSet.has(sub)) {
@@ -275,19 +257,17 @@ export class Grammar
                         if (lambdaInHere)
                         {
                             //this means that every single subproduction was nullable
-                            //console.log("new nullable!", symbol.sym);
                             tempSet.add(symbol.sym);
                             change = true;
                             count++;
                         }
                         
                     });
-                    if (count >= this.nonTerminalProductions[symbol.sym].length)
+                    if (count >= this.nonTerminalProductions.get(symbol.sym).size)
                     {
                         if (!tempSet.has(symbol.sym))
                         {
                             //this means that every single production was nullable
-                            //console.log("new nullable!");
                             tempSet.add(symbol.sym);
                             change = true;
                         }
@@ -306,7 +286,7 @@ export class Grammar
         return this.nullableSet;
     }
 
-    union(set1, set2)
+    union(set1: Set<string>, set2: Set<string>)
     {
         if (set2 == undefined && set1 != undefined)
             return set1;
@@ -326,22 +306,19 @@ export class Grammar
         {
             let change = false;
             this.nonterminals.forEach(nonTerm => {
-                console.log("checking nonterminal: ", nonTerm);
-                this.nonTerminalProductions[nonTerm.sym].forEach(production => {
-                    console.log("\tchecking production: ", production);
+                //console.log("checking nonterminal: ", nonTerm);
+                this.nonTerminalProductions.get(nonTerm.sym).forEach(production => {
+                    //console.log("\tchecking production: ", production);
                     production.every(sub => {
-                        console.log("\t\tchecking subproduction: ", sub);
-                        //if (sub == "id_or_func_call")
-                        //    console.log("here");
-                        let countBefore = this.first[nonTerm.sym].size;
-                        this.first[nonTerm.sym] = this.union(this.first[nonTerm.sym], this.first[sub]);
-                        let countAfter = this.first[nonTerm.sym].size;
+                        //console.log("\t\tchecking subproduction: ", sub);
+                        let countBefore = this.first.get(nonTerm.sym).size;
+                        this.first.set(nonTerm.sym, this.union(this.first.get(nonTerm.sym), this.first.get(sub)));
+                        let countAfter = this.first.get(nonTerm.sym).size;
                         if (countBefore != countAfter)
                             change = true;
                         if (this.nullableSet.has(sub))
                             return true;
-                        console.log("\t\t\tfirst non-nullable character: ", sub);
-                        //this.first[nonTerm.sym].add(sub);
+                        //console.log("\t\t\tfirst non-nullable character: ", sub);
                         return false;
                     });
                 });
@@ -353,13 +330,6 @@ export class Grammar
 
     getFirst()
     {
-        /*
-        let map: Map<string, string[]> = new Map();
-        for (const [key, value] of Object.entries(this.first)) {
-            map[key] = Array.from(value);
-        }
-        return map;
-        */
         return this.first;
     }
 
