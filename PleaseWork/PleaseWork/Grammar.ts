@@ -1,3 +1,5 @@
+import { copyFileSync } from "fs";
+
 const CHECK_GRAMMAR_ERRORS: boolean = false;
 
 class NodeType
@@ -48,10 +50,9 @@ export class Grammar
     first: Map<string, Set<string>> = new Map();
     nullableSet: Set<string> = new Set<string>();
 
-    constructor(input: string)
-    {
+    constructor(input: string) {
         let lines = input.split("\n");
-       
+
         let expression = new RegExp("([^ ]*)( -> )(.*)", "i");
 
         let setOfTerminals: Set<string> = new Set();
@@ -65,7 +66,7 @@ export class Grammar
 
         this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
 
-        //console.log("--------------------\nRAW INPUT: \n", input);
+        console.log("--------------------\nRAW INPUT:\n", input);
 
         lines.forEach(element => {
             let match = expression.exec(element);
@@ -96,6 +97,7 @@ export class Grammar
                     let right = match[3].trim();
                     this.terminalProductions.push(node);
                     this.nonTerminalProductions[left] = [];
+                    
                 }
                 else {
                     let right = match[3].trim();
@@ -104,32 +106,27 @@ export class Grammar
                         ;
                     }
                     else {
-                        if (setOfTerminals.has(left))
-                        {
+                        if (setOfTerminals.has(left)) {
                             throw new Error("Lefthandside has been defined as a terminal and a production rule!");
                         }
-                        else
-                        {
+                        else {
                             setOfNon.add(left);
                         }
                     }
-
-                    if (!firstNode)
-                    {
+                    if (!firstNode) {
                         firstNode = true;
                         startNodeName = left;
                     }
                     this.nonterminals.push(new nonterminal(left, right));
+                    
                 }
 
             }
             else {
-                if (!switchToNon)
-                {
+                if (!switchToNon) {
                     switchToNon = true;
                 }
-                else
-                {
+                else {
                     if (element.length > 0) {
                         throw new Error("Grammar is impropperly formatted!");
                     }
@@ -141,38 +138,43 @@ export class Grammar
         this.nonterminals.forEach(element => {
             let tempNode = new NodeType(element.sym);
             globalNodes.set(tempNode.label, tempNode);
-            this.first[element.sym] = new Set<string[]>();
+            if (element.label != undefined && element.label != 'undefined')
+                this.first[element.label] = new Set();     
         });
         this.terminalProductions.forEach(element => {
             globalNodes.set(element.label, element);
-            let tset = new Set<string[]>();
-            tset.add([element.sym]);
-            this.first[element.sym] = tset;
+            if (element.label != undefined && element.label != 'undefined') {
+                this.first[element.label] = new Set();
+                this.first[element.label].add(element.label);
+            }
         });
 
         this.nonterminals.forEach(element => {
             let temp = globalNodes.get(element.sym);
             let nonterminalSet = new Set<string[]>();
 
+            //set up first with empty sets
+            this.first[element.sym] = new Set();
+
             let tempRight = [];
             let rightHandSide = element.eq.split("|");
             rightHandSide.forEach(right => {
                 let tempList = []
                 let temp = right.split(" ");
-                temp.forEach(element => {
-                    element = element.trim();
-                    if (element.length > 0)
-                    {
-                        tempList.push(element);
-                        tempRight.push(element);
+                temp.forEach(subelement => {
+                    subelement = subelement.trim();
+                    if (subelement.length > 0) {
+                        tempRight.push(subelement);
+                        if (subelement == "lambda")
+                            subelement = "";
+                        tempList.push(subelement);
                     }
                 });
                 nonterminalSet.add(tempList);
                 this.nonTerminalProductions[element.sym] = Array.from(nonterminalSet);
             });
-            this.first[element.sym] = nonterminalSet;
             rightHandSide = tempRight;
-            
+
             if (CHECK_GRAMMAR_ERRORS) {
                 rightHandSide.forEach(right => {
 
@@ -216,7 +218,26 @@ export class Grammar
         }
 
         this.nullableSet = this.calculateNullable();
-
+        console.log("Nullable: ", this.nullableSet);
+        console.log("First: ");
+        for (const [key, value] of Object.entries(this.first)){
+            console.log(key, "::", value);
+        }
+        this.calculateFirst();
+        /*
+        let k2: string[] = [];
+        console.log("First calculated: ")
+        for (const [key, value] of Object.entries(this.first)) {
+            console.log(key, "::", value);
+            k2.push(key)
+        }
+        
+        let k1: string[] = [];
+        for (let k of this.first.keys())
+            k1.push(k);
+        console.log("keys! ", k1);
+        console.log("keys2! ", k2);
+        */
     }
 
     depthFirstSearch(node: NodeType, visited: Set<string>)
@@ -245,7 +266,7 @@ export class Grammar
                        // console.log("testing production: ", production, "\n")
                         let lambdaInHere = true;
                         production.every(sub => {
-                            if (sub != "lambda" && !tempSet.has(sub)) {
+                            if (sub != "" && !tempSet.has(sub)) {
                                 lambdaInHere = false;
                                 return false;
                             }
@@ -283,6 +304,63 @@ export class Grammar
     getNullable()
     {
         return this.nullableSet;
+    }
+
+    union(set1, set2)
+    {
+        if (set2 == undefined && set1 != undefined)
+            return set1;
+        else if (set1 == undefined && set2 != undefined)
+            return set2;
+        else if (set1 == undefined && set2 == undefined)
+            return undefined;
+        let a = Array.from(set1);
+        let b = Array.from(set2);
+        let c = a.concat(b);
+        return new Set(c);
+    }
+
+    calculateFirst()
+    {
+        while (true)
+        {
+            let change = false;
+            this.nonterminals.forEach(nonTerm => {
+                console.log("checking nonterminal: ", nonTerm);
+                this.nonTerminalProductions[nonTerm.sym].forEach(production => {
+                    console.log("\tchecking production: ", production);
+                    production.every(sub => {
+                        console.log("\t\tchecking subproduction: ", sub);
+                        //if (sub == "id_or_func_call")
+                        //    console.log("here");
+                        let countBefore = this.first[nonTerm.sym].size;
+                        this.first[nonTerm.sym] = this.union(this.first[nonTerm.sym], this.first[sub]);
+                        let countAfter = this.first[nonTerm.sym].size;
+                        if (countBefore != countAfter)
+                            change = true;
+                        if (this.nullableSet.has(sub))
+                            return true;
+                        console.log("\t\t\tfirst non-nullable character: ", sub);
+                        //this.first[nonTerm.sym].add(sub);
+                        return false;
+                    });
+                });
+            });
+            if (change == false)
+                break;
+        }
+    }
+
+    getFirst()
+    {
+        /*
+        let map: Map<string, string[]> = new Map();
+        for (const [key, value] of Object.entries(this.first)) {
+            map[key] = Array.from(value);
+        }
+        return map;
+        */
+        return this.first;
     }
 
 

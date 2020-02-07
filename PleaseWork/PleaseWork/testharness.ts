@@ -18,7 +18,8 @@ function main(){
         let G = new Grammar(input);
         
         let first : Map<string,Set<string>> = G.getFirst();
-        if( !dictionariesAreSame( expected, first ) ){
+        if (!dictionariesAreSame(expected, first)) {
+
             console.log("Test "+name+" failed");
             ++numFailed;
         } 
@@ -29,18 +30,22 @@ function main(){
     return numFailed==0;
 }
 
-function dictionariesAreSame( s1: { [key:string] : string[]}, s2: Map<string,Set<string>> ){
+function dictionariesAreSame(s1: { [key: string]: string[] }, s2: Map<string, Set<string>>) {
     let M1: Map<string,Set<string>> = toMap(s1);
     let M2 = s2;
     
     let k1: string[] = [];
     let k2: string[] = [];
-    for(let k of M1.keys() )
+    for (let k of M1.keys())
         k1.push(k);
-    for(let k of M2.keys() )
-        k2.push(k);
+    for (const [key, value] of Object.entries(s2)) 
+        k2.push(key);
     k1.sort();
     k2.sort();
+
+    console.log("MAPS:\n", "yours:\n", s1, "\nmine:\n", s2);
+    console.log("LISTS:\n", "yours:\n", k1, "\nmine:\n", k2);
+
     if( !listsEqual(k1,k2) ){
         console.log("Lists not equal:",k1,k2);
         return false;
@@ -67,6 +72,7 @@ function toMap( s: { [key:string] : string[]} ) {
     
 function listsEqual(L1a: any, L2a: any )
 {
+    console.log("yours:\n", L1a, "\nmine:\n", L2a);
     let L1: string[] = [];
     let L2: string[] = [];
     L1a.forEach( (x:string) => {
