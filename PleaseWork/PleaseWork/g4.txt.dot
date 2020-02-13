@@ -1,0 +1,7 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S' →  • S>];
+n1 [label=<1<br />S' → S • >];
+n0 -> n1 [label="undefined"];
+}

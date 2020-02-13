@@ -53,6 +53,8 @@ export class Grammar
     follow: Map<string, Set<string>> = new Map();
     nullableSet: Set<string> = new Set<string>();
 
+    startNodeLabel: string;
+
     constructor(input: string) {
         let lines = input.split("\n");
 
@@ -137,8 +139,7 @@ export class Grammar
             }
         });
 
-        //console.log("WHAT WE GOT? ", this.nonterminals);
-
+        this.startNodeLabel = startNodeName;
 
         this.nonterminals.forEach(element => {
             let tempNode = new NodeType(element.sym);
