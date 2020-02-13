@@ -137,7 +137,9 @@ export class Grammar
             }
         });
 
-        
+        //console.log("WHAT WE GOT? ", this.nonterminals);
+
+
         this.nonterminals.forEach(element => {
             let tempNode = new NodeType(element.sym);
             this.globalNodes.set(tempNode.label, tempNode);
@@ -156,7 +158,6 @@ export class Grammar
         this.nonterminals.forEach(element => {
             let temp = this.globalNodes.get(element.sym);
             //let nonterminalSet = new Set<string[]>();
-
             //set up first with empty sets
             this.first.set(element.sym, new Set<string>());
 
@@ -197,7 +198,14 @@ export class Grammar
             }
         });
 
+        let temp = new Map < string, Set<string[]>>();
+        this.nonterminals.forEach(element => {
+            temp.set(element.sym, this.nonTerminalProductions.get(element.sym));
+        });
+        this.nonTerminalProductions = temp;
         //console.log(this.nonTerminalProductions);
+        //console.log(this.globalNodes);
+        //console.log(this.first);
 
         if (CHECK_GRAMMAR_ERRORS) {
             startNode = this.globalNodes.get(startNodeName);
@@ -226,6 +234,9 @@ export class Grammar
 
         this.nullableSet = this.calculateNullable();
         this.calculateFirst();
+
+        console.log(this.nonTerminalProductions);
+
         this.calcuateFollow(startNodeName);
     }
 
@@ -339,37 +350,47 @@ export class Grammar
     calcuateFollow(startNodeName: string)
     {
         let change = false;
+        this.follow.set(startNodeName, new Set("$"));
         do {
             change = false;
-            this.follow.set(startNodeName, new Set("$"));
-            for (let N of this.nonTerminalProductions.keys()) {
+            this.nonterminals.forEach(element => {
+                console.log("nonterminal ", element);
+                let N = element.sym;
                 let tempSet = this.nonTerminalProductions.get(N);
+                //tempSet is a set that contains a list of strings for each prodction for a nonterminal
                 tempSet.forEach((P: string[]) => {
+                    console.log("\tproduction rule ", P)
+                    //for each singular production
                     P.forEach((x: string, i: number) => {
-                        let phi = P.slice(i + 1).every((y: string) => {
-                            let tempSet2 = this.union(this.follow.get(x), this.first.get(y)) || new Set<string>();
-                            let set2 = this.follow.get(x);
-                            let numba = 0;
-                            if (set2 != undefined)
-                                numba = set2.size;
-                            this.follow.set(x, tempSet2);
-                            if (numba != this.follow.get(x).size)
-                                change = true;
-                            return this.nullableSet.has(y);
-                        });
-                        if (phi == true) {
-                            let tempSet2 = this.union(this.follow.get(N), this.follow.get(x)) || new Set<string>();
-                            let set2 = this.follow.get(x);
-                            let numba = 0;
-                            if (set2 != undefined)
-                                numba = set2.size;
-                            this.follow.set(x, tempSet2);
-                            if (numba != this.follow.get(x).size)
-                                change = true;
+                        //for every terminal/nonterminal
+                        if (this.nonTerminalProductions.has(x)) {
+                            console.log("\t\tsingular item ", x);
+
+                            let phi = P.slice(i + 1).every((y: string) => {
+                                let tempSet2 = this.union(this.follow.get(x), this.first.get(y)) || new Set<string>();
+                                let set2 = this.follow.get(x);
+                                let numba = 0;
+                                if (set2 != undefined)
+                                    numba = set2.size;
+                                this.follow.set(x, tempSet2);
+                                if (numba != this.follow.get(x).size)
+                                    change = true;
+                                return this.nullableSet.has(y);
+                            });
+                            if (phi == true) {
+                                let tempSet2 = this.union(this.follow.get(N), this.follow.get(x)) || new Set<string>();
+                                let set2 = this.follow.get(x);
+                                let numba = 0;
+                                if (set2 != undefined)
+                                    numba = set2.size;
+                                this.follow.set(x, tempSet2);
+                                if (numba != this.follow.get(x).size)
+                                    change = true;
+                            }
                         }
                     });
                 });
-            }
+            });
         } while (change);
     }
 
