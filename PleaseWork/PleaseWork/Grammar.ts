@@ -355,17 +355,17 @@ export class Grammar
         do {
             change = false;
             this.nonterminals.forEach(element => {
-                console.log("nonterminal ", element);
+                //console.log("nonterminal ", element);
                 let N = element.sym;
                 let tempSet = this.nonTerminalProductions.get(N);
                 //tempSet is a set that contains a list of strings for each prodction for a nonterminal
                 tempSet.forEach((P: string[]) => {
-                    console.log("\tproduction rule ", P)
+                    //console.log("\tproduction rule ", P)
                     //for each singular production
                     P.forEach((x: string, i: number) => {
                         //for every terminal/nonterminal
                         if (this.nonTerminalProductions.has(x)) {
-                            console.log("\t\tsingular item ", x);
+                            //console.log("\t\tsingular item ", x);
 
                             let phi = P.slice(i + 1).every((y: string) => {
                                 let tempSet2 = this.union(this.follow.get(x), this.first.get(y)) || new Set<string>();

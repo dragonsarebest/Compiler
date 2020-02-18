@@ -41,15 +41,22 @@ function getStateWithLabel(I2, allStates, toDo, stateMap) {
 function makeTransitions(currentState, allStates, toDo, stateMap, gg) {
     if (currentState.item.dpos >= currentState.item.rhs.length)
         return; //nothing to do
-    let sym = currentState.item.rhs[currentState.item.dpos + 1];
+    let sym = currentState.item.rhs[currentState.item.dpos];
+    if (sym == "")
+        return;
+    //we cannot have naything before or after "nothing"
     let I2 = new LR0Item(currentState.item.lhs, currentState.item.rhs, currentState.item.dpos + 1);
     let q2i = getStateWithLabel(I2, allStates, toDo, stateMap);
     currentState.addTransition(sym, q2i);
+    console.log("checking symbol:", sym);
     if (gg.nonTerminalProductions.has(sym)) {
         gg.nonTerminalProductions.get(sym).forEach(P => {
-            let q2i = new LR0Item(sym, P, 0);
-            //let q2i = index of state with label P and dpos at start
-            currentState.addTransition("", getStateWithLabel(q2i, allStates, toDo, stateMap));
+            console.log("production:", P);
+            let I2 = new LR0Item(sym, P, 0);
+            console.log("item with label P:", I2);
+            let q2i = getStateWithLabel(I2, allStates, toDo, stateMap);
+            console.log("q2i:", q2i);
+            currentState.addTransition("", q2i);
         });
     }
 }
@@ -66,6 +73,7 @@ function makeNFA(input) {
         let q = allStates[qi];
         makeTransitions(q, allStates, toDo, stateMap, gg);
     }
+    console.log("ALL DONE:", allStates);
     return allStates;
 }
 exports.makeNFA = makeNFA;
