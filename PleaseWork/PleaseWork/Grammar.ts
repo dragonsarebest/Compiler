@@ -301,7 +301,7 @@ export class Grammar
         return this.nullableSet;
     }
 
-    union(set1: Set<string>, set2: Set<string>)
+    union(set1: Set<any>, set2: Set<any>)
     {
         if (set2 == undefined && set1 != undefined)
             return set1;
