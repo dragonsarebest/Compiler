@@ -1,5 +1,6 @@
 import { copyFileSync } from "fs";
 import { stringify } from "querystring";
+import { union } from "./Untils";
 
 const CHECK_GRAMMAR_ERRORS: boolean = false;
 
@@ -301,19 +302,7 @@ export class Grammar
         return this.nullableSet;
     }
 
-    union(set1: Set<any>, set2: Set<any>)
-    {
-        if (set2 == undefined && set1 != undefined)
-            return set1;
-        else if (set1 == undefined && set2 != undefined)
-            return set2;
-        else if (set1 == undefined && set2 == undefined)
-            return undefined;
-        let a = Array.from(set1);
-        let b = Array.from(set2);
-        let c = a.concat(b);
-        return new Set(c);
-    }
+    
 
     calculateFirst()
     {
@@ -327,7 +316,7 @@ export class Grammar
                     production.every(sub => {
                         //console.log("\t\tchecking subproduction: ", sub);
                         let countBefore = this.first.get(nonTerm.sym).size;
-                        this.first.set(nonTerm.sym, this.union(this.first.get(nonTerm.sym), this.first.get(sub)));
+                        this.first.set(nonTerm.sym, union(this.first.get(nonTerm.sym), this.first.get(sub)));
                         let countAfter = this.first.get(nonTerm.sym).size;
                         if (countBefore != countAfter)
                             change = true;
@@ -368,7 +357,7 @@ export class Grammar
                             //console.log("\t\tsingular item ", x);
 
                             let phi = P.slice(i + 1).every((y: string) => {
-                                let tempSet2 = this.union(this.follow.get(x), this.first.get(y)) || new Set<string>();
+                                let tempSet2 = union(this.follow.get(x), this.first.get(y)) || new Set<string>();
                                 let set2 = this.follow.get(x);
                                 let numba = 0;
                                 if (set2 != undefined)
@@ -379,7 +368,7 @@ export class Grammar
                                 return this.nullableSet.has(y);
                             });
                             if (phi == true) {
-                                let tempSet2 = this.union(this.follow.get(N), this.follow.get(x)) || new Set<string>();
+                                let tempSet2 = union(this.follow.get(N), this.follow.get(x)) || new Set<string>();
                                 let set2 = this.follow.get(x);
                                 let numba = 0;
                                 if (set2 != undefined)
