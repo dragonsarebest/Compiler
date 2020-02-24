@@ -1,0 +1,13 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S' →  • expr [0]<br />expr →  • expr + factor [2]<br />expr →  • factor [3]<br />factor →  • ( expr ) [6]<br />factor →  • ID [5]>];
+n1 [label=<1<br />S' → expr •  [1]<br />expr → expr • + factor [11]>];
+n2 [label=<2<br />expr → factor •  [4]>];
+n3 [label=<3<br />factor → ID •  [10]>];
+n4 [label=<4<br />expr →  • expr + factor [2]<br />expr →  • factor [3]<br />factor →  • ( expr ) [6]<br />factor →  • ID [5]<br />factor → ( • expr ) [7]>];
+n0 -> n1 [label="expr"];
+n0 -> n2 [label="factor"];
+n0 -> n3 [label="ID"];
+n0 -> n4 [label="("];
+}

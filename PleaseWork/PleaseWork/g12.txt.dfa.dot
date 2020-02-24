@@ -1,0 +1,37 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S →  • recipeList [2]<br />S' →  • S [0]<br />anyWord →  • ADD [19]<br />anyWord →  • COMBINE [21]<br />anyWord →  • DIVIDE [22]<br />anyWord →  • REFRIGERATE [18]<br />anyWord →  • REMOVE [20]<br />anyWord →  • SERVES [17]<br />anyWord →  • STIR [24]<br />anyWord →  • TAKE [23]<br />anyWord →  • WORD [16]<br />anyWordOrNumber →  • NUM [13]<br />anyWordOrNumber →  • anyWord [12]<br />recipe →  • sentence PERIOD sentence PERIOD optionalIngredients optionalCookingTime optionalPreheat method serves [7]<br />recipeList →  • recipe [5]<br />recipeList →  • recipe recipeList [4]<br />sentence →  • anyWordOrNumber [10]<br />sentence →  • anyWordOrNumber sentence [9]>];
+n1 [label=<1<br />S' → S •  [1]>];
+n2 [label=<2<br />S → recipeList •  [3]>];
+n3 [label=<3<br />anyWord →  • ADD [19]<br />anyWord →  • COMBINE [21]<br />anyWord →  • DIVIDE [22]<br />anyWord →  • REFRIGERATE [18]<br />anyWord →  • REMOVE [20]<br />anyWord →  • SERVES [17]<br />anyWord →  • STIR [24]<br />anyWord →  • TAKE [23]<br />anyWord →  • WORD [16]<br />anyWordOrNumber →  • NUM [13]<br />anyWordOrNumber →  • anyWord [12]<br />recipe →  • sentence PERIOD sentence PERIOD optionalIngredients optionalCookingTime optionalPreheat method serves [7]<br />recipeList →  • recipe [5]<br />recipeList →  • recipe recipeList [4]<br />recipeList → recipe •  [6]<br />recipeList → recipe • recipeList [272]<br />sentence →  • anyWordOrNumber [10]<br />sentence →  • anyWordOrNumber sentence [9]>];
+n4 [label=<4<br />recipe → sentence • PERIOD sentence PERIOD optionalIngredients optionalCookingTime optionalPreheat method serves [8]>];
+n5 [label=<5<br />anyWord →  • ADD [19]<br />anyWord →  • COMBINE [21]<br />anyWord →  • DIVIDE [22]<br />anyWord →  • REFRIGERATE [18]<br />anyWord →  • REMOVE [20]<br />anyWord →  • SERVES [17]<br />anyWord →  • STIR [24]<br />anyWord →  • TAKE [23]<br />anyWord →  • WORD [16]<br />anyWordOrNumber →  • NUM [13]<br />anyWordOrNumber →  • anyWord [12]<br />sentence →  • anyWordOrNumber [10]<br />sentence →  • anyWordOrNumber sentence [9]<br />sentence → anyWordOrNumber •  [11]<br />sentence → anyWordOrNumber • sentence [34]>];
+n6 [label=<6<br />anyWordOrNumber → anyWord •  [15]>];
+n7 [label=<7<br />anyWord → WORD •  [33]>];
+n8 [label=<8<br />anyWord → SERVES •  [32]>];
+n9 [label=<9<br />anyWord → REFRIGERATE •  [31]>];
+n10 [label=<10<br />anyWord → ADD •  [30]>];
+n11 [label=<11<br />anyWord → REMOVE •  [29]>];
+n12 [label=<12<br />anyWord → COMBINE •  [28]>];
+n13 [label=<13<br />anyWord → DIVIDE •  [27]>];
+n14 [label=<14<br />anyWord → TAKE •  [26]>];
+n15 [label=<15<br />anyWord → STIR •  [25]>];
+n16 [label=<16<br />anyWordOrNumber → NUM •  [14]>];
+n0 -> n1 [label="S"];
+n0 -> n2 [label="recipeList"];
+n0 -> n3 [label="recipe"];
+n0 -> n4 [label="sentence"];
+n0 -> n5 [label="anyWordOrNumber"];
+n0 -> n6 [label="anyWord"];
+n0 -> n7 [label="WORD"];
+n0 -> n8 [label="SERVES"];
+n0 -> n9 [label="REFRIGERATE"];
+n0 -> n10 [label="ADD"];
+n0 -> n11 [label="REMOVE"];
+n0 -> n12 [label="COMBINE"];
+n0 -> n13 [label="DIVIDE"];
+n0 -> n14 [label="TAKE"];
+n0 -> n15 [label="STIR"];
+n0 -> n16 [label="NUM"];
+}

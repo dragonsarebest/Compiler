@@ -36,8 +36,6 @@ class NFAState {
     }
 }
 
-
-
 class DFAState {
     label: Set<number>;
     transitions: Map<string, number>;
@@ -78,15 +76,15 @@ function makeTransitions(currentState: NFAState, allStates: NFAState[], toDo: nu
     let I2 = new LR0Item(currentState.item.lhs, currentState.item.rhs, currentState.item.dpos + 1);
     let q2i = getStateWithLabel(I2, allStates, toDo, stateMap);
     currentState.addTransition(sym, q2i);
-    console.log("checking symbol:", sym)
+    //console.log("checking symbol:", sym)
     if (gg.nonTerminalProductions.has(sym))
     {
         gg.nonTerminalProductions.get(sym).forEach(P => {
-                console.log("production:", P);
+                //console.log("production:", P);
                 let I2 = new LR0Item(sym, P, 0);
-                console.log("item with label P:", I2);
+                //console.log("item with label P:", I2);
                 let q2i = getStateWithLabel(I2, allStates, toDo, stateMap)
-                console.log("q2i:", q2i);
+                //console.log("q2i:", q2i);
                 currentState.addTransition("", q2i);
         });
     }
@@ -108,25 +106,45 @@ export function makeNFA(input : string)
     while (toDo.length > 0) {
         let qi = toDo.pop();
         let q = allStates[qi];
-        makeTransitions(q, allStates, toDo, stateMap, gg);
+        makeTransitions(q, allStates, toDo, stateMap, gg);   
     }
-    console.log("ALL DONE:", allStates);
+    //console.log("ALL DONE:", allStates);
 
     return allStates;
 }
 
+function getDFAStateIndexForLabel(sss: Set<number>, dfa: DFAState[], toDo: number[])
+{
+    //given all of the index numbers that correspond to all outgoing nfa states
+    let key = setToString(sss);
+    //console.log("KEYS: " + key);
 
+    let ddd: DFAState = new DFAState(sss);
+    let found = dfa.findIndex(element => element == ddd);
+    if (found == -1) {
+        dfa.push(ddd);
+        return dfa.length - 1;
+    }
+    else
+    {
+        return found;
+    }
+}
 
-function processState(q: DFAState, nfa: NfAState[], dfa: DFAState[], toDo: number[]) {
+function processState(q: DFAState, nfa: NFAState[], dfa: DFAState[], toDo: number[]) {
     let r: Map<string, Set<number>> = collectTransitions(q, nfa);
     for (let sym of r.keys()) {
-        //ss = set of NFA state indices
+        //r = set of all possible transitions (excluding lambda transitions)
         //that q can get to on sym
         let ss: Set<number> = r.get(sym);
+        console.log(sym);
+        console.log(ss);
+
         let q2i = getDFAStateIndexForLabel(ss, dfa, toDo);
         q.addTransition(sym, q2i);
     }
 }
+
 function collectTransitions(q: DFAState, nfa: NFAState[])
 {
     let r: Map<string, Set<number>> = new Map();
@@ -149,7 +167,19 @@ function collectTransitions(q: DFAState, nfa: NFAState[])
 }
 
 
+function computeClosure(nfa: NFAState[], stateIndex: number, closure: Set<number>) {
+    closure.add(stateIndex);
+    if (nfa[stateIndex].transitions.has("")) {
+        //NFAState.transitions is a Map from string to number[]
+        nfa[stateIndex].transitions.get("").forEach((index: number) => {
+            if (!closure.has(index)) {
+                computeClosure(nfa, index, closure);
+            }
+        });
+    }
+}
 
+let dfaStateMap: Map<string, number> = new Map(); 
 export function makeDFA(input: string)
 {
     //nfa = NFAState[] list
@@ -158,9 +188,18 @@ export function makeDFA(input: string)
 
     let nfa = makeNFA(input);
     let dfa: DFAState[] = [];
+
+    nfa.forEach((N: NFAState, index: number) => {
+        let closure: Set<number> = new Set();
+        computeClosure(nfa, index, closure);
+        N.closure = closure;
+    });
+
+    //console.log(nfa[0].closure);
+
     dfa.push(new DFAState(nfa[0].closure));
 
-
+    //console.log(dfa);
 
     //initially, we must process DFA start state (index 0)
     let toDo: number[] = [0];
@@ -169,7 +208,8 @@ export function makeDFA(input: string)
         let qi = toDo.pop();
         let q = dfa[qi];
         processState(q, nfa, dfa, toDo);
+        dfaStateMap.set(setToString(q.label), qi);
     }
-
+    console.log("Created DFA!");
     return dfa;
 }

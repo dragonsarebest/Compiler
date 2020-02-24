@@ -1,0 +1,27 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />A →  • y [5]<br />A →  • z S [6]<br />S →  • A [3]<br />S →  • x S [2]<br />S' →  • S [0]>];
+n1 [label=<1<br />S' → S •  [1]>];
+n2 [label=<2<br />A →  • y [5]<br />A →  • z S [6]<br />S →  • A [3]<br />S →  • x S [2]<br />S → x • S [10]>];
+n3 [label=<3<br />S → A •  [4]>];
+n4 [label=<4<br />A → y •  [9]>];
+n5 [label=<5<br />A →  • y [5]<br />A →  • z S [6]<br />A → z • S [7]<br />S →  • A [3]<br />S →  • x S [2]>];
+n6 [label=<6<br />A → z S •  [8]>];
+n7 [label=<7<br />S → x S •  [11]>];
+n0 -> n1 [label="S"];
+n0 -> n2 [label="x"];
+n0 -> n3 [label="A"];
+n0 -> n4 [label="y"];
+n0 -> n5 [label="z"];
+n2 -> n7 [label="S"];
+n2 -> n2 [label="x"];
+n2 -> n3 [label="A"];
+n2 -> n4 [label="y"];
+n2 -> n5 [label="z"];
+n5 -> n6 [label="S"];
+n5 -> n2 [label="x"];
+n5 -> n3 [label="A"];
+n5 -> n4 [label="y"];
+n5 -> n5 [label="z"];
+}

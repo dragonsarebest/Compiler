@@ -24,6 +24,9 @@ export class Tokenizer {
     }
 
     next(): Token {
+
+        console.log(this.grammar.terminals);
+
         //console.log("next");
         if (this.idx >= this.inputData.length - 1) {
             //special "end of file" metatoken

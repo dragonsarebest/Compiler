@@ -1,0 +1,9 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S →  • LP RP [3]<br />S →  • LP S RP [2]<br />S' →  • S [0]>];
+n1 [label=<1<br />S' → S •  [1]>];
+n2 [label=<2<br />S →  • LP RP [3]<br />S →  • LP S RP [2]<br />S → LP • RP [4]<br />S → LP • S RP [6]>];
+n0 -> n1 [label="S"];
+n0 -> n2 [label="LP"];
+}

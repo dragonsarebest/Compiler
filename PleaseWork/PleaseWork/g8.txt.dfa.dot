@@ -1,0 +1,9 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S' →  • assign [0]<br />assign →  • ID = expr [2]>];
+n1 [label=<1<br />S' → assign •  [1]>];
+n2 [label=<2<br />assign → ID • = expr [3]>];
+n0 -> n1 [label="assign"];
+n0 -> n2 [label="ID"];
+}

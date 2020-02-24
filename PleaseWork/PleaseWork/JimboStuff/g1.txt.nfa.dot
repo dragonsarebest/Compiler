@@ -1,0 +1,37 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S' →  • expr>];
+n1 [label=<1<br />S' → expr • >];
+n2 [label=<2<br />expr →  • expr + factor>];
+n3 [label=<3<br />expr →  • factor>];
+n4 [label=<4<br />expr → factor • >];
+n5 [label=<5<br />factor →  • ID>];
+n6 [label=<6<br />factor →  • ( expr )>];
+n7 [label=<7<br />factor → ( • expr )>];
+n8 [label=<8<br />factor → ( expr • )>];
+n9 [label=<9<br />factor → ( expr ) • >];
+n10 [label=<10<br />factor → ID • >];
+n11 [label=<11<br />expr → expr • + factor>];
+n12 [label=<12<br />expr → expr + • factor>];
+n13 [label=<13<br />expr → expr + factor • >];
+n0 -> n1 [label="expr"];
+n0 -> n2 [label=<&lambda;>];
+n0 -> n3 [label=<&lambda;>];
+n2 -> n11 [label="expr"];
+n2 -> n2 [label=<&lambda;>];
+n2 -> n3 [label=<&lambda;>];
+n3 -> n4 [label="factor"];
+n3 -> n5 [label=<&lambda;>];
+n3 -> n6 [label=<&lambda;>];
+n5 -> n10 [label="ID"];
+n6 -> n7 [label="("];
+n7 -> n8 [label="expr"];
+n7 -> n2 [label=<&lambda;>];
+n7 -> n3 [label=<&lambda;>];
+n8 -> n9 [label=")"];
+n11 -> n12 [label="+"];
+n12 -> n13 [label="factor"];
+n12 -> n5 [label=<&lambda;>];
+n12 -> n6 [label=<&lambda;>];
+}

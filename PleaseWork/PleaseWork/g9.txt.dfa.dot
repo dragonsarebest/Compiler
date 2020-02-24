@@ -1,0 +1,11 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S →  •  [3]<br />S →  • stmt SEMI S [2]<br />S' →  • S [0]<br />stmt →  • NUM [5]>];
+n1 [label=<1<br />S' → S •  [1]>];
+n2 [label=<2<br />S → stmt • SEMI S [4]>];
+n3 [label=<3<br />stmt → NUM •  [6]>];
+n0 -> n1 [label="S"];
+n0 -> n2 [label="stmt"];
+n0 -> n3 [label="NUM"];
+}
