@@ -19,7 +19,7 @@ class TreeNode {
 }
 
 
-function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNode>, arity : Map<string, number> ) {
+function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNode>, arity: Map<string, number>) {
     let opNode = operatorStack.pop();
     console.log("Opperation node: " + opNode.sym);
     let c1 = operandStack.pop();
@@ -33,7 +33,7 @@ function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNod
     operandStack.push(opNode);
 }
 
-export function parse(input: string){
+export function parse(input: string) {
     let operatorStack: Array<TreeNode>;
     let operandStack: Array<TreeNode>;
     let fs = require("fs");
@@ -54,8 +54,9 @@ export function parse(input: string){
     operators.set("ADDOP", 3);
     operators.set("MULOP", 4);
     operators.set("BITNOT", 5);
-    operators.set("POWOP", 6);
-    operators.set("FUNCCALL", 7);
+    operators.set("NEGATE", 6);
+    operators.set("POWOP", 7);
+    operators.set("FUNCCALL", 8);
     //higher number means higher priority
 
     let arity: Map<string, number> = new Map<string, number>();
@@ -65,7 +66,7 @@ export function parse(input: string){
     arity.set("MULOP", 2);
     arity.set("NEGATE", 1);
     arity.set("POWOP", 2);
-    arity.set("FUNCCALL",2);
+    arity.set("FUNCCALL", 2);
     arity.set("BITNOT", 1);
     //all unary opperations become 1 in arity
 
@@ -88,19 +89,16 @@ export function parse(input: string){
         if (t.lexeme == "-") {
             pt = tokenizer.previous;
         }
-        if (pt == undefined || pt.sym == "LPAREN" || pt.sym in operators) {
+        if (pt == undefined || pt.sym == "LPAREN" || operators.has(pt.sym)) {
             t.sym = "NEGATE";
         }
         let sym = t.sym;
 
         console.log("Token: " + t);
 
-        if (sym == "RP")
-        {
-            while (true)
-            {
-                if (operatorStack[operatorStack.length-1].sym == "LP")
-                {
+        if (sym == "RP") {
+            while (true) {
+                if (operatorStack[operatorStack.length - 1].sym == "LP") {
                     operatorStack.pop();
                     break;
                 }
@@ -108,8 +106,7 @@ export function parse(input: string){
             }
             continue;
         }
-        if (sym == "LP" || sym == "POWOP" || sym == "BITNOT" || sym == "NEGATE")
-        {
+        if (sym == "LP" || sym == "POWOP" || sym == "BITNOT" || sym == "NEGATE") {
             operatorStack.push(new TreeNode(t.sym, t));
             continue;
         }
