@@ -6,10 +6,13 @@ export class Tokenizer {
     inputData: string;
     currentLine: number;
     idx: number;    //index of next unparsed char in inputData
+    previous: Token;
+    current: Token;
 
     constructor(grammar: Grammar) {
         this.grammar = grammar;
-        this.previous = undefined;
+        this.previous = null;
+        this.current = null;
     }
 
     setInput(inputData: string) {
@@ -18,15 +21,6 @@ export class Tokenizer {
         this.idx = 0;
 
         //console.log("got this data for tokenization: " + inputData);
-    }
-
-    previous(): Token {
-        let tempIDX = this.idx;
-        let tempCurrentLine = this.currentLine;
-        let prev = this.next();
-        this.idx = tempIDX;
-        this.currentLine = tempCurrentLine;
-        return prev;
     }
 
     next(): Token {
@@ -57,6 +51,8 @@ export class Tokenizer {
 
                 if (sym !== "WHITESPACE" && sym !== "COMMENT") {
                     let token = new Token(sym, lexeme, temp);
+                    this.previous = this.current;
+                    this.current = token;
                     return token;
                 } else {
                     //skip whitespace and get next real token
