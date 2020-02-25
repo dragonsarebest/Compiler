@@ -1,0 +1,24 @@
+Table row 0
+    On A, shift and go to 2
+    On B, shift and go to 4
+    On C, shift and go to 5
+    On S, shift and go to 1
+    On a, shift and go to 3
+Table row 1
+    On $, pop 1 and reduce to S'
+Table row 2
+    On x, shift and go to 9
+Table row 3
+    On x, shift and go to 8
+Table row 4
+    On x, shift and go to 6
+Table row 5
+    On $, pop 1 and reduce to S
+Table row 6
+    On y, shift and go to 7
+Table row 7
+    On $, pop 3 and reduce to S
+Table row 8
+    On $, pop 2 and reduce to C
+Table row 9
+    On $, pop 2 and reduce to S

@@ -1,0 +1,25 @@
+Table row 0
+    On IF, shift and go to 2
+    On S, shift and go to 1
+    On x, shift and go to 3
+Table row 1
+    On $, pop 1 and reduce to S'
+Table row 2
+    On x, shift and go to 4
+Table row 3
+    On $, pop 1 and reduce to S
+    On ELSE, pop 1 and reduce to S
+Table row 4
+    On IF, shift and go to 2
+    On S, shift and go to 5
+    On x, shift and go to 3
+Table row 5
+    On $, pop 3 and reduce to S
+    On ELSE, shift and go to 6
+Table row 6
+    On IF, shift and go to 2
+    On S, shift and go to 7
+    On x, shift and go to 3
+Table row 7
+    On $, pop 5 and reduce to S
+    On ELSE, pop 5 and reduce to S

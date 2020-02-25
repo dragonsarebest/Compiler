@@ -7,6 +7,7 @@ class TreeNode {
     sym: string;
     token: Token;
     children: TreeNode[];
+    rhs: string[];
     constructor(sym: string, token: Token) {
         this.sym = sym;
         this.token = token;
@@ -31,6 +32,19 @@ function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNod
     opNode.addChild(c1);
     console.log("Adding to opperation's children: " + c1.sym);
     operandStack.push(opNode);
+}
+
+function createNewNode(t: Token, gg: Grammar)
+{
+    let tNode = new TreeNode(t.sym, t);
+    let rhs: string[] = []
+    gg.nonterminals.forEach(element => {
+        if (element.sym == t.sym) {
+            rhs.push(element.eq);
+        }
+    });
+    tNode.rhs = rhs;
+    return tNode;
 }
 
 export function parse(input: string){
@@ -110,13 +124,15 @@ export function parse(input: string){
         }
         if (sym == "LP" || sym == "POWOP" || sym == "BITNOT" || sym == "NEGATE")
         {
-            operatorStack.push(new TreeNode(t.sym, t));
+            let tNode = createNewNode(t, gg);
+            operatorStack.push(tNode);
             continue;
         }
         //THIS DOESN'T WORK AS INTENDED???
 
         if (sym == "NUM" || sym == "ID") {
-            operandStack.push(new TreeNode(t.sym, t));
+            let tNode = createNewNode(t, gg);
+            operatorStack.push(tNode);
         }
         else {
             console.log("not a num or id or negate");
@@ -130,7 +146,8 @@ export function parse(input: string){
                     }
                     doOperation(operatorStack, operandStack, arity);
                 }
-                operatorStack.push(new TreeNode(t.sym, t));
+                let tNode = createNewNode(t, gg);
+                operatorStack.push(tNode);
             }
             else {
                 while (true) {
@@ -145,7 +162,8 @@ export function parse(input: string){
                     }
                     doOperation(operatorStack, operandStack, arity);
                 }
-                operatorStack.push(new TreeNode(t.sym, t));
+                let tNode = createNewNode(t, gg);
+                operatorStack.push(tNode);
 
                 while (operatorStack.length > 0) {
                     doOperation(operatorStack, operandStack, arity);

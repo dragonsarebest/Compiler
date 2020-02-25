@@ -213,3 +213,40 @@ export function makeDFA(input: string)
     console.log("Created DFA!");
     return dfa;
 }
+
+
+
+class Action {
+    action: string; //'s' or 'r'
+    num: number;    //state number for shift, rhs length for reduce
+    //the following are only used for reduce
+    sym: string;   //lhs symbol
+    constructor(a: string, n: number, sym?: string) {
+        this.action = a;
+        this.num = n;
+        this.sym = sym;     //might be <undefined>
+    }
+}
+
+export function makeTable(grammarSpec: string)
+{
+    let dfa: DFAState[] = makeDFA(grammarSpec);
+    let table: Map<string, Action>[] = [];
+
+
+    dfa.forEach((q: DFAState, idx: number) => {
+        table.push(new Map());
+        //q.transitions is a map: string -> number
+        for (let sym of q.transitions.keys()) {
+            //shift
+            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
+            if (sym[sym.length - 1] == "•") {
+                //reduce, if you're at this point, go to
+                table[idx].set(sym, new Action("r", q.transitions.get(sym)));
+            }
+        }
+    });
+
+
+    return table;
+}

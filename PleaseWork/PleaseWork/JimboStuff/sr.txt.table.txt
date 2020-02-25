@@ -1,0 +1,14 @@
+Table row 0
+    On S, shift and go to 1
+    On x, shift and go to 2
+Table row 1
+    On $, pop 1 and reduce to S'
+Table row 2
+    On $, pop 1 and reduce to S
+    On S, shift and go to 3
+    On x, shift and go to 2
+Table row 3
+    On x, shift and go to 4
+Table row 4
+    On $, pop 3 and reduce to S
+    On x, pop 3 and reduce to S
