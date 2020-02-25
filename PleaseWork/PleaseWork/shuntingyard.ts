@@ -54,8 +54,9 @@ export function parse(input: string){
     operators.set("ADDOP", 3);
     operators.set("MULOP", 4);
     operators.set("BITNOT", 5);
-    operators.set("POWOP", 6);
-    operators.set("FUNCCALL", 7);
+    operators.set("NEGATE", 6);
+    operators.set("POWOP", 7);
+    operators.set("FUNCCALL", 8);
     //higher number means higher priority
 
     let arity: Map<string, number> = new Map<string, number>();
