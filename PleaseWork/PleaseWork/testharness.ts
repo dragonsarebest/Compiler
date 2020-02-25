@@ -12,12 +12,12 @@ function main() {
     for (let i = 0; i < tests.length; ++i) {
 
         let name: string = tests[i]["name"];
-        let expected: { [key: string]: string[] } = tests[i]["follow"];
+        let expected: { [key: string]: string[] } = tests[i]["first"];
         let input: string = tests[i]["input"];
 
         let G = new Grammar(input);
 
-        let first: Map<string, Set<string>> = G.getFollow();
+        let first: Map<string, Set<string>> = G.getFirst();
         if (!dictionariesAreSame(expected, first)) {
             console.log("Test " + name + " failed");
             ++numFailed;
