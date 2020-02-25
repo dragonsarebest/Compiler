@@ -19,11 +19,11 @@ class TreeNode {
 }
 
 
-function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNode>, arity : Object ) {
+function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNode>, arity: Map<string, number>) {
     let opNode = operatorStack.pop();
     console.log("Opperation node: " + opNode.sym);
     let c1 = operandStack.pop();
-    if (arity[opNode.sym] == 2) {
+    if (arity.get(opNode.sym) == 2) {
         let c2 = operandStack.pop();
         opNode.addChild(c2);
         console.log("Adding to opperation's children: " + c2.sym);
@@ -33,47 +33,41 @@ function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNod
     operandStack.push(opNode);
 }
 
-export function parse(input: string){
+export function parse(input: string) {
     let operatorStack: Array<TreeNode>;
     let operandStack: Array<TreeNode>;
     let fs = require("fs");
 
-    let associativity =
-        {
-            "LP": "left",
-            "CMA": "right",
-            "MULOP": "left",
-            "ADDOP": "left",
-            "NEGATE": "right",
-            "BITNOT": "right",
-            "POWOP": "right",
-            "FUNCCALL": "left"
-        }
+    let associativity: Map<string, string> = new Map<string, string>();
+    associativity.set("LP", "left");
+    associativity.set("CMA", "right");
+    associativity.set("MULOP", "left");
+    associativity.set("ADDOP", "left");
+    associativity.set("NEGATE", "right");
+    associativity.set("BITNOT", "right");
+    associativity.set("POWOP", "right");
+    associativity.set("FUNCCALL", "left");
 
-    let operators =
-        {
-            "LP": 1,
-            "CMA": 2,
-            "ADDOP": 3,
-            "MULOP": 4,
-            "NEGATE": 5,
-            "BITNOT": 5,
-            "POWOP": 6,
-            "FUNCCALL": 7
-        }
+    let operators: Map<string, number> = new Map<string, number>();
+    operators.set("LP", 1);
+    operators.set("CMA", 2);
+    operators.set("ADDOP", 3);
+    operators.set("MULOP", 4);
+    operators.set("BITNOT", 5);
+    operators.set("NEGATE", 6);
+    operators.set("POWOP", 7);
+    operators.set("FUNCCALL", 8);
     //higher number means higher priority
 
-    let arity =
-        {
-            "LP": 2,
-            "CMA": 2,
-            "ADDOP": 2,
-            "MULOP": 2,
-            "NEGATE": 1,
-            "POWOP": 2,
-            "FUNCCALL": 2,
-            "BITNOT" : 1
-        }
+    let arity: Map<string, number> = new Map<string, number>();
+    arity.set("LP", 2);
+    arity.set("CMA", 2);
+    arity.set("ADDOP", 2);
+    arity.set("MULOP", 2);
+    arity.set("NEGATE", 1);
+    arity.set("POWOP", 2);
+    arity.set("FUNCCALL", 2);
+    arity.set("BITNOT", 1);
     //all unary opperations become 1 in arity
 
     console.log("INPUT:");
@@ -95,19 +89,16 @@ export function parse(input: string){
         if (t.lexeme == "-") {
             pt = tokenizer.previous;
         }
-        if (pt == undefined || pt.sym == "LPAREN" || pt.sym in operators) {
+        if (pt == undefined || pt.sym == "LPAREN" || operators.has(pt.sym)) {
             t.sym = "NEGATE";
         }
         let sym = t.sym;
 
         console.log("Token: " + t);
 
-        if (sym == "RP")
-        {
-            while (true)
-            {
-                if (operatorStack[operatorStack.length-1].sym == "LP")
-                {
+        if (sym == "RP") {
+            while (true) {
+                if (operatorStack[operatorStack.length - 1].sym == "LP") {
                     operatorStack.pop();
                     break;
                 }
@@ -115,8 +106,7 @@ export function parse(input: string){
             }
             continue;
         }
-        if (sym == "LP" || sym == "POWOP" || sym == "BITNOT" || sym == "NEGATE")
-        {
+        if (sym == "LP" || sym == "POWOP" || sym == "BITNOT" || sym == "NEGATE") {
             operatorStack.push(new TreeNode(t.sym, t));
             continue;
         }
@@ -127,12 +117,12 @@ export function parse(input: string){
         }
         else {
             console.log("not a num or id or negate");
-            if (associativity[sym] == "left") {
+            if (associativity.get(sym) == "left") {
                 while (true) {
                     if (operatorStack.length == 0)
                         break;
                     let A = operatorStack[operatorStack.length - 1].sym;
-                    if (operators[A] < operators[sym]) {
+                    if (operators.get(A) < operators.get(sym)) {
                         break;
                     }
                     doOperation(operatorStack, operandStack, arity);
@@ -144,7 +134,7 @@ export function parse(input: string){
                     if (operatorStack.length == 0)
                         break;
                     let A = operatorStack[operatorStack.length - 1].sym;
-                    if (operators[A] >= operators[sym]) {
+                    if (operators.get(A) >= operators.get(sym)) {
                         doOperation(operatorStack, operandStack, arity);
                     }
                     else {
