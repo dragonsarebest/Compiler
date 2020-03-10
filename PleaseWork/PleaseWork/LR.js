@@ -62,7 +62,7 @@ function makeTransitions(currentState, allStates, toDo, stateMap, gg) {
     currentState.addTransition(sym, q2i);
     //console.log("checking symbol:", sym)
     if (gg.nonTerminalProductions.has(sym)) {
-        gg.nonTerminalProductions.get(sym).forEach(P => {
+        gg.nonTerminalProductions.get(sym).forEach((P) => {
             //console.log("production:", P);
             let I2 = new LR0Item(sym, P, 0);
             //console.log("item with label P:", I2);
@@ -89,39 +89,22 @@ function makeNFA(input) {
     return allStates;
 }
 exports.makeNFA = makeNFA;
+let dfaStateMap = new Map();
 function getDFAStateIndexForLabel(sss, dfa, toDo) {
     //given all of the index numbers that correspond to all outgoing nfa states
     let key = Untils_1.setToString(sss);
-    console.log("KEYS: " + key);
+    //console.log("KEYS: " + key);
     let ddd = new DFAState(sss);
-    let found = dfa.findIndex(element => element == ddd);
-    if (found == -1) {
-        dfa.push(ddd);
-        return dfa.length - 1;
+    if (dfaStateMap.has(key)) {
+        return dfaStateMap.get(key);
     }
     else {
-        return found;
+        let q2i = dfa.length;
+        toDo.push(q2i);
+        dfa.push(ddd);
+        dfaStateMap.set(key, q2i);
+        return q2i;
     }
-    /*
-    
-    dfa.forEach((d: DFAState, index: number) => {
-        let ts: string = setToString(d.label);
-        console.log("\tDFA: " + ts);
-        console.log("\tINDEX: " + index);
-        if (!dfaStateMap.has(ts))
-            dfaStateMap.set(ts, index);
-
-        //find DFA whose label contains a key in SSS, where SSS is every dfa state that we can get to given the NFA symbol
-        d.label.forEach(dfaNumba => {
-            sss.forEach(entry => {
-                if (dfaNumba == entry) {
-                    toDo.push(index);
-                }
-            });
-        });
-    });
-    return toDo.pop();
-    */
 }
 function processState(q, nfa, dfa, toDo) {
     let r = collectTransitions(q, nfa);
@@ -129,8 +112,8 @@ function processState(q, nfa, dfa, toDo) {
         //r = set of all possible transitions (excluding lambda transitions)
         //that q can get to on sym
         let ss = r.get(sym);
-        console.log(sym);
-        console.log(ss);
+        //console.log(sym);
+        //console.log(ss);
         let q2i = getDFAStateIndexForLabel(ss, dfa, toDo);
         q.addTransition(sym, q2i);
     }
@@ -164,7 +147,6 @@ function computeClosure(nfa, stateIndex, closure) {
         });
     }
 }
-let dfaStateMap = new Map();
 function makeDFA(input) {
     //nfa = NFAState[] list
     //We've already computed the closures

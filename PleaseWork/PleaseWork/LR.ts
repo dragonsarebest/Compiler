@@ -79,7 +79,7 @@ function makeTransitions(currentState: NFAState, allStates: NFAState[], toDo: nu
     //console.log("checking symbol:", sym)
     if (gg.nonTerminalProductions.has(sym))
     {
-        gg.nonTerminalProductions.get(sym).forEach(P => {
+        gg.nonTerminalProductions.get(sym).forEach((P: string[]) => {
                 //console.log("production:", P);
                 let I2 = new LR0Item(sym, P, 0);
                 //console.log("item with label P:", I2);
@@ -113,6 +113,7 @@ export function makeNFA(input : string)
     return allStates;
 }
 
+let dfaStateMap: Map<string, number> = new Map(); 
 function getDFAStateIndexForLabel(sss: Set<number>, dfa: DFAState[], toDo: number[])
 {
     //given all of the index numbers that correspond to all outgoing nfa states
@@ -120,14 +121,16 @@ function getDFAStateIndexForLabel(sss: Set<number>, dfa: DFAState[], toDo: numbe
     //console.log("KEYS: " + key);
 
     let ddd: DFAState = new DFAState(sss);
-    let found = dfa.findIndex(element => element == ddd);
-    if (found == -1) {
-        dfa.push(ddd);
-        return dfa.length - 1;
+    if (dfaStateMap.has(key)) {
+        return dfaStateMap.get(key);
     }
     else
     {
-        return found;
+        let q2i: number = dfa.length;
+        toDo.push(q2i);
+        dfa.push(ddd);
+        dfaStateMap.set(key, q2i);
+        return q2i;
     }
 }
 
@@ -137,11 +140,11 @@ function processState(q: DFAState, nfa: NFAState[], dfa: DFAState[], toDo: numbe
         //r = set of all possible transitions (excluding lambda transitions)
         //that q can get to on sym
         let ss: Set<number> = r.get(sym);
-        console.log(sym);
-        console.log(ss);
+        //console.log(sym);
+        //console.log(ss);
 
-        let q2i = getDFAStateIndexForLabel(ss, dfa, toDo);
-        q.addTransition(sym, q2i);
+        let q2i: number = getDFAStateIndexForLabel(ss, dfa, toDo);
+        q.addTransition(sym, q2i)
     }
 }
 
@@ -179,7 +182,6 @@ function computeClosure(nfa: NFAState[], stateIndex: number, closure: Set<number
     }
 }
 
-let dfaStateMap: Map<string, number> = new Map(); 
 export function makeDFA(input: string)
 {
     //nfa = NFAState[] list
@@ -207,6 +209,7 @@ export function makeDFA(input: string)
     while (toDo.length > 0) {
         let qi = toDo.pop();
         let q = dfa[qi];
+
         processState(q, nfa, dfa, toDo);
         dfaStateMap.set(setToString(q.label), qi);
     }

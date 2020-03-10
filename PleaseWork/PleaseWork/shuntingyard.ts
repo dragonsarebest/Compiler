@@ -21,15 +21,15 @@ class TreeNode {
 
 function doOperation(operatorStack: Array<TreeNode>, operandStack: Array<TreeNode>, arity : Map<string, number> ) {
     let opNode = operatorStack.pop();
-    console.log("Opperation node: " + opNode.sym);
+    //console.log("Opperation node: " + opNode.sym);
     let c1 = operandStack.pop();
     if (arity.get(opNode.sym) == 2) {
         let c2 = operandStack.pop();
         opNode.addChild(c2);
-        console.log("Adding to opperation's children: " + c2.sym);
+        //console.log("Adding to opperation's children: " + c2.sym);
     }
     opNode.addChild(c1);
-    console.log("Adding to opperation's children: " + c1.sym);
+    //console.log("Adding to opperation's children: " + c1.sym);
     operandStack.push(opNode);
 }
 
@@ -70,8 +70,8 @@ export function parse(input: string){
     arity.set("BITNOT", 1);
     //all unary opperations become 1 in arity
 
-    console.log("INPUT:");
-    console.log(input);
+    //console.log("INPUT:");
+    //console.log(input);
 
     let data: string = fs.readFileSync("myGrammar.txt", "utf8");
     let gg = new Grammar(data);
@@ -94,7 +94,7 @@ export function parse(input: string){
         }
         let sym = t.sym;
 
-        console.log("Token: " + t);
+        //console.log("Token: " + t);
 
         if (sym == "RP")
         {
@@ -120,7 +120,7 @@ export function parse(input: string){
             operandStack.push(new TreeNode(t.sym, t));
         }
         else {
-            console.log("not a num or id or negate");
+            //console.log("not a num or id or negate");
             if (associativity.get(sym) == "left") {
                 while (true) {
                     if (operatorStack.length == 0)

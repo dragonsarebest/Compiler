@@ -4,24 +4,20 @@ import { union } from "./Untils";
 
 const CHECK_GRAMMAR_ERRORS: boolean = false;
 
-class NodeType
-{
+class NodeType {
     label: string;
     neighbors: NodeType[];
-    constructor(L: string)
-    {
+    constructor(L: string) {
         this.label = L;
         this.neighbors = []
     }
 }
 
-class terminal
-{
+class terminal {
     sym: string;
     rex: RegExp;
 
-    constructor(sym: string, rex: RegExp)
-    {
+    constructor(sym: string, rex: RegExp) {
         this.sym = sym;
         this.rex = rex;
     }
@@ -37,8 +33,7 @@ class nonterminal {
     }
 }
 
-export class Grammar
-{
+export class Grammar {
     terminals: Array<terminal> = []
     //list of terminal class
     terminalProductions: Array<NodeType> = []
@@ -57,6 +52,9 @@ export class Grammar
     startNodeLabel: string;
 
     constructor(input: string) {
+        input = input.trim();
+        //console.log(input);
+
         let lines = input.split("\n");
 
         let expression = new RegExp("([^ ]*)( -> )(.*)", "i");
@@ -72,7 +70,7 @@ export class Grammar
 
         this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
 
-        console.log("--------------------\nRAW INPUT:\n", input);
+        //console.log("--------------------\nRAW INPUT:\n", input);
 
         lines.forEach(element => {
             let match = expression.exec(element);
@@ -103,7 +101,7 @@ export class Grammar
                     let right = match[3].trim();
                     this.terminalProductions.push(node);
                     this.nonTerminalProductions.set(left, new Set<string[]>());
-                    
+
                 }
                 else {
                     let right = match[3].trim();
@@ -124,7 +122,7 @@ export class Grammar
                         startNodeName = left;
                     }
                     this.nonterminals.push(new nonterminal(left, right));
-                    
+
                 }
 
             }
@@ -146,7 +144,7 @@ export class Grammar
             let tempNode = new NodeType(element.sym);
             this.globalNodes.set(tempNode.label, tempNode);
             if (element.sym != undefined && element.sym != 'undefined')
-                this.first.set(element.sym, new Set<string>());   
+                this.first.set(element.sym, new Set<string>());
         });
         this.terminalProductions.forEach(element => {
             this.globalNodes.set(element.label, element);
@@ -200,7 +198,7 @@ export class Grammar
             }
         });
 
-        let temp = new Map < string, Set<string[]>>();
+        let temp = new Map<string, Set<string[]>>();
         this.nonterminals.forEach(element => {
             temp.set(element.sym, this.nonTerminalProductions.get(element.sym));
         });
@@ -242,19 +240,17 @@ export class Grammar
         this.calcuateFollow(startNodeName);
     }
 
-    depthFirstSearch(node: NodeType, visited: Set<string>)
-    {
+    depthFirstSearch(node: NodeType, visited: Set<string>) {
         visited.add(node.label);
         node.neighbors.forEach((w: NodeType) => {
             if (!visited.has(w.label)) {
                 this.depthFirstSearch(w, visited);
             }
         });
-        
+
     }
 
-    calculateNullable()
-    {
+    calculateNullable() {
         let tempSet = new Set<string>();
         while (true) {
             let change = false;
@@ -270,19 +266,16 @@ export class Grammar
                             }
                             return true;
                         });
-                        if (lambdaInHere)
-                        {
+                        if (lambdaInHere) {
                             //this means that every single subproduction was nullable
                             tempSet.add(symbol.sym);
                             change = true;
                             count++;
                         }
-                        
+
                     });
-                    if (count >= this.nonTerminalProductions.get(symbol.sym).size)
-                    {
-                        if (!tempSet.has(symbol.sym))
-                        {
+                    if (count >= this.nonTerminalProductions.get(symbol.sym).size) {
+                        if (!tempSet.has(symbol.sym)) {
                             //this means that every single production was nullable
                             tempSet.add(symbol.sym);
                             change = true;
@@ -297,17 +290,14 @@ export class Grammar
         return tempSet;
     }
 
-    getNullable()
-    {
+    getNullable() {
         return this.nullableSet;
     }
 
-    
 
-    calculateFirst()
-    {
-        while (true)
-        {
+
+    calculateFirst() {
+        while (true) {
             let change = false;
             this.nonterminals.forEach(nonTerm => {
                 //console.log("checking nonterminal: ", nonTerm);
@@ -332,13 +322,11 @@ export class Grammar
         }
     }
 
-    getFirst()
-    {
+    getFirst() {
         return this.first;
     }
 
-    calcuateFollow(startNodeName: string)
-    {
+    calcuateFollow(startNodeName: string) {
         let change = false;
         this.follow.set(startNodeName, new Set("$"));
         do {
@@ -384,8 +372,7 @@ export class Grammar
         } while (change);
     }
 
-    getFollow()
-    {
+    getFollow() {
         return this.follow;
     }
 

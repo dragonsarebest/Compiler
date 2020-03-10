@@ -1,0 +1,13 @@
+digraph d{
+node [fontname=Helvetica,shape=box];
+edge [fontname=Helvetica];
+n0 [label=<0<br />S' →  • program [0]<br />program →  • var-decl-list func-decl-list [2]<br />var-decl →  • TYPE ID SEMI [7]<br />var-decl-list →  •  [5]<br />var-decl-list →  • var-decl var-decl-list [4]>];
+n1 [label=<1<br />S' → program •  [1]>];
+n2 [label=<2<br />func-decl →  • TYPE ID LP RP LBR RBR [16]<br />func-decl-list →  •  [14]<br />func-decl-list →  • func-decl func-decl-list [13]<br />program → var-decl-list • func-decl-list [3]>];
+n3 [label=<3<br />var-decl →  • TYPE ID SEMI [7]<br />var-decl-list →  •  [5]<br />var-decl-list →  • var-decl var-decl-list [4]<br />var-decl-list → var-decl • var-decl-list [6]>];
+n4 [label=<4<br />var-decl → TYPE • ID SEMI [8]>];
+n0 -> n1 [label="program"];
+n0 -> n2 [label="var-decl-list"];
+n0 -> n3 [label="var-decl"];
+n0 -> n4 [label="TYPE"];
+}
