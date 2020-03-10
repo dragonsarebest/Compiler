@@ -1,0 +1,5 @@
+Table row 0
+    On S, shift and go to 1
+    On x, pop 2 and reduce to x
+Table row 1
+Table row 2

@@ -15,16 +15,27 @@ class TreeNode {
 }
 function doOperation(operatorStack, operandStack, arity) {
     let opNode = operatorStack.pop();
-    console.log("Opperation node: " + opNode.sym);
+    //console.log("Opperation node: " + opNode.sym);
     let c1 = operandStack.pop();
     if (arity.get(opNode.sym) == 2) {
         let c2 = operandStack.pop();
         opNode.addChild(c2);
-        console.log("Adding to opperation's children: " + c2.sym);
+        //console.log("Adding to opperation's children: " + c2.sym);
     }
     opNode.addChild(c1);
-    console.log("Adding to opperation's children: " + c1.sym);
+    //console.log("Adding to opperation's children: " + c1.sym);
     operandStack.push(opNode);
+}
+function createNewNode(t, gg) {
+    let tNode = new TreeNode(t.sym, t);
+    let rhs = [];
+    gg.nonterminals.forEach(element => {
+        if (element.sym == t.sym) {
+            rhs.push(element.eq);
+        }
+    });
+    tNode.rhs = rhs;
+    return tNode;
 }
 function parse(input) {
     let operatorStack;
@@ -45,8 +56,9 @@ function parse(input) {
     operators.set("ADDOP", 3);
     operators.set("MULOP", 4);
     operators.set("BITNOT", 5);
-    operators.set("POWOP", 6);
-    operators.set("FUNCCALL", 7);
+    operators.set("NEGATE", 6);
+    operators.set("POWOP", 7);
+    operators.set("FUNCCALL", 8);
     //higher number means higher priority
     let arity = new Map();
     arity.set("LP", 2);
@@ -58,8 +70,8 @@ function parse(input) {
     arity.set("FUNCCALL", 2);
     arity.set("BITNOT", 1);
     //all unary opperations become 1 in arity
-    console.log("INPUT:");
-    console.log(input);
+    //console.log("INPUT:");
+    //console.log(input);
     let data = fs.readFileSync("myGrammar.txt", "utf8");
     let gg = new Grammar_1.Grammar(data);
     let tokenizer = new Tokenizer_1.Tokenizer(gg);
@@ -78,7 +90,7 @@ function parse(input) {
             t.sym = "NEGATE";
         }
         let sym = t.sym;
-        console.log("Token: " + t);
+        //console.log("Token: " + t);
         if (sym == "RP") {
             while (true) {
                 if (operatorStack[operatorStack.length - 1].sym == "LP") {
@@ -90,15 +102,17 @@ function parse(input) {
             continue;
         }
         if (sym == "LP" || sym == "POWOP" || sym == "BITNOT" || sym == "NEGATE") {
-            operatorStack.push(new TreeNode(t.sym, t));
+            let tNode = createNewNode(t, gg);
+            operatorStack.push(tNode);
             continue;
         }
         //THIS DOESN'T WORK AS INTENDED???
         if (sym == "NUM" || sym == "ID") {
-            operandStack.push(new TreeNode(t.sym, t));
+            let tNode = createNewNode(t, gg);
+            operatorStack.push(tNode);
         }
         else {
-            console.log("not a num or id or negate");
+            //console.log("not a num or id or negate");
             if (associativity.get(sym) == "left") {
                 while (true) {
                     if (operatorStack.length == 0)
@@ -109,7 +123,8 @@ function parse(input) {
                     }
                     doOperation(operatorStack, operandStack, arity);
                 }
-                operatorStack.push(new TreeNode(t.sym, t));
+                let tNode = createNewNode(t, gg);
+                operatorStack.push(tNode);
             }
             else {
                 while (true) {
@@ -124,7 +139,8 @@ function parse(input) {
                     }
                     doOperation(operatorStack, operandStack, arity);
                 }
-                operatorStack.push(new TreeNode(t.sym, t));
+                let tNode = createNewNode(t, gg);
+                operatorStack.push(tNode);
                 while (operatorStack.length > 0) {
                     doOperation(operatorStack, operandStack, arity);
                 }

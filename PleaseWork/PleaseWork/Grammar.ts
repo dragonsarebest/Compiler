@@ -57,6 +57,7 @@ export class Grammar
     startNodeLabel: string;
 
     constructor(input: string) {
+        input = input.trim();
         let lines = input.split("\n");
 
         let expression = new RegExp("([^ ]*)( -> )(.*)", "i");
@@ -72,7 +73,7 @@ export class Grammar
 
         this.terminals.push(new terminal("WHITESPACE", new RegExp("\\s+", "gy")));
 
-        console.log("--------------------\nRAW INPUT:\n", input);
+        //console.log("--------------------\nRAW INPUT:\n", input);
 
         lines.forEach(element => {
             let match = expression.exec(element);

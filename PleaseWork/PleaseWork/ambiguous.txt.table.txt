@@ -1,0 +1,7 @@
+Table row 0
+    On IF, shift and go to 2
+    On S, shift and go to 1
+    On x, pop 3 and reduce to x
+Table row 1
+Table row 2
+Table row 3

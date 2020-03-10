@@ -1,0 +1,9 @@
+Table row 0
+    On TYPE, pop 4 and reduce to TYPE
+    On program, shift and go to 1
+    On var-decl, shift and go to 3
+    On var-decl-list, shift and go to 2
+Table row 1
+Table row 2
+Table row 3
+Table row 4

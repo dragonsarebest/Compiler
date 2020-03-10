@@ -1,0 +1,7 @@
+Table row 0
+    On NUM, pop 3 and reduce to NUM
+    On S, shift and go to 1
+    On stmt, shift and go to 2
+Table row 1
+Table row 2
+Table row 3

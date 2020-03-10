@@ -28,6 +28,7 @@ class NFAState {
 }
 class DFAState {
     constructor(label) {
+        this.lhs = [];
         this.label = label;
         this.transitions = new Map();
     }
@@ -92,7 +93,7 @@ exports.makeNFA = makeNFA;
 function getDFAStateIndexForLabel(sss, dfa, toDo) {
     //given all of the index numbers that correspond to all outgoing nfa states
     let key = Untils_1.setToString(sss);
-    console.log("KEYS: " + key);
+    //console.log("KEYS: " + key);
     let ddd = new DFAState(sss);
     let found = dfa.findIndex(element => element == ddd);
     if (found == -1) {
@@ -102,38 +103,24 @@ function getDFAStateIndexForLabel(sss, dfa, toDo) {
     else {
         return found;
     }
-    /*
-    
-    dfa.forEach((d: DFAState, index: number) => {
-        let ts: string = setToString(d.label);
-        console.log("\tDFA: " + ts);
-        console.log("\tINDEX: " + index);
-        if (!dfaStateMap.has(ts))
-            dfaStateMap.set(ts, index);
-
-        //find DFA whose label contains a key in SSS, where SSS is every dfa state that we can get to given the NFA symbol
-        d.label.forEach(dfaNumba => {
-            sss.forEach(entry => {
-                if (dfaNumba == entry) {
-                    toDo.push(index);
-                }
-            });
-        });
-    });
-    return toDo.pop();
-    */
 }
 function processState(q, nfa, dfa, toDo) {
+    let statesToStates = [];
     let r = collectTransitions(q, nfa);
     for (let sym of r.keys()) {
         //r = set of all possible transitions (excluding lambda transitions)
         //that q can get to on sym
         let ss = r.get(sym);
-        console.log(sym);
-        console.log(ss);
+        //console.log(sym);
+        //console.log(ss);
         let q2i = getDFAStateIndexForLabel(ss, dfa, toDo);
         q.addTransition(sym, q2i);
+        r.get(sym).forEach(index => {
+            q.lhs.push(nfa[index].item.lhs);
+            statesToStates.push(nfa[index]);
+        });
     }
+    return statesToStates;
 }
 function collectTransitions(q, nfa) {
     let r = new Map();
@@ -164,6 +151,7 @@ function computeClosure(nfa, stateIndex, closure) {
         });
     }
 }
+let NFAtoDFA = new Map();
 let dfaStateMap = new Map();
 function makeDFA(input) {
     //nfa = NFAState[] list
@@ -178,17 +166,91 @@ function makeDFA(input) {
     });
     //console.log(nfa[0].closure);
     dfa.push(new DFAState(nfa[0].closure));
+    dfa[0].lhs.push(nfa[0].item.lhs);
     //console.log(dfa);
     //initially, we must process DFA start state (index 0)
     let toDo = [0];
     while (toDo.length > 0) {
         let qi = toDo.pop();
         let q = dfa[qi];
-        processState(q, nfa, dfa, toDo);
+        let listOfNFAStates = processState(q, nfa, dfa, toDo);
+        listOfNFAStates.forEach(entry => {
+            NFAtoDFA.set(entry, qi);
+        });
         dfaStateMap.set(Untils_1.setToString(q.label), qi);
     }
-    console.log("Created DFA!");
+    //console.log("Created DFA!");
+    //console.log(NFAtoDFA);
     return dfa;
 }
 exports.makeDFA = makeDFA;
+class Action {
+    constructor(a, n, sym) {
+        this.action = a;
+        this.num = n;
+        this.sym = sym; //might be <undefined>
+    }
+}
+function makeTable(grammarSpec) {
+    let gg = new Grammar_1.Grammar(grammarSpec);
+    let nfa = makeNFA(grammarSpec);
+    let dfa = makeDFA(grammarSpec);
+    let table = [];
+    let shiftReduceError = false;
+    let reduceReduceError = false;
+    dfa.forEach((q, idx) => {
+        console.log(q);
+        table.push(new Map());
+        //q.transitions is a map: string(LR0Item as a string -> number corresponding to the dfa index)
+        let count = 0;
+        let rhsSet = new Set();
+        console.log(q);
+        for (let sym of q.transitions.keys()) {
+            //sym is LR0Item as a string
+            let trans = q.transitions.get(sym);
+            //trans is the index in the dfastate table
+            let dff = dfa[trans];
+            console.log(dff);
+            rhsSet.add(sym);
+            //console.log("Transition: ", sym);
+            if (count >= q.transitions.size - 1) {
+                if (table[idx].get(sym) != undefined) {
+                    if (table[idx].get(sym).action == "r") {
+                        reduceReduceError = true;
+                    }
+                    if (table[idx].get(sym).action == "s") {
+                        shiftReduceError = true;
+                        reduceReduceError = true;
+                    }
+                }
+                table[idx].set(sym, new Action("r", trans, sym));
+                //this may or may not be right?
+            }
+            else {
+                if (table[idx].get(sym) != undefined) {
+                    if (table[idx].get(sym).action == "s") {
+                        shiftReduceError = true;
+                    }
+                    if (table[idx].get(sym).action == "r") {
+                        shiftReduceError = true;
+                        reduceReduceError = true;
+                    }
+                }
+                table[idx].set(sym, new Action("s", q.transitions.get(sym)));
+            }
+            count += 1;
+        }
+    });
+    let error = 0;
+    if (shiftReduceError && !reduceReduceError)
+        error = 1;
+    if (!shiftReduceError && reduceReduceError)
+        error = 2;
+    if (shiftReduceError && reduceReduceError)
+        error = 3;
+    let returnValue;
+    returnValue = [table, error];
+    return returnValue;
+}
+exports.makeTable = makeTable;
 //# sourceMappingURL=LR.js.map

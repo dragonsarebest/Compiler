@@ -1,0 +1,11 @@
+Table row 0
+    On ID, shift and go to 3
+    On NUM, shift and go to 4
+    On S, shift and go to 1
+    On callableThings, pop 5 and reduce to callableThings
+    On mathThings, shift and go to 2
+Table row 1
+Table row 2
+Table row 3
+Table row 4
+Table row 5

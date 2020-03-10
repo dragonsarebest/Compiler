@@ -1,0 +1,9 @@
+Table row 0
+    On ID, shift and go to 3
+    On S, shift and go to 1
+    On assign, pop 4 and reduce to assign
+    On func-call, shift and go to 2
+Table row 1
+Table row 2
+Table row 3
+Table row 4
