@@ -1,0 +1,4 @@
+Table row 0
+    On NUM, pop 4 and reduce to NUM
+    On S, shift and go to 1
+    On stmt, shift and go to 2

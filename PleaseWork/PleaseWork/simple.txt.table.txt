@@ -1,9 +1,19 @@
 Table row 0
-    On ID, shift and go to 3
+    On ID, shift and go to 2
     On S, shift and go to 1
-    On assign, pop 4 and reduce to assign
-    On func-call, shift and go to 2
+    On assign, shift and go to 2
+    On func-call, shift and go to 1
 Table row 1
 Table row 2
+    On EQ, shift and go to 3
+    On LP, shift and go to 9
 Table row 3
+    On NUM, shift and go to 5
+    On expr, shift and go to 4
 Table row 4
+    On +, shift and go to 6
+Table row 5
+Table row 6
+Table row 7
+Table row 8
+Table row 9

@@ -28,7 +28,6 @@ class NFAState {
 }
 class DFAState {
     constructor(label) {
-        this.lhs = [];
         this.label = label;
         this.transitions = new Map();
     }
@@ -63,7 +62,7 @@ function makeTransitions(currentState, allStates, toDo, stateMap, gg) {
     currentState.addTransition(sym, q2i);
     //console.log("checking symbol:", sym)
     if (gg.nonTerminalProductions.has(sym)) {
-        gg.nonTerminalProductions.get(sym).forEach(P => {
+        gg.nonTerminalProductions.get(sym).forEach((P) => {
             //console.log("production:", P);
             let I2 = new LR0Item(sym, P, 0);
             //console.log("item with label P:", I2);
@@ -90,22 +89,24 @@ function makeNFA(input) {
     return allStates;
 }
 exports.makeNFA = makeNFA;
+let dfaStateMap = new Map();
 function getDFAStateIndexForLabel(sss, dfa, toDo) {
     //given all of the index numbers that correspond to all outgoing nfa states
     let key = Untils_1.setToString(sss);
     //console.log("KEYS: " + key);
     let ddd = new DFAState(sss);
-    let found = dfa.findIndex(element => element == ddd);
-    if (found == -1) {
-        dfa.push(ddd);
-        return dfa.length - 1;
+    if (dfaStateMap.has(key)) {
+        return dfaStateMap.get(key);
     }
     else {
-        return found;
+        let q2i = dfa.length;
+        toDo.push(q2i);
+        dfa.push(ddd);
+        dfaStateMap.set(key, q2i);
+        return q2i;
     }
 }
 function processState(q, nfa, dfa, toDo) {
-    let statesToStates = [];
     let r = collectTransitions(q, nfa);
     for (let sym of r.keys()) {
         //r = set of all possible transitions (excluding lambda transitions)
@@ -115,12 +116,7 @@ function processState(q, nfa, dfa, toDo) {
         //console.log(ss);
         let q2i = getDFAStateIndexForLabel(ss, dfa, toDo);
         q.addTransition(sym, q2i);
-        r.get(sym).forEach(index => {
-            q.lhs.push(nfa[index].item.lhs);
-            statesToStates.push(nfa[index]);
-        });
     }
-    return statesToStates;
 }
 function collectTransitions(q, nfa) {
     let r = new Map();
@@ -151,8 +147,6 @@ function computeClosure(nfa, stateIndex, closure) {
         });
     }
 }
-let NFAtoDFA = new Map();
-let dfaStateMap = new Map();
 function makeDFA(input) {
     //nfa = NFAState[] list
     //We've already computed the closures
@@ -166,21 +160,16 @@ function makeDFA(input) {
     });
     //console.log(nfa[0].closure);
     dfa.push(new DFAState(nfa[0].closure));
-    dfa[0].lhs.push(nfa[0].item.lhs);
     //console.log(dfa);
     //initially, we must process DFA start state (index 0)
     let toDo = [0];
     while (toDo.length > 0) {
         let qi = toDo.pop();
         let q = dfa[qi];
-        let listOfNFAStates = processState(q, nfa, dfa, toDo);
-        listOfNFAStates.forEach(entry => {
-            NFAtoDFA.set(entry, qi);
-        });
+        processState(q, nfa, dfa, toDo);
         dfaStateMap.set(Untils_1.setToString(q.label), qi);
     }
     //console.log("Created DFA!");
-    //console.log(NFAtoDFA);
     return dfa;
 }
 exports.makeDFA = makeDFA;
@@ -194,52 +183,30 @@ class Action {
 function makeTable(grammarSpec) {
     let gg = new Grammar_1.Grammar(grammarSpec);
     let nfa = makeNFA(grammarSpec);
+    console.log(nfa);
     let dfa = makeDFA(grammarSpec);
+    console.log(dfa);
+    //let table: Map<number, Map<string, Action>> = new Map();
     let table = [];
     let shiftReduceError = false;
     let reduceReduceError = false;
     dfa.forEach((q, idx) => {
-        console.log(q);
+        table.push(new Map());
+        //q.transitions is a map: string -> number
+        for (let sym of q.transitions.keys()) {
+            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
+        }
+    });
+    //all shifts are now done
+    //this is for reducing!
+    dfa.forEach((q, idx) => {
+        //table.set(idx, new Map());
         table.push(new Map());
         //q.transitions is a map: string(LR0Item as a string -> number corresponding to the dfa index)
-        let count = 0;
-        let rhsSet = new Set();
-        console.log(q);
-        for (let sym of q.transitions.keys()) {
-            //sym is LR0Item as a string
-            let trans = q.transitions.get(sym);
-            //trans is the index in the dfastate table
-            let dff = dfa[trans];
-            console.log(dff);
-            rhsSet.add(sym);
-            //console.log("Transition: ", sym);
-            if (count >= q.transitions.size - 1) {
-                if (table[idx].get(sym) != undefined) {
-                    if (table[idx].get(sym).action == "r") {
-                        reduceReduceError = true;
-                    }
-                    if (table[idx].get(sym).action == "s") {
-                        shiftReduceError = true;
-                        reduceReduceError = true;
-                    }
-                }
-                table[idx].set(sym, new Action("r", trans, sym));
-                //this may or may not be right?
-            }
-            else {
-                if (table[idx].get(sym) != undefined) {
-                    if (table[idx].get(sym).action == "s") {
-                        shiftReduceError = true;
-                    }
-                    if (table[idx].get(sym).action == "r") {
-                        shiftReduceError = true;
-                        reduceReduceError = true;
-                    }
-                }
-                table[idx].set(sym, new Action("s", q.transitions.get(sym)));
-            }
-            count += 1;
-        }
+        //console.log(q);
+        //look for this q's symbol in the rhs of any production where it is followed by a dot
+        //search NFA table for this q's symbol & if the dpos is the same position as this symbol in the
+        //production then we can reduce to this nfa state. now we need to figure out what dfa state this nfa maps to.
     });
     let error = 0;
     if (shiftReduceError && !reduceReduceError)

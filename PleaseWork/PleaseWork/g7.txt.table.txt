@@ -1,0 +1,6 @@
+Table row 0
+    On (, pop 3 and reduce to (
+    On ID, shift and go to 8
+    On expr, shift and go to 1
+    On factor, shift and go to 2
+    On term, shift and go to 2

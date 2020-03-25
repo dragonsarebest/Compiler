@@ -1,0 +1,10 @@
+Table row 0
+    On LP, pop 1 and reduce to LP
+    On S, shift and go to 1
+Table row 1
+    On LP, shift and go to 1
+    On RP, pop 3 and reduce to RP
+    On S, shift and go to 2
+Table row 2
+    On RP, pop 3 and reduce to RP
+Table row 3

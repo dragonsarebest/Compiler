@@ -1,0 +1,61 @@
+Table row 0
+    On ADD, shift and go to 8
+    On COMBINE, shift and go to 10
+    On DIVIDE, shift and go to 11
+    On NUM, pop 14 and reduce to NUM
+    On REFRIGERATE, shift and go to 7
+    On REMOVE, shift and go to 9
+    On S, shift and go to 1
+    On SERVES, shift and go to 6
+    On STIR, shift and go to 13
+    On TAKE, shift and go to 12
+    On WORD, shift and go to 5
+    On anyWord, shift and go to 4
+    On anyWordOrNumber, shift and go to 3
+    On recipe, shift and go to 2
+    On recipeList, shift and go to 1
+    On sentence, shift and go to 3
+Table row 1
+Table row 2
+    On ADD, shift and go to 8
+    On COMBINE, shift and go to 10
+    On DIVIDE, shift and go to 11
+    On NUM, pop 14 and reduce to NUM
+    On REFRIGERATE, shift and go to 7
+    On REMOVE, shift and go to 9
+    On SERVES, shift and go to 6
+    On STIR, shift and go to 13
+    On TAKE, shift and go to 12
+    On WORD, shift and go to 5
+    On anyWord, shift and go to 4
+    On anyWordOrNumber, shift and go to 3
+    On recipe, shift and go to 2
+    On recipeList, shift and go to 16
+    On sentence, shift and go to 3
+Table row 3
+    On ADD, shift and go to 8
+    On COMBINE, shift and go to 10
+    On DIVIDE, shift and go to 11
+    On NUM, pop 14 and reduce to NUM
+    On REFRIGERATE, shift and go to 7
+    On REMOVE, shift and go to 9
+    On SERVES, shift and go to 6
+    On STIR, shift and go to 13
+    On TAKE, shift and go to 12
+    On WORD, shift and go to 5
+    On anyWord, shift and go to 4
+    On anyWordOrNumber, shift and go to 3
+    On sentence, shift and go to 15
+Table row 4
+Table row 5
+Table row 6
+Table row 7
+Table row 8
+Table row 9
+Table row 10
+Table row 11
+Table row 12
+Table row 13
+Table row 14
+Table row 15
+Table row 16

@@ -1,9 +1,50 @@
 Table row 0
-    On TYPE, pop 4 and reduce to TYPE
+    On TYPE, shift and go to 3
     On program, shift and go to 1
-    On var-decl, shift and go to 3
-    On var-decl-list, shift and go to 2
+    On var-decl, shift and go to 2
+    On var-decl-list, shift and go to 1
 Table row 1
+    On TYPE, shift and go to 8
+    On func-decl, shift and go to 7
+    On func-decl-list, shift and go to 6
 Table row 2
+    On TYPE, shift and go to 3
+    On var-decl, shift and go to 2
+    On var-decl-list, shift and go to 5
 Table row 3
+    On ID, shift and go to 4
 Table row 4
+    On SEMI, shift and go to 7
+Table row 5
+Table row 6
+Table row 7
+    On TYPE, shift and go to 8
+    On func-decl, shift and go to 7
+    On func-decl-list, shift and go to 14
+Table row 8
+    On ID, shift and go to 9
+Table row 9
+    On LP, shift and go to 10
+Table row 10
+    On RP, shift and go to 11
+Table row 11
+    On LBR, shift and go to 12
+Table row 12
+    On RBR, shift and go to 13
+Table row 13
+Table row 14
+Table row 15
+Table row 16
+Table row 17
+Table row 18
+Table row 19
+Table row 20
+Table row 21
+Table row 22
+Table row 23
+Table row 24
+Table row 25
+Table row 26
+Table row 27
+Table row 28
+Table row 29

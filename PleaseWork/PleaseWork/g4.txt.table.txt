@@ -1,0 +1,13 @@
+Table row 0
+    On A, shift and go to 2
+    On S, shift and go to 1
+    On x, shift and go to 1
+    On y, shift and go to 6
+    On z, pop 4 and reduce to z
+Table row 1
+    On A, shift and go to 2
+    On S, shift and go to 2
+    On x, shift and go to 1
+    On y, shift and go to 6
+    On z, pop 4 and reduce to z
+Table row 2

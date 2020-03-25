@@ -1,0 +1,5 @@
+Table row 0
+    On (, pop 4 and reduce to (
+    On ID, shift and go to 3
+    On expr, shift and go to 1
+    On factor, shift and go to 2

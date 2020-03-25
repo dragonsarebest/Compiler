@@ -1,0 +1,32 @@
+Table row 0
+    On (, pop 3 and reduce to (
+    On ID, shift and go to 8
+    On f, shift and go to 2
+    On p, shift and go to 2
+    On s, shift and go to 1
+Table row 1
+    On +, pop 6 and reduce to +
+Table row 2
+    On *, pop 8 and reduce to *
+Table row 3
+    On (, pop 3 and reduce to (
+    On ID, shift and go to 8
+    On f, shift and go to 2
+    On p, shift and go to 2
+    On s, shift and go to 4
+Table row 4
+    On ), shift and go to 5
+    On +, pop 6 and reduce to +
+Table row 5
+Table row 6
+    On (, pop 3 and reduce to (
+    On ID, shift and go to 8
+    On f, shift and go to 2
+    On p, shift and go to 7
+Table row 7
+    On *, pop 8 and reduce to *
+Table row 8
+    On (, pop 3 and reduce to (
+    On ID, shift and go to 8
+    On f, shift and go to 9
+Table row 9

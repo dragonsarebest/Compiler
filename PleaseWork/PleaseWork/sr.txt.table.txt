@@ -1,5 +1,8 @@
 Table row 0
     On S, shift and go to 1
-    On x, pop 2 and reduce to x
+    On x, shift and go to 1
 Table row 1
+    On S, shift and go to 2
+    On x, shift and go to 1
 Table row 2
+Table row 3

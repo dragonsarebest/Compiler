@@ -238,7 +238,7 @@ export class Grammar
         this.nullableSet = this.calculateNullable();
         this.calculateFirst();
 
-        console.log(this.nonTerminalProductions);
+        //console.log(this.nonTerminalProductions);
 
         this.calcuateFollow(startNodeName);
     }

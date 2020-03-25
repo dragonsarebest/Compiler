@@ -1,11 +1,13 @@
 Table row 0
-    On A, shift and go to 2
+    On A, shift and go to 1
     On B, shift and go to 4
-    On C, pop 5 and reduce to C
+    On C, shift and go to 3
     On S, shift and go to 1
-    On a, shift and go to 3
+    On a, shift and go to 2
 Table row 1
+    On x, shift and go to 8
 Table row 2
+    On x, shift and go to 3
 Table row 3
 Table row 4
 Table row 5

@@ -1,9 +1,6 @@
 Table row 0
-    On A, shift and go to 2
-    On B, pop 4 and reduce to B
+    On A, shift and go to 4
+    On B, shift and go to 2
     On S, shift and go to 1
-    On a, shift and go to 3
+    On a, shift and go to 2
 Table row 1
-Table row 2
-Table row 3
-Table row 4
