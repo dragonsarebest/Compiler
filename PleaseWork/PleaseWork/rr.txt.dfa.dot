@@ -1,9 +1,0 @@
-digraph d{
-node [fontname=Helvetica,shape=box];
-edge [fontname=Helvetica];
-n0 [label=<0<br />A →  • a [10]<br />B →  • a [5]<br />S →  • A x [2]<br />S →  • B x y [3]<br />S' →  • S [0]>];
-n0 -> n1 [label="S"];
-n0 -> n4 [label="A"];
-n0 -> n2 [label="a"];
-n0 -> n2 [label="B"];
-}
