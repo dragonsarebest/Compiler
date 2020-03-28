@@ -114,15 +114,15 @@ let dfaStateMap: Map<string, number> = new Map();
 function getDFAStateIndexForLabel(sss: Set<number>, dfa: DFAState[], toDo: number[]) {
     //given all of the index numbers that correspond to all outgoing nfa states
     let key = setToString(sss);
-    console.log("KEYS: " + key);
-    console.log("DFA state map: ");
-    console.log(dfaStateMap);
-
-    let ddd: DFAState = new DFAState(sss);
+    //console.log("KEY: " + key);
+    //console.log("DFA state map: ");
+    //console.log(dfaStateMap);
+    
     if (dfaStateMap.has(key)) {
         return dfaStateMap.get(key);
     }
     else {
+        let ddd: DFAState = new DFAState(sss);
         let q2i: number = dfa.length;
         toDo.push(q2i);
         dfa.push(ddd);
@@ -130,11 +130,17 @@ function getDFAStateIndexForLabel(sss: Set<number>, dfa: DFAState[], toDo: numbe
         return q2i;
     }
 }
-
+//look @ current DFA state DQ
+//for every symbol possible, S
+//consider every NFA state in DQ's label as NQ
+//for every NQ, list of NFA states you can reach from NQ on s
+//union that list w/ all of the closures of all the NFA states you could reach via s
+//make a transition from the current DQ to a new DQ w/ label s
+//repeat until no new changes
 function processState(q: DFAState, nfa: NFAState[], dfa: DFAState[], toDo: number[]) {
     let r: Map<string, Set<number>> = collectTransitions(q, nfa);
-    console.log("collected transitions: ");
-    console.log(r);
+    //console.log("collected transitions: ");
+    //console.log(r);
     for (let sym of r.keys()) {
         //r = set of all possible transitions (excluding lambda transitions)
         //that q can get to on sym
@@ -150,6 +156,7 @@ function processState(q: DFAState, nfa: NFAState[], dfa: DFAState[], toDo: numbe
 
 function collectTransitions(q: DFAState, nfa: NFAState[]) {
     let r: Map<string, Set<number>> = new Map();
+    
     q.label.forEach((nfaStateIndex: number) => {
         let nq = nfa[nfaStateIndex];
         for (let sym of nq.transitions.keys()) {
@@ -165,97 +172,9 @@ function collectTransitions(q: DFAState, nfa: NFAState[]) {
             }
         }
     });
+    
     return r;
 }
-/*
-private void computeClosure(HashSet < LR0Item > stateItems)
-{
-    int stateIndex = 0;
-    List < LR0Item > toConsider = stateItems.ToList();
-
-    while (stateIndex < toConsider.Count) {
-        LR0Item item = toConsider[stateIndex];
-        stateIndex++;
-        if (!item.DposAtEnd()) {
-            string sym = item.Rhs[item.Dpos];
-            if (productionDict.ContainsKey(sym)) //nonterminal
-            {
-                foreach(string p in productionDict[sym].productions)
-                {
-                    LR0Item item2 = new LR0Item(sym, getProductionAsList(p), 0);
-                    if (!stateItems.Contains(item2)) {
-                        stateItems.Add(item2);
-                        toConsider.Add(item2);
-                    }
-                }
-            }
-        }
-    }
-}
-*/
-
-
-//in accordance w/ thomas
-function computeClosure2(nfa: NFAState[], stateIndex: number)
-{
-    let nuff: NFAState = nfa[stateIndex];
-    let length: number = 0;
-    nuff.closure.forEach((value: number) => {
-        let nfaStateToCheck: NFAState = nfa[value];
-        let item: LR0Item = nfaStateToCheck.item;
-        //as long as the dpos is NOT at the end (indicating we can go nowhere else)
-        //find the nonTerminals in the rhs following the dpos, add its closure to this one's
-        if (item.dpos > item.rhs.length) {
-            let innerIndex: number = item.dpos;
-            while (true) {
-                if (innerIndex >= item.rhs.length) {
-                    break;
-                }
-
-                let symbol: string = item.rhs[innerIndex];
-                console.log(symbol);
-                if (gg.nonTerminalProductions.has(symbol)) {
-
-                    nfa.every((ns: NFAState, nfaNum: number) => {
-                        if (ns.item.lhs == symbol) {
-                            nuff.closure = union(nuff.closure, ns.closure);
-                        }
-                    });
-
-                }
-                innerIndex++;
-            }
-        }
-    });
-}
-
-////second attempt
-//function computeClosure3(nfa: NFAState[], stateIndex: number) {
-//    let nuff: NFAState = nfa[stateIndex];
-//    let innerIndex = nuff.item.dpos;
-//    //go through productions starting @ dpos, as long as dpos is not at the end
-
-//    while (true)
-//    {
-//        if (innerIndex > nuff.item.rhs.length)
-//            break;
-
-//        let symbol: string = nuff.item.rhs[innerIndex];
-
-//        //finding say LP * S RP, we should compute transitions on symbol S and add it to the closure
-
-//        if (gg.nonTerminalProductions.has(symbol))
-//        {
-//            nfa.every((ns: NFAState, nfaNum: number) => {
-//                if (ns.item.lhs == symbol) {
-//                    nuff.closure = union(nuff.closure, collectTrans(nfa, nfaNum, symbol));
-//                }
-//            });
-//        }
-
-//        innerIndex++;
-//    }
-//}
 
 function computeClosure(nfa: NFAState[], stateIndex: number, closure: Set<number>) {
     closure.add(stateIndex);
@@ -283,20 +202,6 @@ function containMe(nfa: NFAState[])
         //preliminary closure
     });
 
-    let changes: boolean = true;
-
-    while (changes) {
-        changes = false;
-        nfa.forEach((N: NFAState, index: number) => {
-            let len: number = N.closure.size;
-            computeClosure2(nfa, index);
-            if (len != N.closure.size) {
-                changes = true;
-            }
-        });
-        //with thomas's new closure computation
-    }
-
     //final result
     nfa.forEach((N: NFAState, index: number) => {
         console.log("Closure for state " + index);
@@ -306,23 +211,22 @@ function containMe(nfa: NFAState[])
     });
 }
 
-export function makeDFA(input: string) {
-    //nfa = NFAState[] list
-    //We've already computed the closures
-    //nfa[0] is start state
 
+
+export function makeDFA(input: string) {
     let nfa = makeNFA(input);
     let dfa: DFAState[] = [];
 
     containMe(nfa);
 
-    //console.log(nfa[0].closure);
-
     dfa.push(new DFAState(nfa[0].closure));
 
+    console.log("starting dfa state:")
     console.log(dfa[0]);
+    console.log(dfa[0].transitions);
+    console.log(dfa[0].label);
+    console.log("===============");
 
-    //initially, we must process DFA start state (index 0)
     let toDo: number[] = [0];
 
     while (toDo.length > 0) {
@@ -330,7 +234,7 @@ export function makeDFA(input: string) {
         let q = dfa[qi];
 
         processState(q, nfa, dfa, toDo);
-        dfaStateMap.set(setToString(q.label), qi);
+        //dfaStateMap.set(setToString(q.label), qi);
     }
     console.log("Created DFA!");
 
