@@ -2,13 +2,15 @@ digraph d{
 node [fontname=Helvetica,shape=box];
 edge [fontname=Helvetica];
 n0 [label=<0<br />S →  • LP RP [3]<br />S →  • LP S RP [2]<br />S' →  • S [0]>];
-n1 [label=<1<br />S →  • LP RP [3]<br />S →  • LP S RP [2]<br />S → LP • RP [4]<br />S → LP • S RP [6]>];
-n2 [label=<2<br />S → LP S • RP [7]>];
-n3 [label=<3<br />S → LP S RP •  [8]>];
+n1 [label=<1<br />S' → S •  [1]>];
+n2 [label=<2<br />S →  • LP RP [3]<br />S →  • LP S RP [2]<br />S → LP • RP [4]<br />S → LP • S RP [6]>];
+n3 [label=<3<br />S → LP S • RP [7]>];
+n4 [label=<4<br />S → LP RP •  [5]>];
+n5 [label=<5<br />S → LP S RP •  [8]>];
 n0 -> n1 [label="S"];
-n0 -> n1 [label="LP"];
-n1 -> n2 [label="S"];
-n1 -> n1 [label="LP"];
-n1 -> n3 [label="RP"];
-n2 -> n3 [label="RP"];
+n0 -> n2 [label="LP"];
+n2 -> n3 [label="S"];
+n2 -> n2 [label="LP"];
+n2 -> n4 [label="RP"];
+n3 -> n5 [label="RP"];
 }

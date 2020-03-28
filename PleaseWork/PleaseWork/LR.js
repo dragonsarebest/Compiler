@@ -75,6 +75,7 @@ function makeTransitions(currentState, allStates, toDo, stateMap, gg) {
 let gg;
 function makeNFA(input) {
     gg = new Grammar_1.Grammar(input);
+    dfaStateMap = new Map();
     let allStates = [];
     let startState = new NFAState(new LR0Item("S'", [gg.startNodeLabel], 0));
     allStates.push(startState);
@@ -90,7 +91,7 @@ function makeNFA(input) {
     return allStates;
 }
 exports.makeNFA = makeNFA;
-let dfaStateMap = new Map();
+let dfaStateMap;
 function getDFAStateIndexForLabel(sss, dfa, toDo) {
     //given all of the index numbers that correspond to all outgoing nfa states
     let key = Untils_1.setToString(sss);

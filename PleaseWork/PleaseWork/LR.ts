@@ -90,6 +90,7 @@ let gg: Grammar;
 
 export function makeNFA(input: string) {
     gg = new Grammar(input);
+    dfaStateMap = new Map();
     let allStates: NFAState[] = [];
 
     let startState = new NFAState(new LR0Item("S'", [gg.startNodeLabel], 0));
@@ -110,7 +111,7 @@ export function makeNFA(input: string) {
     return allStates;
 }
 
-let dfaStateMap: Map<string, number> = new Map();
+let dfaStateMap: Map<string, number>;
 function getDFAStateIndexForLabel(sss: Set<number>, dfa: DFAState[], toDo: number[]) {
     //given all of the index numbers that correspond to all outgoing nfa states
     let key = setToString(sss);

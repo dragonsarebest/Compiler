@@ -2,6 +2,8 @@ digraph d{
 node [fontname=Helvetica,shape=box];
 edge [fontname=Helvetica];
 n0 [label=<0<br />S →  • x [2]<br />S' →  • S [0]>];
+n1 [label=<1<br />S' → S •  [1]>];
+n2 [label=<2<br />S → x •  [3]>];
 n0 -> n1 [label="S"];
-n0 -> n1 [label="x"];
+n0 -> n2 [label="x"];
 }

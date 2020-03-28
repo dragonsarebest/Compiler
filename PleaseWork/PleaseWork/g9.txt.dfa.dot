@@ -2,7 +2,16 @@ digraph d{
 node [fontname=Helvetica,shape=box];
 edge [fontname=Helvetica];
 n0 [label=<0<br />S →  •  [3]<br />S →  • stmt SEMI S [2]<br />S' →  • S [0]<br />stmt →  • NUM [5]>];
+n1 [label=<1<br />S' → S •  [1]>];
+n2 [label=<2<br />S → stmt • SEMI S [4]>];
+n3 [label=<3<br />stmt → NUM •  [6]>];
+n4 [label=<4<br />S →  •  [3]<br />S →  • stmt SEMI S [2]<br />S → stmt SEMI • S [7]<br />stmt →  • NUM [5]>];
+n5 [label=<5<br />S → stmt SEMI S •  [8]>];
 n0 -> n1 [label="S"];
 n0 -> n2 [label="stmt"];
-n0 -> n4 [label="NUM"];
+n0 -> n3 [label="NUM"];
+n2 -> n4 [label="SEMI"];
+n4 -> n5 [label="S"];
+n4 -> n2 [label="stmt"];
+n4 -> n3 [label="NUM"];
 }

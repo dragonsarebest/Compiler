@@ -2,6 +2,14 @@ digraph d{
 node [fontname=Helvetica,shape=box];
 edge [fontname=Helvetica];
 n0 [label=<0<br />S' →  • assign [0]<br />assign →  • ID = expr [2]>];
+n1 [label=<1<br />S' → assign •  [1]>];
+n2 [label=<2<br />assign → ID • = expr [3]>];
+n3 [label=<3<br />assign → ID = • expr [4]<br />expr →  • NUM [6]>];
+n4 [label=<4<br />assign → ID = expr •  [5]>];
+n5 [label=<5<br />expr → NUM •  [7]>];
 n0 -> n1 [label="assign"];
-n0 -> n1 [label="ID"];
+n0 -> n2 [label="ID"];
+n2 -> n3 [label="="];
+n3 -> n4 [label="expr"];
+n3 -> n5 [label="NUM"];
 }
