@@ -1,0 +1,974 @@
+[
+ {
+  "name": "ambiguous.txt",
+  "grammar": "x -> x\nIF -> \\bif\\b\nELSE -> \\belse\\b\n\nS -> IF x S | IF x S ELSE S | x\n",
+  "expectedReturn": 1,
+  "expectedTable": [
+   {
+    "S": {
+     "action": "s",
+     "num": 1
+    },
+    "IF": {
+     "action": "s",
+     "num": 2
+    },
+    "x": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    }
+   },
+   {
+    "x": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S"
+    },
+    "ELSE": {
+     "action": "r",
+     "num": 1,
+     "sym": "S"
+    }
+   },
+   {
+    "S": {
+     "action": "s",
+     "num": 5
+    },
+    "IF": {
+     "action": "s",
+     "num": 2
+    },
+    "x": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    },
+    "ELSE": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "S": {
+     "action": "s",
+     "num": 7
+    },
+    "IF": {
+     "action": "s",
+     "num": 2
+    },
+    "x": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 5,
+     "sym": "S"
+    },
+    "ELSE": {
+     "action": "r",
+     "num": 5,
+     "sym": "S"
+    }
+   }
+  ]
+ },
+ {
+  "name": "decl.txt",
+  "grammar": "TYPE -> \\bint\\b\nSEMI -> ;\nLP -> \\(\nRP -> \\)\nLBR -> \\{\nRBR -> \\}\nID -> \\w+\n\nprogram -> var-decl-list func-decl-list\nvar-decl-list -> var-decl var-decl-list | lambda\nvar-decl -> TYPE ID SEMI\nfunc-decl-list -> func-decl func-decl-list | lambda\nfunc-decl -> TYPE ID LP RP LBR RBR\n",
+  "expectedReturn": 1,
+  "expectedTable": [
+   {
+    "TYPE": {
+     "action": "s",
+     "num": 4
+    },
+    "$": {
+     "action": "r",
+     "num": 0,
+     "sym": "var-decl-list"
+    },
+    "program": {
+     "action": "s",
+     "num": 1
+    },
+    "var-decl-list": {
+     "action": "s",
+     "num": 2
+    },
+    "var-decl": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 0,
+     "sym": "func-decl-list"
+    },
+    "func-decl-list": {
+     "action": "s",
+     "num": 8
+    },
+    "func-decl": {
+     "action": "s",
+     "num": 9
+    },
+    "TYPE": {
+     "action": "s",
+     "num": 10
+    }
+   },
+   {
+    "TYPE": {
+     "action": "s",
+     "num": 4
+    },
+    "$": {
+     "action": "r",
+     "num": 0,
+     "sym": "var-decl-list"
+    },
+    "var-decl-list": {
+     "action": "s",
+     "num": 7
+    },
+    "var-decl": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "ID": {
+     "action": "s",
+     "num": 5
+    }
+   },
+   {
+    "SEMI": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "TYPE": {
+     "action": "r",
+     "num": 3,
+     "sym": "var-decl"
+    },
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "var-decl"
+    }
+   },
+   {
+    "TYPE": {
+     "action": "r",
+     "num": 2,
+     "sym": "var-decl-list"
+    },
+    "$": {
+     "action": "r",
+     "num": 2,
+     "sym": "var-decl-list"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 2,
+     "sym": "program"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 0,
+     "sym": "func-decl-list"
+    },
+    "func-decl-list": {
+     "action": "s",
+     "num": 16
+    },
+    "func-decl": {
+     "action": "s",
+     "num": 9
+    },
+    "TYPE": {
+     "action": "s",
+     "num": 10
+    }
+   },
+   {
+    "ID": {
+     "action": "s",
+     "num": 11
+    }
+   },
+   {
+    "LP": {
+     "action": "s",
+     "num": 12
+    }
+   },
+   {
+    "RP": {
+     "action": "s",
+     "num": 13
+    }
+   },
+   {
+    "LBR": {
+     "action": "s",
+     "num": 14
+    }
+   },
+   {
+    "RBR": {
+     "action": "s",
+     "num": 15
+    }
+   },
+   {
+    "TYPE": {
+     "action": "r",
+     "num": 6,
+     "sym": "func-decl"
+    },
+    "$": {
+     "action": "r",
+     "num": 6,
+     "sym": "func-decl"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 2,
+     "sym": "func-decl-list"
+    }
+   }
+  ]
+ },
+ {
+  "name": "expr.txt",
+  "grammar": "+ -> \\+\n* -> \\*\nID -> \\w+\n( -> \\(\n) -> \\)\n\nexpr -> expr + factor | factor\nfactor -> ID | ( expr )\n",
+  "expectedReturn": 0,
+  "expectedTable": [
+   {
+    "expr": {
+     "action": "s",
+     "num": 1
+    },
+    "factor": {
+     "action": "s",
+     "num": 2
+    },
+    "ID": {
+     "action": "s",
+     "num": 3
+    },
+    "(": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    },
+    "+": {
+     "action": "s",
+     "num": 7
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "expr"
+    },
+    "+": {
+     "action": "r",
+     "num": 1,
+     "sym": "expr"
+    },
+    ")": {
+     "action": "r",
+     "num": 1,
+     "sym": "expr"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "factor"
+    },
+    "+": {
+     "action": "r",
+     "num": 1,
+     "sym": "factor"
+    },
+    ")": {
+     "action": "r",
+     "num": 1,
+     "sym": "factor"
+    }
+   },
+   {
+    "expr": {
+     "action": "s",
+     "num": 5
+    },
+    "factor": {
+     "action": "s",
+     "num": 2
+    },
+    "ID": {
+     "action": "s",
+     "num": 3
+    },
+    "(": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    ")": {
+     "action": "s",
+     "num": 6
+    },
+    "+": {
+     "action": "s",
+     "num": 7
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "factor"
+    },
+    "+": {
+     "action": "r",
+     "num": 3,
+     "sym": "factor"
+    },
+    ")": {
+     "action": "r",
+     "num": 3,
+     "sym": "factor"
+    }
+   },
+   {
+    "factor": {
+     "action": "s",
+     "num": 8
+    },
+    "ID": {
+     "action": "s",
+     "num": 3
+    },
+    "(": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "expr"
+    },
+    "+": {
+     "action": "r",
+     "num": 3,
+     "sym": "expr"
+    },
+    ")": {
+     "action": "r",
+     "num": 3,
+     "sym": "expr"
+    }
+   }
+  ]
+ },
+ {
+  "name": "oddball.txt",
+  "grammar": "SEMI -> ;\nNUM -> \\d+\n\nS -> S SEMI stmt | stmt SEMI S\nstmt -> NUM\n",
+  "expectedReturn": 1,
+  "expectedTable": [
+   {
+    "S": {
+     "action": "s",
+     "num": 1
+    },
+    "stmt": {
+     "action": "s",
+     "num": 2
+    },
+    "NUM": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    },
+    "SEMI": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "SEMI": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "stmt"
+    },
+    "SEMI": {
+     "action": "r",
+     "num": 1,
+     "sym": "stmt"
+    }
+   },
+   {
+    "S": {
+     "action": "s",
+     "num": 5
+    },
+    "stmt": {
+     "action": "s",
+     "num": 2
+    },
+    "NUM": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    },
+    "SEMI": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "stmt": {
+     "action": "s",
+     "num": 7
+    },
+    "NUM": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    },
+    "SEMI": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    }
+   }
+  ]
+ },
+ {
+  "name": "oddball2.txt",
+  "grammar": "NUM -> \\d+\n+ -> \\+\nID -> \\w+\n. -> \\.\nLP -> [(]\nRP -> [)]\n\nS -> mathThings + NUM | callableThings LP RP\nmathThings -> ID | NUM\ncallableThings -> ID . ID | ID\n",
+  "expectedReturn": 0,
+  "expectedTable": [
+   {
+    "S": {
+     "action": "s",
+     "num": 1
+    },
+    "mathThings": {
+     "action": "s",
+     "num": 2
+    },
+    "ID": {
+     "action": "s",
+     "num": 3
+    },
+    "NUM": {
+     "action": "s",
+     "num": 4
+    },
+    "callableThings": {
+     "action": "s",
+     "num": 5
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    }
+   },
+   {
+    "+": {
+     "action": "s",
+     "num": 10
+    }
+   },
+   {
+    "+": {
+     "action": "r",
+     "num": 1,
+     "sym": "mathThings"
+    },
+    "LP": {
+     "action": "r",
+     "num": 1,
+     "sym": "callableThings"
+    },
+    ".": {
+     "action": "s",
+     "num": 8
+    }
+   },
+   {
+    "+": {
+     "action": "r",
+     "num": 1,
+     "sym": "mathThings"
+    }
+   },
+   {
+    "LP": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "RP": {
+     "action": "s",
+     "num": 7
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    }
+   },
+   {
+    "ID": {
+     "action": "s",
+     "num": 9
+    }
+   },
+   {
+    "LP": {
+     "action": "r",
+     "num": 3,
+     "sym": "callableThings"
+    }
+   },
+   {
+    "NUM": {
+     "action": "s",
+     "num": 11
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    }
+   }
+  ]
+ },
+ {
+  "name": "rr.txt",
+  "grammar": "x -> x\ny -> y \na -> a\nb -> b\n\nS -> A x | B x y\nA -> a\nB -> a \n \n",
+  "expectedReturn": 2,
+  "expectedTable": [
+   {
+    "S": {
+     "action": "s",
+     "num": 1
+    },
+    "A": {
+     "action": "s",
+     "num": 2
+    },
+    "a": {
+     "action": "s",
+     "num": 3
+    },
+    "B": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    }
+   },
+   {
+    "x": {
+     "action": "s",
+     "num": 7
+    }
+   },
+   {
+    "x": {
+     "action": "r",
+     "num": 1,
+     "sym": "B"
+    }
+   },
+   {
+    "x": {
+     "action": "s",
+     "num": 5
+    }
+   },
+   {
+    "y": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 2,
+     "sym": "S"
+    }
+   }
+  ]
+ },
+ {
+  "name": "simple.txt",
+  "grammar": "NUM -> \\d+\nID -> \\w+\nEQ -> =\nLP -> \\(\nRP -> \\)\n+ -> \\+\n\nS -> func-call | assign\nassign -> ID EQ expr\nfunc-call -> ID LP RP\nexpr -> expr + NUM | NUM\n",
+  "expectedReturn": 0,
+  "expectedTable": [
+   {
+    "S": {
+     "action": "s",
+     "num": 1
+    },
+    "func-call": {
+     "action": "s",
+     "num": 2
+    },
+    "ID": {
+     "action": "s",
+     "num": 3
+    },
+    "assign": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S"
+    }
+   },
+   {
+    "LP": {
+     "action": "s",
+     "num": 5
+    },
+    "EQ": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S"
+    }
+   },
+   {
+    "RP": {
+     "action": "s",
+     "num": 11
+    }
+   },
+   {
+    "expr": {
+     "action": "s",
+     "num": 7
+    },
+    "NUM": {
+     "action": "s",
+     "num": 8
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "assign"
+    },
+    "+": {
+     "action": "s",
+     "num": 9
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "expr"
+    },
+    "+": {
+     "action": "r",
+     "num": 1,
+     "sym": "expr"
+    }
+   },
+   {
+    "NUM": {
+     "action": "s",
+     "num": 10
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "expr"
+    },
+    "+": {
+     "action": "r",
+     "num": 3,
+     "sym": "expr"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "func-call"
+    }
+   }
+  ]
+ },
+ {
+  "name": "sr,rr.txt",
+  "grammar": "x -> x\ny -> y \na -> a\nb -> b\n\nS -> A x | B x y | C \nA -> a\nB -> a \nC -> a x\n \n",
+  "expectedReturn": 3,
+  "expectedTable": [
+   {
+    "S": {
+     "action": "s",
+     "num": 1
+    },
+    "A": {
+     "action": "s",
+     "num": 2
+    },
+    "a": {
+     "action": "s",
+     "num": 3
+    },
+    "B": {
+     "action": "s",
+     "num": 4
+    },
+    "C": {
+     "action": "s",
+     "num": 5
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    }
+   },
+   {
+    "x": {
+     "action": "s",
+     "num": 9
+    }
+   },
+   {
+    "x": {
+     "action": "s",
+     "num": 8
+    }
+   },
+   {
+    "x": {
+     "action": "s",
+     "num": 6
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S"
+    }
+   },
+   {
+    "y": {
+     "action": "s",
+     "num": 7
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 2,
+     "sym": "C"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 2,
+     "sym": "S"
+    }
+   }
+  ]
+ },
+ {
+  "name": "sr.txt",
+  "grammar": "x -> x\n\nS -> x S x | x\n",
+  "expectedReturn": 1,
+  "expectedTable": [
+   {
+    "S": {
+     "action": "s",
+     "num": 1
+    },
+    "x": {
+     "action": "s",
+     "num": 2
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S'"
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 1,
+     "sym": "S"
+    },
+    "x": {
+     "action": "s",
+     "num": 2
+    },
+    "S": {
+     "action": "s",
+     "num": 3
+    }
+   },
+   {
+    "x": {
+     "action": "s",
+     "num": 4
+    }
+   },
+   {
+    "$": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    },
+    "x": {
+     "action": "r",
+     "num": 3,
+     "sym": "S"
+    }
+   }
+  ]
+ }
+]
