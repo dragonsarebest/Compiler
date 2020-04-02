@@ -296,7 +296,6 @@ export function makeTable(grammarSpec: string)
             let production = nfa[entry].item;
             //console.log(production, production.rhs.length);
             if (production.dposAtEnd()) {
-                //since the character "S'" is not actually in the grammar, but added after the fact by the nfa
                 
                 let follow = gg.follow.get(production.lhs);
                 //get the follow for the lhs of this production
