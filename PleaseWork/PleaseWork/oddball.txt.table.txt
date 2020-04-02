@@ -1,14 +1,19 @@
 Table row 0
-    On NUM, shift and go to 2
+    On NUM, shift and go to 3
     On S, shift and go to 1
     On stmt, shift and go to 2
 Table row 1
-    On SEMI, shift and go to 3
+    On SEMI, shift and go to 6
 Table row 2
+    On SEMI, shift and go to 4
 Table row 3
-    On NUM, shift and go to 2
-    On stmt, shift and go to 5
 Table row 4
+    On NUM, shift and go to 3
+    On S, shift and go to 5
+    On stmt, shift and go to 2
 Table row 5
+    On SEMI, pop 6 and reduce to S
 Table row 6
+    On NUM, shift and go to 3
+    On stmt, shift and go to 7
 Table row 7

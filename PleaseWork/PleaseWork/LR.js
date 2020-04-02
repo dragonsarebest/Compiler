@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Grammar_1 = require("./Grammar");
 const Untils_1 = require("./Untils");
+let gg;
 class LR0Item {
     constructor(lhs, rhs, dpos) {
         this.lhs = lhs;
@@ -13,6 +14,14 @@ class LR0Item {
         let l2 = this.rhs.slice(this.dpos);
         //Unicode 2192 = arrow, 2022=bullet
         return this.lhs + " \u2192 " + l1.join(" ") + " \u2022 " + l2.join(" ");
+    }
+    dposAtEnd() {
+        return this.dpos >= this.rhs.length;
+    }
+    itemsEqual(item2) {
+        if (item2.lhs == this.lhs && item2.rhs == this.rhs && item2.dpos == this.dpos)
+            return true;
+        return false;
     }
 }
 class NFAState {
@@ -33,7 +42,7 @@ class DFAState {
     }
     addTransition(sym, stateIndex) {
         if (this.transitions.has(sym))
-            throw new Error("Duplicate transition");
+            throw new Error("Duplicate transition " + stateIndex);
         this.transitions.set(sym, stateIndex);
     }
 }
@@ -51,12 +60,12 @@ function getStateWithLabel(I2, allStates, toDo, stateMap) {
     return q2i;
 }
 function makeTransitions(currentState, allStates, toDo, stateMap, gg) {
-    if (currentState.item.dpos >= currentState.item.rhs.length)
+    if (currentState.item.dposAtEnd())
         return; //nothing to do
     let sym = currentState.item.rhs[currentState.item.dpos];
     if (sym == "")
         return;
-    //we cannot have naything before or after "nothing"
+    //we cannot have anything before or after "nothing"
     let I2 = new LR0Item(currentState.item.lhs, currentState.item.rhs, currentState.item.dpos + 1);
     let q2i = getStateWithLabel(I2, allStates, toDo, stateMap);
     currentState.addTransition(sym, q2i);
@@ -73,7 +82,8 @@ function makeTransitions(currentState, allStates, toDo, stateMap, gg) {
     }
 }
 function makeNFA(input) {
-    let gg = new Grammar_1.Grammar(input);
+    gg = new Grammar_1.Grammar(input);
+    dfaStateMap = new Map();
     let allStates = [];
     let startState = new NFAState(new LR0Item("S'", [gg.startNodeLabel], 0));
     allStates.push(startState);
@@ -89,16 +99,18 @@ function makeNFA(input) {
     return allStates;
 }
 exports.makeNFA = makeNFA;
-let dfaStateMap = new Map();
+let dfaStateMap;
 function getDFAStateIndexForLabel(sss, dfa, toDo) {
     //given all of the index numbers that correspond to all outgoing nfa states
     let key = Untils_1.setToString(sss);
-    //console.log("KEYS: " + key);
-    let ddd = new DFAState(sss);
+    //console.log("KEY: " + key);
+    //console.log("DFA state map: ");
+    //console.log(dfaStateMap);
     if (dfaStateMap.has(key)) {
         return dfaStateMap.get(key);
     }
     else {
+        let ddd = new DFAState(sss);
         let q2i = dfa.length;
         toDo.push(q2i);
         dfa.push(ddd);
@@ -108,9 +120,12 @@ function getDFAStateIndexForLabel(sss, dfa, toDo) {
 }
 function processState(q, nfa, dfa, toDo) {
     let r = collectTransitions(q, nfa);
+    //console.log("collected transitions: ");
+    //console.log(r);
     for (let sym of r.keys()) {
         //r = set of all possible transitions (excluding lambda transitions)
         //that q can get to on sym
+        //console.log("transition me");
         let ss = r.get(sym);
         //console.log(sym);
         //console.log(ss);
@@ -138,6 +153,7 @@ function collectTransitions(q, nfa) {
 }
 function computeClosure(nfa, stateIndex, closure) {
     closure.add(stateIndex);
+    //console.log(nfa[stateIndex].transitions);
     if (nfa[stateIndex].transitions.has("")) {
         //NFAState.transitions is a Map from string to number[]
         nfa[stateIndex].transitions.get("").forEach((index) => {
@@ -147,29 +163,45 @@ function computeClosure(nfa, stateIndex, closure) {
         });
     }
 }
-function makeDFA(input) {
-    //nfa = NFAState[] list
-    //We've already computed the closures
-    //nfa[0] is start state
-    let nfa = makeNFA(input);
-    let dfa = [];
+function containMe(nfa) {
+    //nfa.forEach((value: NFAState, index: number) => {
+    //    console.log(index + "::" + value.item);
+    //});
     nfa.forEach((N, index) => {
         let closure = new Set();
         computeClosure(nfa, index, closure);
         N.closure = closure;
+        //preliminary closure
     });
-    //console.log(nfa[0].closure);
+    //final result
+    //nfa.forEach((N: NFAState, index: number) => {
+    //    console.log("Closure for state " + index);
+    //    console.log(N.closure);
+    //    console.log("transitions");
+    //    console.log(N.transitions);
+    //});
+}
+function makeDFA(input) {
+    let nfa = makeNFA(input);
+    let dfa = [];
+    containMe(nfa);
     dfa.push(new DFAState(nfa[0].closure));
-    //console.log(dfa);
-    //initially, we must process DFA start state (index 0)
+    //console.log("starting dfa state:")
+    //console.log(dfa[0]);
+    //console.log(dfa[0].transitions);
+    //console.log(dfa[0].label);
+    //console.log("===============");
     let toDo = [0];
     while (toDo.length > 0) {
         let qi = toDo.pop();
         let q = dfa[qi];
         processState(q, nfa, dfa, toDo);
-        dfaStateMap.set(Untils_1.setToString(q.label), qi);
+        //dfaStateMap.set(setToString(q.label), qi);
     }
     //console.log("Created DFA!");
+    //console.log("dfa: ");
+    //console.log(dfa);
+    //console.log("\n\n\n");
     return dfa;
 }
 exports.makeDFA = makeDFA;
@@ -181,11 +213,13 @@ class Action {
     }
 }
 function makeTable(grammarSpec) {
-    let gg = new Grammar_1.Grammar(grammarSpec);
     let nfa = makeNFA(grammarSpec);
-    console.log(nfa);
+    //nfa.forEach((n: NFAState) => {
+    //    console.log(n);
+    //});
+    //console.log(nfa);
     let dfa = makeDFA(grammarSpec);
-    console.log(dfa);
+    //console.log(dfa);
     //let table: Map<number, Map<string, Action>> = new Map();
     let table = [];
     let shiftReduceError = false;
@@ -194,24 +228,85 @@ function makeTable(grammarSpec) {
         table.push(new Map());
         //q.transitions is a map: string -> number
         for (let sym of q.transitions.keys()) {
-            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
+            table[idx].set(sym, new Action("s", q.transitions.get(sym), sym));
         }
     });
     //all shifts are now done
+    //console.log("Table so far: ", table);
+    //console.log(gg);
     //this is for reducing!
     dfa.forEach((q, idx) => {
-        //table.set(idx, new Map());
-        table.push(new Map());
-        //q.transitions is a map: string(LR0Item as a string -> number corresponding to the dfa index)
-        //console.log(q);
-        //look for this q's symbol in the rhs of any production where it is followed by a dot
-        //search NFA table for this q's symbol & if the dpos is the same position as this symbol in the
-        //production then we can reduce to this nfa state. now we need to figure out what dfa state this nfa maps to.
+        //if dpos is at the end & the next token is in the follow of that productions lhs
+        //next token = transitions 
+        q.label.forEach((entry) => {
+            //for every nfa/production that makes up this dfa
+            let production = nfa[entry].item;
+            //console.log(production, production.rhs.length);
+            if (production.dposAtEnd()) {
+                //since the character "S'" is not actually in the grammar, but added after the fact by the nfa
+                let follow = gg.follow.get(production.lhs);
+                //get the follow for the lhs of this production
+                //console.log("Num Transitions: ", q.transitions.size);
+                q.transitions.forEach((transIndex, sym) => {
+                    if (follow != undefined && follow.has(sym)) {
+                        //we reduce!
+                        //console.log("\treducing");
+                        let inThere = table[idx].get(sym);
+                        if (inThere != undefined && inThere.action == "s") {
+                            //console.log("\t\tshift reduce found");
+                            shiftReduceError = true;
+                        }
+                        if (inThere != undefined && inThere.action == "r") {
+                            //console.log("\t\treduce-reduce found");
+                            reduceReduceError = true;
+                        }
+                        table[idx].set(sym, new Action("r", transIndex, production.lhs));
+                    }
+                });
+                //for (let sym of q.transitions.keys()) {
+                //    if (follow != undefined && follow.has(sym)) {
+                //        //we reduce!
+                //        //console.log("\treducing");
+                //        let inThere = table[idx].get(sym);
+                //        if (inThere != undefined && inThere.action == "s") {
+                //            //console.log("\t\tshift reduce found");
+                //            shiftReduceError = true;
+                //        }
+                //        if (inThere != undefined && inThere.action == "r") {
+                //            //console.log("\t\treduce-reduce found");
+                //            reduceReduceError = true;
+                //        }
+                //        //find the dfas whose list of nfas contains a production whose rhs contains this sym followed by dpos
+                //        dfa.forEach((innerDfa: DFAState, innerIdx: number) => {
+                //            innerDfa.label.forEach((nfaEntry: number) => {
+                //                let innerNfa = nfa[nfaEntry];
+                //                let production = innerNfa.item;
+                //                let innerRhs = production.rhs;
+                //                let count: number = 0;
+                //                for (let component of innerRhs)
+                //                {
+                //                    if (component == sym)
+                //                    {
+                //                        if (production.dpos == count + 1)
+                //                        {
+                //                            //means we have a reduce!
+                //                            table[idx].set(sym, new Action("r", innerIdx, production.lhs));
+                //                        }
+                //                    }
+                //                    count += 1;
+                //                }
+                //            });
+                //        });
+                //    }
+                //}
+            }
+        });
     });
+    console.log("Table so far + reducing: ", table);
     let error = 0;
-    if (shiftReduceError && !reduceReduceError)
+    if (shiftReduceError)
         error = 1;
-    if (!shiftReduceError && reduceReduceError)
+    if (reduceReduceError)
         error = 2;
     if (shiftReduceError && reduceReduceError)
         error = 3;
