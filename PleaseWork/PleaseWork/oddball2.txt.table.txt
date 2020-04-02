@@ -21,3 +21,15 @@ Table row 9
 Table row 10
     On NUM, shift and go to 11
 Table row 11
+Table row 12
+Table row 13
+Table row 14
+Table row 15
+Table row 16
+Table row 17
+Table row 18
+Table row 19
+Table row 20
+Table row 21
+Table row 22
+Table row 23

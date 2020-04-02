@@ -257,6 +257,17 @@ class Action {
     }
 }
 
+class FAState
+{
+    state: DFAState;
+    dfaIndex: number;
+    constructor(dfa: DFAState, index: number)
+    {
+        this.state = dfa;
+        this.dfaIndex = index;
+    }
+}
+
 export function makeTable(grammarSpec: string)
 {
     let nfa: NFAState[] = makeNFA(grammarSpec);
@@ -269,9 +280,83 @@ export function makeTable(grammarSpec: string)
     //console.log(dfa);
     //let table: Map<number, Map<string, Action>> = new Map();
     let table: Map<string, Action>[] = [];
+    for (let i of dfa)
+    {
+        table.push(new Map());
+    }
+    //initalizes the table for every dfa state
 
     let shiftReduceError: boolean = false;
     let reduceReduceError: boolean = false;
+    
+    {
+        //let seen: FAState[] = []
+        //let stack: FAState[] = [];
+        //let currentState: FAState = new FAState(dfa[0], 0);
+        //stack.push(currentState);
+
+        //while (stack.length > 0)
+        //{
+        //    while (seen.includes(currentState))
+        //        currentState = stack.pop();
+        //    //while we have already seen this fastate
+
+        //    currentState = stack.pop();
+
+        //    console.log(currentState);
+
+        //    let currentDFA: DFAState = currentState.state;
+        //    let index: number = currentState.dfaIndex;
+
+        //    for (let sym of currentDFA.transitions.keys())
+        //    {
+        //        let newIndex: number = currentDFA.transitions.get(sym);
+        //        table[index].set(sym, new Action("s", newIndex, sym));
+        //        stack.push(new FAState(dfa[newIndex], newIndex));
+        //    }
+
+        //    currentDFA.label.forEach((entry: number) => {
+        //        //for every nfa/production that makes up this dfa
+        //        let production = nfa[entry].item;
+        //        //console.log(production, production.rhs.length);
+        //        if (production.dposAtEnd()) {
+
+        //            let follow = gg.follow.get(production.lhs);
+        //            //get the follow for the lhs of this production
+
+        //            //console.log("Num Transitions: ", q.transitions.size);
+
+        //            currentDFA.transitions.forEach((transIndex: number, sym: string) => {
+        //                if (follow != undefined && follow.has(sym)) {
+        //                    //we reduce!
+        //                    //console.log("\treducing");
+        //                    let inThere = table[index].get(sym);
+        //                    if (inThere != undefined && inThere.action == "s") {
+        //                        //console.log("\t\tshift reduce found");
+        //                        shiftReduceError = true;
+        //                    }
+        //                    if (inThere != undefined && inThere.action == "r") {
+        //                        //console.log("\t\treduce-reduce found");
+        //                        reduceReduceError = true;
+        //                    }
+
+        //                    for (let i: number = 0; i < production.rhs.length; i++)
+        //                    {
+        //                        stack.pop();
+        //                    }
+
+        //                    let tempState: FAState = stack.pop();
+        //                    stack.push(tempState);
+        //                    let reduceIndex: number = tempState.state.transitions.get(production.lhs);
+        //                    stack.push(new FAState(dfa[reduceIndex], reduceIndex));
+        //                    table[index].set(sym, new Action("r", reduceIndex, production.lhs));
+        //                }
+        //            });
+        //        }
+        //    });
+        //    seen.push(currentState);
+        //}
+    }
 
     dfa.forEach((q: DFAState, idx: number) => {
         table.push(new Map());

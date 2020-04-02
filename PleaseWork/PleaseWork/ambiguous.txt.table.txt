@@ -17,3 +17,11 @@ Table row 6
     On S, shift and go to 7
     On x, shift and go to 3
 Table row 7
+Table row 8
+Table row 9
+Table row 10
+Table row 11
+Table row 12
+Table row 13
+Table row 14
+Table row 15

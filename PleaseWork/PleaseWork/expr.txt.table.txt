@@ -21,3 +21,12 @@ Table row 7
     On ID, shift and go to 3
     On factor, shift and go to 8
 Table row 8
+Table row 9
+Table row 10
+Table row 11
+Table row 12
+Table row 13
+Table row 14
+Table row 15
+Table row 16
+Table row 17

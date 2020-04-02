@@ -8,3 +8,8 @@ Table row 2
 Table row 3
     On x, shift and go to 4
 Table row 4
+Table row 5
+Table row 6
+Table row 7
+Table row 8
+Table row 9

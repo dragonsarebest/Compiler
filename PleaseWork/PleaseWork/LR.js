@@ -212,6 +212,12 @@ class Action {
         this.sym = sym; //might be <undefined>
     }
 }
+class FAState {
+    constructor(dfa, index) {
+        this.state = dfa;
+        this.dfaIndex = index;
+    }
+}
 function makeTable(grammarSpec) {
     let nfa = makeNFA(grammarSpec);
     //nfa.forEach((n: NFAState) => {
@@ -222,8 +228,69 @@ function makeTable(grammarSpec) {
     //console.log(dfa);
     //let table: Map<number, Map<string, Action>> = new Map();
     let table = [];
+    for (let i of dfa) {
+        table.push(new Map());
+    }
+    //initalizes the table for every dfa state
     let shiftReduceError = false;
     let reduceReduceError = false;
+    {
+        //let seen: FAState[] = []
+        //let stack: FAState[] = [];
+        //let currentState: FAState = new FAState(dfa[0], 0);
+        //stack.push(currentState);
+        //while (stack.length > 0)
+        //{
+        //    while (seen.includes(currentState))
+        //        currentState = stack.pop();
+        //    //while we have already seen this fastate
+        //    currentState = stack.pop();
+        //    console.log(currentState);
+        //    let currentDFA: DFAState = currentState.state;
+        //    let index: number = currentState.dfaIndex;
+        //    for (let sym of currentDFA.transitions.keys())
+        //    {
+        //        let newIndex: number = currentDFA.transitions.get(sym);
+        //        table[index].set(sym, new Action("s", newIndex, sym));
+        //        stack.push(new FAState(dfa[newIndex], newIndex));
+        //    }
+        //    currentDFA.label.forEach((entry: number) => {
+        //        //for every nfa/production that makes up this dfa
+        //        let production = nfa[entry].item;
+        //        //console.log(production, production.rhs.length);
+        //        if (production.dposAtEnd()) {
+        //            let follow = gg.follow.get(production.lhs);
+        //            //get the follow for the lhs of this production
+        //            //console.log("Num Transitions: ", q.transitions.size);
+        //            currentDFA.transitions.forEach((transIndex: number, sym: string) => {
+        //                if (follow != undefined && follow.has(sym)) {
+        //                    //we reduce!
+        //                    //console.log("\treducing");
+        //                    let inThere = table[index].get(sym);
+        //                    if (inThere != undefined && inThere.action == "s") {
+        //                        //console.log("\t\tshift reduce found");
+        //                        shiftReduceError = true;
+        //                    }
+        //                    if (inThere != undefined && inThere.action == "r") {
+        //                        //console.log("\t\treduce-reduce found");
+        //                        reduceReduceError = true;
+        //                    }
+        //                    for (let i: number = 0; i < production.rhs.length; i++)
+        //                    {
+        //                        stack.pop();
+        //                    }
+        //                    let tempState: FAState = stack.pop();
+        //                    stack.push(tempState);
+        //                    let reduceIndex: number = tempState.state.transitions.get(production.lhs);
+        //                    stack.push(new FAState(dfa[reduceIndex], reduceIndex));
+        //                    table[index].set(sym, new Action("r", reduceIndex, production.lhs));
+        //                }
+        //            });
+        //        }
+        //    });
+        //    seen.push(currentState);
+        //}
+    }
     dfa.forEach((q, idx) => {
         table.push(new Map());
         //q.transitions is a map: string -> number
@@ -243,7 +310,6 @@ function makeTable(grammarSpec) {
             let production = nfa[entry].item;
             //console.log(production, production.rhs.length);
             if (production.dposAtEnd()) {
-                //since the character "S'" is not actually in the grammar, but added after the fact by the nfa
                 let follow = gg.follow.get(production.lhs);
                 //get the follow for the lhs of this production
                 //console.log("Num Transitions: ", q.transitions.size);
@@ -263,42 +329,6 @@ function makeTable(grammarSpec) {
                         table[idx].set(sym, new Action("r", transIndex, production.lhs));
                     }
                 });
-                //for (let sym of q.transitions.keys()) {
-                //    if (follow != undefined && follow.has(sym)) {
-                //        //we reduce!
-                //        //console.log("\treducing");
-                //        let inThere = table[idx].get(sym);
-                //        if (inThere != undefined && inThere.action == "s") {
-                //            //console.log("\t\tshift reduce found");
-                //            shiftReduceError = true;
-                //        }
-                //        if (inThere != undefined && inThere.action == "r") {
-                //            //console.log("\t\treduce-reduce found");
-                //            reduceReduceError = true;
-                //        }
-                //        //find the dfas whose list of nfas contains a production whose rhs contains this sym followed by dpos
-                //        dfa.forEach((innerDfa: DFAState, innerIdx: number) => {
-                //            innerDfa.label.forEach((nfaEntry: number) => {
-                //                let innerNfa = nfa[nfaEntry];
-                //                let production = innerNfa.item;
-                //                let innerRhs = production.rhs;
-                //                let count: number = 0;
-                //                for (let component of innerRhs)
-                //                {
-                //                    if (component == sym)
-                //                    {
-                //                        if (production.dpos == count + 1)
-                //                        {
-                //                            //means we have a reduce!
-                //                            table[idx].set(sym, new Action("r", innerIdx, production.lhs));
-                //                        }
-                //                    }
-                //                    count += 1;
-                //                }
-                //            });
-                //        });
-                //    }
-                //}
             }
         });
     });
