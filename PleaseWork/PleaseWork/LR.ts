@@ -60,6 +60,15 @@ class DFAState {
     }
 }
 
+let lastInput: string;
+function setUp(input: string) {
+    if (lastInput == undefined || lastInput != input) {
+        lastInput = input;
+        gg = new Grammar(input);
+        dfaStateMap = new Map();
+    }
+}
+
 function getStateWithLabel(I2: LR0Item, allStates: NFAState[], toDo: number[], stateMap: Map<string, number>) {
     let I2s = I2.toString();
     let q2i: number;
@@ -98,8 +107,9 @@ function makeTransitions(currentState: NFAState, allStates: NFAState[], toDo: nu
 }
 
 export function makeNFA(input: string) {
-    gg = new Grammar(input);
-    dfaStateMap = new Map();
+
+    setUp(input);
+    
     let allStates: NFAState[] = [];
 
     let startState = new NFAState(new LR0Item("S'", [gg.startNodeLabel], 0));
@@ -270,93 +280,18 @@ class FAState
 
 export function makeTable(grammarSpec: string)
 {
-    let nfa: NFAState[] = makeNFA(grammarSpec);
-
-    //nfa.forEach((n: NFAState) => {
-    //    console.log(n);
-    //});
-    //console.log(nfa);
-    let dfa: DFAState[] = makeDFA(grammarSpec);
-    //console.log(dfa);
-    //let table: Map<number, Map<string, Action>> = new Map();
+    let nfa: NFAState[];
+    let dfa: DFAState[];
+    nfa = makeNFA(grammarSpec);
+    dfa = makeDFA(grammarSpec);
     let table: Map<string, Action>[] = [];
-    for (let i of dfa)
-    {
-        table.push(new Map());
-    }
-    //initalizes the table for every dfa state
+
+    //since "S'" is not in the grammar but added by the nfa class to prevent loop backs to the start
+    //console.log(gg);
+    //console.log(gg.follow);
 
     let shiftReduceError: boolean = false;
     let reduceReduceError: boolean = false;
-    
-    {
-        //let seen: FAState[] = []
-        //let stack: FAState[] = [];
-        //let currentState: FAState = new FAState(dfa[0], 0);
-        //stack.push(currentState);
-
-        //while (stack.length > 0)
-        //{
-        //    while (seen.includes(currentState))
-        //        currentState = stack.pop();
-        //    //while we have already seen this fastate
-
-        //    currentState = stack.pop();
-
-        //    console.log(currentState);
-
-        //    let currentDFA: DFAState = currentState.state;
-        //    let index: number = currentState.dfaIndex;
-
-        //    for (let sym of currentDFA.transitions.keys())
-        //    {
-        //        let newIndex: number = currentDFA.transitions.get(sym);
-        //        table[index].set(sym, new Action("s", newIndex, sym));
-        //        stack.push(new FAState(dfa[newIndex], newIndex));
-        //    }
-
-        //    currentDFA.label.forEach((entry: number) => {
-        //        //for every nfa/production that makes up this dfa
-        //        let production = nfa[entry].item;
-        //        //console.log(production, production.rhs.length);
-        //        if (production.dposAtEnd()) {
-
-        //            let follow = gg.follow.get(production.lhs);
-        //            //get the follow for the lhs of this production
-
-        //            //console.log("Num Transitions: ", q.transitions.size);
-
-        //            currentDFA.transitions.forEach((transIndex: number, sym: string) => {
-        //                if (follow != undefined && follow.has(sym)) {
-        //                    //we reduce!
-        //                    //console.log("\treducing");
-        //                    let inThere = table[index].get(sym);
-        //                    if (inThere != undefined && inThere.action == "s") {
-        //                        //console.log("\t\tshift reduce found");
-        //                        shiftReduceError = true;
-        //                    }
-        //                    if (inThere != undefined && inThere.action == "r") {
-        //                        //console.log("\t\treduce-reduce found");
-        //                        reduceReduceError = true;
-        //                    }
-
-        //                    for (let i: number = 0; i < production.rhs.length; i++)
-        //                    {
-        //                        stack.pop();
-        //                    }
-
-        //                    let tempState: FAState = stack.pop();
-        //                    stack.push(tempState);
-        //                    let reduceIndex: number = tempState.state.transitions.get(production.lhs);
-        //                    stack.push(new FAState(dfa[reduceIndex], reduceIndex));
-        //                    table[index].set(sym, new Action("r", reduceIndex, production.lhs));
-        //                }
-        //            });
-        //        }
-        //    });
-        //    seen.push(currentState);
-        //}
-    }
 
     dfa.forEach((q: DFAState, idx: number) => {
         table.push(new Map());
@@ -367,10 +302,6 @@ export function makeTable(grammarSpec: string)
     });
     //all shifts are now done
 
-    //console.log("Table so far: ", table);
-
-    //console.log(gg);
-
     //this is for reducing!
     dfa.forEach((q: DFAState, idx: number) =>
     {
@@ -379,42 +310,59 @@ export function makeTable(grammarSpec: string)
         q.label.forEach((entry: number) => {
             //for every nfa/production that makes up this dfa
             let production = nfa[entry].item;
-            //console.log(production, production.rhs.length);
             if (production.dposAtEnd()) {
-                
+
+                //console.log(production.lhs);
+
                 let follow = gg.follow.get(production.lhs);
                 //get the follow for the lhs of this production
 
-                //console.log("Num Transitions: ", q.transitions.size);
+                console.log("\tLHS: ", production.lhs);
+                console.log("\tFOLLOW: ", follow);
 
-                q.transitions.forEach((transIndex: number, sym: string) => {
-                    if (follow != undefined && follow.has(sym)) {
+                if (follow != undefined) {
+                    follow.forEach((sym: string) => {
+                        //if the dpos is at the end of a production, you add an entry in the table
+                        //where(table row = DFA state number)
+                        //and column = f where f is any symbol in follow of production.lhs
+                        //and the content of the table cell(row, column) is["r", lengthOfRHS, SymbolOnLHS]
+
                         //we reduce!
                         //console.log("\treducing");
+
                         let inThere = table[idx].get(sym);
+
                         if (inThere != undefined && inThere.action == "s") {
-                            //console.log("\t\tshift reduce found");
+                            console.log("\t\tshift reduce found: error code 1");
                             shiftReduceError = true;
                         }
-                        if (inThere != undefined && inThere.action == "r") {
-                            //console.log("\t\treduce-reduce found");
+                        else if (inThere != undefined && inThere.action == "r") {
+                            console.log("\t\treduce-reduce found: error code 2");
                             reduceReduceError = true;
                         }
+                        else {
+                            //supposed to go here but fails "sr,rr.txt" if we do put it here...
+                        }
+                        table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
 
-                        table[idx].set(sym, new Action("r", transIndex, production.lhs));
-                    }
-                });              
+                    });
+                }
             }
         });
 
     });
 
-    console.log("Table so far + reducing: ", table);
+    //console.log("Table so far + reducing: ", table);
+
+    console.log("\n");
+    console.log(gg.terminalProductions);
+    console.log(gg.nonTerminalProductions);
+    console.log("\n");
 
     let error: number = 0;
-    if (shiftReduceError)
+    if (shiftReduceError && !reduceReduceError)
         error = 1;
-    if (reduceReduceError)
+    if (!shiftReduceError && reduceReduceError)
         error = 2;
     if (shiftReduceError && reduceReduceError)
         error = 3;

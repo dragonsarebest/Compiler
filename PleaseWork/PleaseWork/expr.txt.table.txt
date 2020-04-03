@@ -6,7 +6,13 @@ Table row 0
 Table row 1
     On +, shift and go to 7
 Table row 2
+    On $, pop 1 and reduce to undefined
+    On ), pop 1 and reduce to undefined
+    On +, pop 1 and reduce to undefined
 Table row 3
+    On $, pop 1 and reduce to undefined
+    On ), pop 1 and reduce to undefined
+    On +, pop 1 and reduce to undefined
 Table row 4
     On (, shift and go to 4
     On ID, shift and go to 3
@@ -16,17 +22,14 @@ Table row 5
     On ), shift and go to 6
     On +, shift and go to 7
 Table row 6
+    On $, pop 3 and reduce to undefined
+    On ), pop 3 and reduce to undefined
+    On +, pop 3 and reduce to undefined
 Table row 7
     On (, shift and go to 4
     On ID, shift and go to 3
     On factor, shift and go to 8
 Table row 8
-Table row 9
-Table row 10
-Table row 11
-Table row 12
-Table row 13
-Table row 14
-Table row 15
-Table row 16
-Table row 17
+    On $, pop 3 and reduce to undefined
+    On ), pop 3 and reduce to undefined
+    On +, pop 3 and reduce to undefined

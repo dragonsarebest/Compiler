@@ -7,17 +7,12 @@ Table row 1
 Table row 2
     On x, shift and go to 7
 Table row 3
+    On x, pop 1 and reduce to undefined
 Table row 4
     On x, shift and go to 5
 Table row 5
     On y, shift and go to 6
 Table row 6
+    On $, pop 3 and reduce to undefined
 Table row 7
-Table row 8
-Table row 9
-Table row 10
-Table row 11
-Table row 12
-Table row 13
-Table row 14
-Table row 15
+    On $, pop 2 and reduce to undefined

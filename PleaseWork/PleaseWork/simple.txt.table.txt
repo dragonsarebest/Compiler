@@ -5,31 +5,27 @@ Table row 0
     On func-call, shift and go to 2
 Table row 1
 Table row 2
+    On $, pop 1 and reduce to undefined
 Table row 3
     On EQ, shift and go to 6
     On LP, shift and go to 5
 Table row 4
+    On $, pop 1 and reduce to undefined
 Table row 5
     On RP, shift and go to 11
 Table row 6
     On NUM, shift and go to 8
     On expr, shift and go to 7
 Table row 7
+    On $, pop 3 and reduce to undefined
     On +, shift and go to 9
 Table row 8
+    On $, pop 1 and reduce to undefined
+    On +, pop 1 and reduce to undefined
 Table row 9
     On NUM, shift and go to 10
 Table row 10
+    On $, pop 3 and reduce to undefined
+    On +, pop 3 and reduce to undefined
 Table row 11
-Table row 12
-Table row 13
-Table row 14
-Table row 15
-Table row 16
-Table row 17
-Table row 18
-Table row 19
-Table row 20
-Table row 21
-Table row 22
-Table row 23
+    On $, pop 3 and reduce to undefined

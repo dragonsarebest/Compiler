@@ -1,0 +1,14 @@
+TYPE -> \\bint\\b
+SEMI -> ;
+LP -> \\(
+RP -> \\)
+LBR -> \\{
+RBR -> \\}
+ID -> \\w+
+
+program -> var-decl-list func-decl-list
+var-decl-list -> var-decl var-decl-list | lambda
+var-decl -> TYPE ID SEMI
+func-decl-list -> func-decl func-decl-list | lambda
+func-decl -> TYPE ID LP RP LBR RBR
+
