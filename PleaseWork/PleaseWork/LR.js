@@ -241,16 +241,9 @@ function makeTable(grammarSpec) {
     //console.log(nfa);
     let shiftReduceError = false;
     let reduceReduceError = false;
-    dfa.forEach((q, idx) => {
-        table.push(new Map());
-        //q.transitions is a map: string -> number
-        for (let sym of q.transitions.keys()) {
-            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
-        }
-    });
-    //all shifts are now done
     //this is for reducing!
     dfa.forEach((q, idx) => {
+        table.push(new Map());
         //if dpos is at the end & the next token is in the follow of that productions lhs
         //next token = transitions 
         q.label.forEach((entry) => {
@@ -270,12 +263,8 @@ function makeTable(grammarSpec) {
                         //we reduce!
                         //console.log("\treducing");
                         let inThere = table[idx].get(sym);
-                        if (inThere != undefined && inThere.action == "s") {
-                            console.log("\t\tshift reduce found: error code 1");
-                            shiftReduceError = true;
-                        }
-                        else if (inThere != undefined && inThere.action == "r") {
-                            console.log("\t\treduce-reduce found: error code 2");
+                        if (inThere != undefined && inThere.action == "r") {
+                            //console.log("\t\treduce-reduce found: error code 2");
                             reduceReduceError = true;
                         }
                         else {
@@ -288,6 +277,18 @@ function makeTable(grammarSpec) {
             }
         });
     });
+    dfa.forEach((q, idx) => {
+        //q.transitions is a map: string -> number
+        for (let sym of q.transitions.keys()) {
+            let inThere = table[idx].get(sym);
+            if (inThere != undefined && inThere.action == "r") {
+                //console.log("\t\treduce-reduce found: error code 2");
+                shiftReduceError = true;
+            }
+            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
+        }
+    });
+    //all shifts are now done
     table[1].set("$", new Action("r", 1, "S'"));
     //console.log("Table so far + reducing: ", table);
     let error = 0;

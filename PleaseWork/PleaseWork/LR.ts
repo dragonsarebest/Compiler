@@ -289,7 +289,6 @@ export function makeTable(grammarSpec: string)
     nfa = makeNFA(grammarSpec);
     dfa = makeDFA(grammarSpec);
     let table: Map<string, Action>[] = [];
-
     //since "S'" is not in the grammar but added by the nfa class to prevent loop backs to the start
     //console.log(gg);
     //console.log(gg.follow);
@@ -299,18 +298,12 @@ export function makeTable(grammarSpec: string)
     let shiftReduceError: boolean = false;
     let reduceReduceError: boolean = false;
 
-    dfa.forEach((q: DFAState, idx: number) => {
-        table.push(new Map());
-        //q.transitions is a map: string -> number
-        for (let sym of q.transitions.keys()) {
-            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
-        }
-    });
-    //all shifts are now done
+    
 
     //this is for reducing!
     dfa.forEach((q: DFAState, idx: number) =>
     {
+        table.push(new Map());
         //if dpos is at the end & the next token is in the follow of that productions lhs
         //next token = transitions 
         q.label.forEach((entry: number) => {
@@ -337,19 +330,13 @@ export function makeTable(grammarSpec: string)
 
                         let inThere = table[idx].get(sym);
 
-                        if (inThere != undefined && inThere.action == "s") {
-                            console.log("\t\tshift reduce found: error code 1");
-                            shiftReduceError = true;
-                        }
-                        else if (inThere != undefined && inThere.action == "r") {
-                            console.log("\t\treduce-reduce found: error code 2");
+                        if (inThere != undefined && inThere.action == "r") {
+                            //console.log("\t\treduce-reduce found: error code 2");
                             reduceReduceError = true;
                         }
                         else {
-                            //supposed to go here but fails "sr,rr.txt" if we do put it here...
                             table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
                         }
-                        //table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
 
                     });
                 }
@@ -357,6 +344,20 @@ export function makeTable(grammarSpec: string)
         });
 
     });
+
+    dfa.forEach((q: DFAState, idx: number) => {
+        
+        //q.transitions is a map: string -> number
+        for (let sym of q.transitions.keys()) {
+            let inThere = table[idx].get(sym);
+            if (inThere != undefined && inThere.action == "r") {
+                //console.log("\t\treduce-reduce found: error code 2");
+                shiftReduceError = true;
+            }
+            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
+        }
+    });
+    //all shifts are now done
 
     table[1].set("$", new Action("r", 1, "S'"));
 
