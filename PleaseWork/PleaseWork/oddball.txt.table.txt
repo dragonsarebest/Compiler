@@ -3,22 +3,23 @@ Table row 0
     On S, shift and go to 1
     On stmt, shift and go to 2
 Table row 1
+    On $, pop 1 and reduce to S'
     On SEMI, shift and go to 6
 Table row 2
     On SEMI, shift and go to 4
 Table row 3
-    On $, pop 1 and reduce to undefined
-    On SEMI, pop 1 and reduce to undefined
+    On $, pop 1 and reduce to stmt
+    On SEMI, pop 1 and reduce to stmt
 Table row 4
     On NUM, shift and go to 3
     On S, shift and go to 5
     On stmt, shift and go to 2
 Table row 5
-    On $, pop 3 and reduce to undefined
-    On SEMI, pop 3 and reduce to undefined
+    On $, pop 3 and reduce to S
+    On SEMI, shift and go to 6
 Table row 6
     On NUM, shift and go to 3
     On stmt, shift and go to 7
 Table row 7
-    On $, pop 3 and reduce to undefined
-    On SEMI, pop 3 and reduce to undefined
+    On $, pop 3 and reduce to S
+    On SEMI, pop 3 and reduce to S

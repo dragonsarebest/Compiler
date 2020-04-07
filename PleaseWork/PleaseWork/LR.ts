@@ -12,6 +12,9 @@ class LR0Item {
         this.lhs = lhs;
         this.rhs = rhs;
         this.dpos = dpos;
+        if (this.rhs.length == 1 && this.rhs[0] == "") {
+            this.rhs = [];
+        }
     }
     toString(): string {
         let l1 = this.rhs.slice(0, this.dpos);
@@ -21,6 +24,7 @@ class LR0Item {
     }
     dposAtEnd(): boolean
     {
+        //console.log(this, this.dpos >= this.rhs.length);
         return this.dpos >= this.rhs.length
     }
     itemsEqual(item2: LR0Item): boolean {
@@ -259,11 +263,11 @@ class Action {
     action: string; //'s' or 'r'
     num: number;    //state number for shift, rhs length for reduce
     //the following are only used for reduce
-    sym: string;   //lhs symbol
+    lhs: string;   //lhs symbol
     constructor(a: string, n: number, sym?: string) {
         this.action = a;
         this.num = n;
-        this.sym = sym;     //might be <undefined>
+        this.lhs = sym;     //might be <undefined>
     }
 }
 
@@ -290,6 +294,8 @@ export function makeTable(grammarSpec: string)
     //console.log(gg);
     //console.log(gg.follow);
 
+    //console.log(nfa);
+
     let shiftReduceError: boolean = false;
     let reduceReduceError: boolean = false;
 
@@ -297,7 +303,7 @@ export function makeTable(grammarSpec: string)
         table.push(new Map());
         //q.transitions is a map: string -> number
         for (let sym of q.transitions.keys()) {
-            table[idx].set(sym, new Action("s", q.transitions.get(sym), sym));
+            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
         }
     });
     //all shifts are now done
@@ -317,8 +323,7 @@ export function makeTable(grammarSpec: string)
                 let follow = gg.follow.get(production.lhs);
                 //get the follow for the lhs of this production
 
-                console.log("\tLHS: ", production.lhs);
-                console.log("\tFOLLOW: ", follow);
+                //console.log(production.lhs, follow);
 
                 if (follow != undefined) {
                     follow.forEach((sym: string) => {
@@ -342,8 +347,9 @@ export function makeTable(grammarSpec: string)
                         }
                         else {
                             //supposed to go here but fails "sr,rr.txt" if we do put it here...
+                            table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
                         }
-                        table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
+                        //table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
 
                     });
                 }
@@ -352,12 +358,9 @@ export function makeTable(grammarSpec: string)
 
     });
 
-    //console.log("Table so far + reducing: ", table);
+    table[1].set("$", new Action("r", 1, "S'"));
 
-    console.log("\n");
-    console.log(gg.terminalProductions);
-    console.log(gg.nonTerminalProductions);
-    console.log("\n");
+    //console.log("Table so far + reducing: ", table);
 
     let error: number = 0;
     if (shiftReduceError && !reduceReduceError)

@@ -8,6 +8,9 @@ class LR0Item {
         this.lhs = lhs;
         this.rhs = rhs;
         this.dpos = dpos;
+        if (this.rhs.length == 1 && this.rhs[0] == "") {
+            this.rhs = [];
+        }
     }
     toString() {
         let l1 = this.rhs.slice(0, this.dpos);
@@ -16,6 +19,7 @@ class LR0Item {
         return this.lhs + " \u2192 " + l1.join(" ") + " \u2022 " + l2.join(" ");
     }
     dposAtEnd() {
+        //console.log(this, this.dpos >= this.rhs.length);
         return this.dpos >= this.rhs.length;
     }
     itemsEqual(item2) {
@@ -216,7 +220,7 @@ class Action {
     constructor(a, n, sym) {
         this.action = a;
         this.num = n;
-        this.sym = sym; //might be <undefined>
+        this.lhs = sym; //might be <undefined>
     }
 }
 class FAState {
@@ -234,13 +238,14 @@ function makeTable(grammarSpec) {
     //since "S'" is not in the grammar but added by the nfa class to prevent loop backs to the start
     //console.log(gg);
     //console.log(gg.follow);
+    //console.log(nfa);
     let shiftReduceError = false;
     let reduceReduceError = false;
     dfa.forEach((q, idx) => {
         table.push(new Map());
         //q.transitions is a map: string -> number
         for (let sym of q.transitions.keys()) {
-            table[idx].set(sym, new Action("s", q.transitions.get(sym), sym));
+            table[idx].set(sym, new Action("s", q.transitions.get(sym)));
         }
     });
     //all shifts are now done
@@ -255,8 +260,7 @@ function makeTable(grammarSpec) {
                 //console.log(production.lhs);
                 let follow = gg.follow.get(production.lhs);
                 //get the follow for the lhs of this production
-                console.log("\tLHS: ", production.lhs);
-                console.log("\tFOLLOW: ", follow);
+                //console.log(production.lhs, follow);
                 if (follow != undefined) {
                     follow.forEach((sym) => {
                         //if the dpos is at the end of a production, you add an entry in the table
@@ -276,18 +280,16 @@ function makeTable(grammarSpec) {
                         }
                         else {
                             //supposed to go here but fails "sr,rr.txt" if we do put it here...
+                            table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
                         }
-                        table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
+                        //table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
                     });
                 }
             }
         });
     });
+    table[1].set("$", new Action("r", 1, "S'"));
     //console.log("Table so far + reducing: ", table);
-    console.log("\n");
-    console.log(gg.terminalProductions);
-    console.log(gg.nonTerminalProductions);
-    console.log("\n");
     let error = 0;
     if (shiftReduceError && !reduceReduceError)
         error = 1;

@@ -1,14 +1,18 @@
 Table row 0
+    On $, pop 0 and reduce to var-decl-list
     On TYPE, shift and go to 4
     On program, shift and go to 1
     On var-decl, shift and go to 3
     On var-decl-list, shift and go to 2
 Table row 1
+    On $, pop 1 and reduce to S'
 Table row 2
+    On $, pop 0 and reduce to func-decl-list
     On TYPE, shift and go to 10
     On func-decl, shift and go to 9
     On func-decl-list, shift and go to 8
 Table row 3
+    On $, pop 0 and reduce to var-decl-list
     On TYPE, shift and go to 4
     On var-decl, shift and go to 3
     On var-decl-list, shift and go to 7
@@ -17,14 +21,15 @@ Table row 4
 Table row 5
     On SEMI, shift and go to 6
 Table row 6
-    On $, pop 3 and reduce to undefined
-    On TYPE, pop 3 and reduce to undefined
+    On $, pop 3 and reduce to var-decl
+    On TYPE, pop 3 and reduce to var-decl
 Table row 7
-    On $, pop 2 and reduce to undefined
-    On TYPE, pop 2 and reduce to undefined
+    On $, pop 2 and reduce to var-decl-list
+    On TYPE, pop 2 and reduce to var-decl-list
 Table row 8
-    On $, pop 2 and reduce to undefined
+    On $, pop 2 and reduce to program
 Table row 9
+    On $, pop 0 and reduce to func-decl-list
     On TYPE, shift and go to 10
     On func-decl, shift and go to 9
     On func-decl-list, shift and go to 16
@@ -39,7 +44,7 @@ Table row 13
 Table row 14
     On RBR, shift and go to 15
 Table row 15
-    On $, pop 6 and reduce to undefined
-    On TYPE, pop 6 and reduce to undefined
+    On $, pop 6 and reduce to func-decl
+    On TYPE, pop 6 and reduce to func-decl
 Table row 16
-    On $, pop 2 and reduce to undefined
+    On $, pop 2 and reduce to func-decl-list

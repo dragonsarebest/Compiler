@@ -141,6 +141,8 @@ export class Grammar
             }
         });
 
+        this.nonterminals.push(new nonterminal("S'", startNodeName));
+        //startNodeName = "S'";
         this.startNodeLabel = startNodeName;
 
         this.nonterminals.forEach(element => {

@@ -4,15 +4,16 @@ Table row 0
     On expr, shift and go to 1
     On factor, shift and go to 2
 Table row 1
+    On $, pop 1 and reduce to S'
     On +, shift and go to 7
 Table row 2
-    On $, pop 1 and reduce to undefined
-    On ), pop 1 and reduce to undefined
-    On +, pop 1 and reduce to undefined
+    On $, pop 1 and reduce to expr
+    On ), pop 1 and reduce to expr
+    On +, pop 1 and reduce to expr
 Table row 3
-    On $, pop 1 and reduce to undefined
-    On ), pop 1 and reduce to undefined
-    On +, pop 1 and reduce to undefined
+    On $, pop 1 and reduce to factor
+    On ), pop 1 and reduce to factor
+    On +, pop 1 and reduce to factor
 Table row 4
     On (, shift and go to 4
     On ID, shift and go to 3
@@ -22,14 +23,14 @@ Table row 5
     On ), shift and go to 6
     On +, shift and go to 7
 Table row 6
-    On $, pop 3 and reduce to undefined
-    On ), pop 3 and reduce to undefined
-    On +, pop 3 and reduce to undefined
+    On $, pop 3 and reduce to factor
+    On ), pop 3 and reduce to factor
+    On +, pop 3 and reduce to factor
 Table row 7
     On (, shift and go to 4
     On ID, shift and go to 3
     On factor, shift and go to 8
 Table row 8
-    On $, pop 3 and reduce to undefined
-    On ), pop 3 and reduce to undefined
-    On +, pop 3 and reduce to undefined
+    On $, pop 3 and reduce to expr
+    On ), pop 3 and reduce to expr
+    On +, pop 3 and reduce to expr
