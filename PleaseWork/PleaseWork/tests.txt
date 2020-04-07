@@ -1,974 +1,1140 @@
 [
  {
-  "name": "ambiguous.txt",
-  "grammar": "x -> x\nIF -> \\bif\\b\nELSE -> \\belse\\b\n\nS -> IF x S | IF x S ELSE S | x\n",
-  "expectedReturn": 1,
-  "expectedTable": [
-   {
-    "S": {
-     "action": "s",
-     "num": 1
-    },
-    "IF": {
-     "action": "s",
-     "num": 2
-    },
-    "x": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    }
-   },
-   {
-    "x": {
-     "action": "s",
-     "num": 4
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S"
-    },
-    "ELSE": {
-     "action": "r",
-     "num": 1,
-     "sym": "S"
-    }
-   },
-   {
-    "S": {
-     "action": "s",
-     "num": 5
-    },
-    "IF": {
-     "action": "s",
-     "num": 2
-    },
-    "x": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    },
-    "ELSE": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "S": {
-     "action": "s",
-     "num": 7
-    },
-    "IF": {
-     "action": "s",
-     "num": 2
-    },
-    "x": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 5,
-     "sym": "S"
-    },
-    "ELSE": {
-     "action": "r",
-     "num": 5,
-     "sym": "S"
-    }
-   }
-  ]
+  "gname": "g1.txt",
+  "name": "i1-1.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "x=42\n",
+  "badParse": true
  },
  {
-  "name": "decl.txt",
-  "grammar": "TYPE -> \\bint\\b\nSEMI -> ;\nLP -> \\(\nRP -> \\)\nLBR -> \\{\nRBR -> \\}\nID -> \\w+\n\nprogram -> var-decl-list func-decl-list\nvar-decl-list -> var-decl var-decl-list | lambda\nvar-decl -> TYPE ID SEMI\nfunc-decl-list -> func-decl func-decl-list | lambda\nfunc-decl -> TYPE ID LP RP LBR RBR\n",
-  "expectedReturn": 1,
-  "expectedTable": [
-   {
-    "TYPE": {
-     "action": "s",
-     "num": 4
-    },
-    "$": {
-     "action": "r",
-     "num": 0,
-     "sym": "var-decl-list"
-    },
-    "program": {
-     "action": "s",
-     "num": 1
-    },
-    "var-decl-list": {
-     "action": "s",
-     "num": 2
-    },
-    "var-decl": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 0,
-     "sym": "func-decl-list"
-    },
-    "func-decl-list": {
-     "action": "s",
-     "num": 8
-    },
-    "func-decl": {
-     "action": "s",
-     "num": 9
-    },
-    "TYPE": {
-     "action": "s",
-     "num": 10
-    }
-   },
-   {
-    "TYPE": {
-     "action": "s",
-     "num": 4
-    },
-    "$": {
-     "action": "r",
-     "num": 0,
-     "sym": "var-decl-list"
-    },
-    "var-decl-list": {
-     "action": "s",
-     "num": 7
-    },
-    "var-decl": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "ID": {
-     "action": "s",
-     "num": 5
-    }
-   },
-   {
-    "SEMI": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "TYPE": {
-     "action": "r",
-     "num": 3,
-     "sym": "var-decl"
-    },
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "var-decl"
-    }
-   },
-   {
-    "TYPE": {
-     "action": "r",
-     "num": 2,
-     "sym": "var-decl-list"
-    },
-    "$": {
-     "action": "r",
-     "num": 2,
-     "sym": "var-decl-list"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 2,
-     "sym": "program"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 0,
-     "sym": "func-decl-list"
-    },
-    "func-decl-list": {
-     "action": "s",
-     "num": 16
-    },
-    "func-decl": {
-     "action": "s",
-     "num": 9
-    },
-    "TYPE": {
-     "action": "s",
-     "num": 10
-    }
-   },
-   {
-    "ID": {
-     "action": "s",
-     "num": 11
-    }
-   },
-   {
-    "LP": {
-     "action": "s",
-     "num": 12
-    }
-   },
-   {
-    "RP": {
-     "action": "s",
-     "num": 13
-    }
-   },
-   {
-    "LBR": {
-     "action": "s",
-     "num": 14
-    }
-   },
-   {
-    "RBR": {
-     "action": "s",
-     "num": 15
-    }
-   },
-   {
-    "TYPE": {
-     "action": "r",
-     "num": 6,
-     "sym": "func-decl"
-    },
-    "$": {
-     "action": "r",
-     "num": 6,
-     "sym": "func-decl"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 2,
-     "sym": "func-decl-list"
-    }
-   }
-  ]
+  "gname": "g1.txt",
+  "name": "i1-2.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "else\n    bar();\n        \n",
+  "badParse": true
  },
  {
-  "name": "expr.txt",
-  "grammar": "+ -> \\+\n* -> \\*\nID -> \\w+\n( -> \\(\n) -> \\)\n\nexpr -> expr + factor | factor\nfactor -> ID | ( expr )\n",
-  "expectedReturn": 0,
-  "expectedTable": [
-   {
-    "expr": {
-     "action": "s",
-     "num": 1
-    },
-    "factor": {
-     "action": "s",
-     "num": 2
-    },
-    "ID": {
-     "action": "s",
-     "num": 3
-    },
-    "(": {
-     "action": "s",
-     "num": 4
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    },
-    "+": {
-     "action": "s",
-     "num": 7
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "expr"
-    },
-    "+": {
-     "action": "r",
-     "num": 1,
-     "sym": "expr"
-    },
-    ")": {
-     "action": "r",
-     "num": 1,
-     "sym": "expr"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "factor"
-    },
-    "+": {
-     "action": "r",
-     "num": 1,
-     "sym": "factor"
-    },
-    ")": {
-     "action": "r",
-     "num": 1,
-     "sym": "factor"
-    }
-   },
-   {
-    "expr": {
-     "action": "s",
-     "num": 5
-    },
-    "factor": {
-     "action": "s",
-     "num": 2
-    },
-    "ID": {
-     "action": "s",
-     "num": 3
-    },
-    "(": {
-     "action": "s",
-     "num": 4
-    }
-   },
-   {
-    ")": {
-     "action": "s",
-     "num": 6
-    },
-    "+": {
-     "action": "s",
-     "num": 7
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "factor"
-    },
-    "+": {
-     "action": "r",
-     "num": 3,
-     "sym": "factor"
-    },
-    ")": {
-     "action": "r",
-     "num": 3,
-     "sym": "factor"
-    }
-   },
-   {
-    "factor": {
-     "action": "s",
-     "num": 8
-    },
-    "ID": {
-     "action": "s",
-     "num": 3
-    },
-    "(": {
-     "action": "s",
-     "num": 4
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "expr"
-    },
-    "+": {
-     "action": "r",
-     "num": 3,
-     "sym": "expr"
-    },
-    ")": {
-     "action": "r",
-     "num": 3,
-     "sym": "expr"
-    }
-   }
-  ]
+  "gname": "g1.txt",
+  "name": "i1-3.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "x = 1 + 2 + + 3;\n",
+  "badParse": true
  },
  {
-  "name": "oddball.txt",
-  "grammar": "SEMI -> ;\nNUM -> \\d+\n\nS -> S SEMI stmt | stmt SEMI S\nstmt -> NUM\n",
-  "expectedReturn": 1,
-  "expectedTable": [
-   {
-    "S": {
-     "action": "s",
-     "num": 1
-    },
-    "stmt": {
-     "action": "s",
-     "num": 2
-    },
-    "NUM": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    },
-    "SEMI": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "SEMI": {
-     "action": "s",
-     "num": 4
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "stmt"
-    },
-    "SEMI": {
-     "action": "r",
-     "num": 1,
-     "sym": "stmt"
-    }
-   },
-   {
-    "S": {
-     "action": "s",
-     "num": 5
-    },
-    "stmt": {
-     "action": "s",
-     "num": 2
-    },
-    "NUM": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    },
-    "SEMI": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "stmt": {
-     "action": "s",
-     "num": 7
-    },
-    "NUM": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    },
-    "SEMI": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    }
-   }
-  ]
+  "gname": "g1.txt",
+  "name": "i1-4.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "42 + 3;\n",
+  "badParse": true
  },
  {
-  "name": "oddball2.txt",
-  "grammar": "NUM -> \\d+\n+ -> \\+\nID -> \\w+\n. -> \\.\nLP -> [(]\nRP -> [)]\n\nS -> mathThings + NUM | callableThings LP RP\nmathThings -> ID | NUM\ncallableThings -> ID . ID | ID\n",
-  "expectedReturn": 0,
-  "expectedTable": [
-   {
-    "S": {
-     "action": "s",
-     "num": 1
-    },
-    "mathThings": {
-     "action": "s",
-     "num": 2
-    },
-    "ID": {
-     "action": "s",
-     "num": 3
-    },
-    "NUM": {
-     "action": "s",
-     "num": 4
-    },
-    "callableThings": {
-     "action": "s",
-     "num": 5
+  "gname": "g1.txt",
+  "name": "v1-1.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "x=42;\n",
+  "badParse": false,
+  "expectedTree": {
+   "sym": "S",
+   "children": [
+    {
+     "sym": "stmt",
+     "children": [
+      {
+       "sym": "assign",
+       "children": [
+        {
+         "sym": "ID",
+         "token": {
+          "sym": "ID",
+          "lexeme": "x",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "EQ",
+         "token": {
+          "sym": "EQ",
+          "lexeme": "=",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "sum",
+         "children": [
+          {
+           "sym": "prod",
+           "children": [
+            {
+             "sym": "pow",
+             "children": [
+              {
+               "sym": "factor",
+               "children": [
+                {
+                 "sym": "NUM",
+                 "token": {
+                  "sym": "NUM",
+                  "lexeme": "42",
+                  "line": 1
+                 },
+                 "children": []
+                }
+               ],
+               "rhs": [
+                "NUM"
+               ]
+              }
+             ],
+             "rhs": [
+              "factor"
+             ]
+            }
+           ],
+           "rhs": [
+            "pow"
+           ]
+          }
+         ],
+         "rhs": [
+          "prod"
+         ]
+        }
+       ],
+       "rhs": [
+        "ID",
+        "EQ",
+        "sum"
+       ]
+      },
+      {
+       "sym": "SEMI",
+       "token": {
+        "sym": "SEMI",
+        "lexeme": ";",
+        "line": 1
+       },
+       "children": []
+      }
+     ],
+     "rhs": [
+      "assign",
+      "SEMI"
+     ]
     }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    }
-   },
-   {
-    "+": {
-     "action": "s",
-     "num": 10
-    }
-   },
-   {
-    "+": {
-     "action": "r",
-     "num": 1,
-     "sym": "mathThings"
-    },
-    "LP": {
-     "action": "r",
-     "num": 1,
-     "sym": "callableThings"
-    },
-    ".": {
-     "action": "s",
-     "num": 8
-    }
-   },
-   {
-    "+": {
-     "action": "r",
-     "num": 1,
-     "sym": "mathThings"
-    }
-   },
-   {
-    "LP": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "RP": {
-     "action": "s",
-     "num": 7
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    }
-   },
-   {
-    "ID": {
-     "action": "s",
-     "num": 9
-    }
-   },
-   {
-    "LP": {
-     "action": "r",
-     "num": 3,
-     "sym": "callableThings"
-    }
-   },
-   {
-    "NUM": {
-     "action": "s",
-     "num": 11
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    }
-   }
-  ]
+   ],
+   "rhs": [
+    "stmt"
+   ]
+  }
  },
  {
-  "name": "rr.txt",
-  "grammar": "x -> x\ny -> y \na -> a\nb -> b\n\nS -> A x | B x y\nA -> a\nB -> a \n \n",
-  "expectedReturn": 2,
-  "expectedTable": [
-   {
-    "S": {
-     "action": "s",
-     "num": 1
+  "gname": "g1.txt",
+  "name": "v1-2.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "foo();\nx=42;\n",
+  "badParse": false,
+  "expectedTree": {
+   "sym": "S",
+   "children": [
+    {
+     "sym": "stmt",
+     "children": [
+      {
+       "sym": "func",
+       "children": [
+        {
+         "sym": "ID",
+         "token": {
+          "sym": "ID",
+          "lexeme": "foo",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "LP",
+         "token": {
+          "sym": "LP",
+          "lexeme": "(",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "plist",
+         "children": [],
+         "rhs": []
+        },
+        {
+         "sym": "RP",
+         "token": {
+          "sym": "RP",
+          "lexeme": ")",
+          "line": 1
+         },
+         "children": []
+        }
+       ],
+       "rhs": [
+        "ID",
+        "LP",
+        "plist",
+        "RP"
+       ]
+      },
+      {
+       "sym": "SEMI",
+       "token": {
+        "sym": "SEMI",
+        "lexeme": ";",
+        "line": 1
+       },
+       "children": []
+      }
+     ],
+     "rhs": [
+      "func",
+      "SEMI"
+     ]
     },
-    "A": {
-     "action": "s",
-     "num": 2
-    },
-    "a": {
-     "action": "s",
-     "num": 3
-    },
-    "B": {
-     "action": "s",
-     "num": 4
+    {
+     "sym": "S",
+     "children": [
+      {
+       "sym": "stmt",
+       "children": [
+        {
+         "sym": "assign",
+         "children": [
+          {
+           "sym": "ID",
+           "token": {
+            "sym": "ID",
+            "lexeme": "x",
+            "line": 2
+           },
+           "children": []
+          },
+          {
+           "sym": "EQ",
+           "token": {
+            "sym": "EQ",
+            "lexeme": "=",
+            "line": 2
+           },
+           "children": []
+          },
+          {
+           "sym": "sum",
+           "children": [
+            {
+             "sym": "prod",
+             "children": [
+              {
+               "sym": "pow",
+               "children": [
+                {
+                 "sym": "factor",
+                 "children": [
+                  {
+                   "sym": "NUM",
+                   "token": {
+                    "sym": "NUM",
+                    "lexeme": "42",
+                    "line": 2
+                   },
+                   "children": []
+                  }
+                 ],
+                 "rhs": [
+                  "NUM"
+                 ]
+                }
+               ],
+               "rhs": [
+                "factor"
+               ]
+              }
+             ],
+             "rhs": [
+              "pow"
+             ]
+            }
+           ],
+           "rhs": [
+            "prod"
+           ]
+          }
+         ],
+         "rhs": [
+          "ID",
+          "EQ",
+          "sum"
+         ]
+        },
+        {
+         "sym": "SEMI",
+         "token": {
+          "sym": "SEMI",
+          "lexeme": ";",
+          "line": 2
+         },
+         "children": []
+        }
+       ],
+       "rhs": [
+        "assign",
+        "SEMI"
+       ]
+      }
+     ],
+     "rhs": [
+      "stmt"
+     ]
     }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    }
-   },
-   {
-    "x": {
-     "action": "s",
-     "num": 7
-    }
-   },
-   {
-    "x": {
-     "action": "r",
-     "num": 1,
-     "sym": "B"
-    }
-   },
-   {
-    "x": {
-     "action": "s",
-     "num": 5
-    }
-   },
-   {
-    "y": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 2,
-     "sym": "S"
-    }
-   }
-  ]
+   ],
+   "rhs": [
+    "stmt",
+    "S"
+   ]
+  }
  },
  {
-  "name": "simple.txt",
-  "grammar": "NUM -> \\d+\nID -> \\w+\nEQ -> =\nLP -> \\(\nRP -> \\)\n+ -> \\+\n\nS -> func-call | assign\nassign -> ID EQ expr\nfunc-call -> ID LP RP\nexpr -> expr + NUM | NUM\n",
-  "expectedReturn": 0,
-  "expectedTable": [
-   {
-    "S": {
-     "action": "s",
-     "num": 1
-    },
-    "func-call": {
-     "action": "s",
-     "num": 2
-    },
-    "ID": {
-     "action": "s",
-     "num": 3
-    },
-    "assign": {
-     "action": "s",
-     "num": 4
+  "gname": "g1.txt",
+  "name": "v1-3.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "foo(1+2,3*4,5**6);\n",
+  "badParse": false,
+  "expectedTree": {
+   "sym": "S",
+   "children": [
+    {
+     "sym": "stmt",
+     "children": [
+      {
+       "sym": "func",
+       "children": [
+        {
+         "sym": "ID",
+         "token": {
+          "sym": "ID",
+          "lexeme": "foo",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "LP",
+         "token": {
+          "sym": "LP",
+          "lexeme": "(",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "plist",
+         "children": [
+          {
+           "sym": "sum",
+           "children": [
+            {
+             "sym": "sum",
+             "children": [
+              {
+               "sym": "prod",
+               "children": [
+                {
+                 "sym": "pow",
+                 "children": [
+                  {
+                   "sym": "factor",
+                   "children": [
+                    {
+                     "sym": "NUM",
+                     "token": {
+                      "sym": "NUM",
+                      "lexeme": "1",
+                      "line": 1
+                     },
+                     "children": []
+                    }
+                   ],
+                   "rhs": [
+                    "NUM"
+                   ]
+                  }
+                 ],
+                 "rhs": [
+                  "factor"
+                 ]
+                }
+               ],
+               "rhs": [
+                "pow"
+               ]
+              }
+             ],
+             "rhs": [
+              "prod"
+             ]
+            },
+            {
+             "sym": "ADDOP",
+             "token": {
+              "sym": "ADDOP",
+              "lexeme": "+",
+              "line": 1
+             },
+             "children": []
+            },
+            {
+             "sym": "prod",
+             "children": [
+              {
+               "sym": "pow",
+               "children": [
+                {
+                 "sym": "factor",
+                 "children": [
+                  {
+                   "sym": "NUM",
+                   "token": {
+                    "sym": "NUM",
+                    "lexeme": "2",
+                    "line": 1
+                   },
+                   "children": []
+                  }
+                 ],
+                 "rhs": [
+                  "NUM"
+                 ]
+                }
+               ],
+               "rhs": [
+                "factor"
+               ]
+              }
+             ],
+             "rhs": [
+              "pow"
+             ]
+            }
+           ],
+           "rhs": [
+            "sum",
+            "ADDOP",
+            "prod"
+           ]
+          },
+          {
+           "sym": "CMA",
+           "token": {
+            "sym": "CMA",
+            "lexeme": ",",
+            "line": 1
+           },
+           "children": []
+          },
+          {
+           "sym": "plist'",
+           "children": [
+            {
+             "sym": "sum",
+             "children": [
+              {
+               "sym": "prod",
+               "children": [
+                {
+                 "sym": "prod",
+                 "children": [
+                  {
+                   "sym": "pow",
+                   "children": [
+                    {
+                     "sym": "factor",
+                     "children": [
+                      {
+                       "sym": "NUM",
+                       "token": {
+                        "sym": "NUM",
+                        "lexeme": "3",
+                        "line": 1
+                       },
+                       "children": []
+                      }
+                     ],
+                     "rhs": [
+                      "NUM"
+                     ]
+                    }
+                   ],
+                   "rhs": [
+                    "factor"
+                   ]
+                  }
+                 ],
+                 "rhs": [
+                  "pow"
+                 ]
+                },
+                {
+                 "sym": "MULOP",
+                 "token": {
+                  "sym": "MULOP",
+                  "lexeme": "*",
+                  "line": 1
+                 },
+                 "children": []
+                },
+                {
+                 "sym": "pow",
+                 "children": [
+                  {
+                   "sym": "factor",
+                   "children": [
+                    {
+                     "sym": "NUM",
+                     "token": {
+                      "sym": "NUM",
+                      "lexeme": "4",
+                      "line": 1
+                     },
+                     "children": []
+                    }
+                   ],
+                   "rhs": [
+                    "NUM"
+                   ]
+                  }
+                 ],
+                 "rhs": [
+                  "factor"
+                 ]
+                }
+               ],
+               "rhs": [
+                "prod",
+                "MULOP",
+                "pow"
+               ]
+              }
+             ],
+             "rhs": [
+              "prod"
+             ]
+            },
+            {
+             "sym": "CMA",
+             "token": {
+              "sym": "CMA",
+              "lexeme": ",",
+              "line": 1
+             },
+             "children": []
+            },
+            {
+             "sym": "plist'",
+             "children": [
+              {
+               "sym": "sum",
+               "children": [
+                {
+                 "sym": "prod",
+                 "children": [
+                  {
+                   "sym": "pow",
+                   "children": [
+                    {
+                     "sym": "factor",
+                     "children": [
+                      {
+                       "sym": "NUM",
+                       "token": {
+                        "sym": "NUM",
+                        "lexeme": "5",
+                        "line": 1
+                       },
+                       "children": []
+                      }
+                     ],
+                     "rhs": [
+                      "NUM"
+                     ]
+                    },
+                    {
+                     "sym": "STARSTAR",
+                     "token": {
+                      "sym": "STARSTAR",
+                      "lexeme": "**",
+                      "line": 1
+                     },
+                     "children": []
+                    },
+                    {
+                     "sym": "pow",
+                     "children": [
+                      {
+                       "sym": "factor",
+                       "children": [
+                        {
+                         "sym": "NUM",
+                         "token": {
+                          "sym": "NUM",
+                          "lexeme": "6",
+                          "line": 1
+                         },
+                         "children": []
+                        }
+                       ],
+                       "rhs": [
+                        "NUM"
+                       ]
+                      }
+                     ],
+                     "rhs": [
+                      "factor"
+                     ]
+                    }
+                   ],
+                   "rhs": [
+                    "factor",
+                    "STARSTAR",
+                    "pow"
+                   ]
+                  }
+                 ],
+                 "rhs": [
+                  "pow"
+                 ]
+                }
+               ],
+               "rhs": [
+                "prod"
+               ]
+              }
+             ],
+             "rhs": [
+              "sum"
+             ]
+            }
+           ],
+           "rhs": [
+            "sum",
+            "CMA",
+            "plist'"
+           ]
+          }
+         ],
+         "rhs": [
+          "sum",
+          "CMA",
+          "plist'"
+         ]
+        },
+        {
+         "sym": "RP",
+         "token": {
+          "sym": "RP",
+          "lexeme": ")",
+          "line": 1
+         },
+         "children": []
+        }
+       ],
+       "rhs": [
+        "ID",
+        "LP",
+        "plist",
+        "RP"
+       ]
+      },
+      {
+       "sym": "SEMI",
+       "token": {
+        "sym": "SEMI",
+        "lexeme": ";",
+        "line": 1
+       },
+       "children": []
+      }
+     ],
+     "rhs": [
+      "func",
+      "SEMI"
+     ]
     }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S"
-    }
-   },
-   {
-    "LP": {
-     "action": "s",
-     "num": 5
-    },
-    "EQ": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S"
-    }
-   },
-   {
-    "RP": {
-     "action": "s",
-     "num": 11
-    }
-   },
-   {
-    "expr": {
-     "action": "s",
-     "num": 7
-    },
-    "NUM": {
-     "action": "s",
-     "num": 8
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "assign"
-    },
-    "+": {
-     "action": "s",
-     "num": 9
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "expr"
-    },
-    "+": {
-     "action": "r",
-     "num": 1,
-     "sym": "expr"
-    }
-   },
-   {
-    "NUM": {
-     "action": "s",
-     "num": 10
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "expr"
-    },
-    "+": {
-     "action": "r",
-     "num": 3,
-     "sym": "expr"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "func-call"
-    }
-   }
-  ]
+   ],
+   "rhs": [
+    "stmt"
+   ]
+  }
  },
  {
-  "name": "sr,rr.txt",
-  "grammar": "x -> x\ny -> y \na -> a\nb -> b\n\nS -> A x | B x y | C \nA -> a\nB -> a \nC -> a x\n \n",
-  "expectedReturn": 3,
-  "expectedTable": [
-   {
-    "S": {
-     "action": "s",
-     "num": 1
-    },
-    "A": {
-     "action": "s",
-     "num": 2
-    },
-    "a": {
-     "action": "s",
-     "num": 3
-    },
-    "B": {
-     "action": "s",
-     "num": 4
-    },
-    "C": {
-     "action": "s",
-     "num": 5
+  "gname": "g1.txt",
+  "name": "v1-4.txt",
+  "grammar": "IF -> \\bif\\b\nELSE -> \\belse\\b\nADDOP -> [-+]\nSTARSTAR -> [*][*]\nMULOP -> [*/%]\nNUM -> -?\\d+\nID -> [A-Za-z_]\\w*\nLP -> [(]\nRP -> [)]\nEQ -> =\nSEMI -> ;\nCMA -> ,\n\nS -> stmt S | stmt\nstmt -> assign SEMI | func SEMI | cond\nassign -> ID EQ sum\nfunc -> ID LP plist RP\nplist -> lambda | sum | sum CMA plist'\nplist' -> sum | sum CMA plist'\nsum -> sum ADDOP prod | prod\nprod -> prod MULOP pow | pow\npow -> factor STARSTAR pow | factor\nfactor -> ID | NUM | LP sum RP\ncond -> IF LP sum RP stmt | IF LP sum RP stmt ELSE stmt\n",
+  "input": "if( x )\n    if( y )\n        foo(1+2*3);\n    else\n        bar();\n        \n",
+  "badParse": false,
+  "expectedTree": {
+   "sym": "S",
+   "children": [
+    {
+     "sym": "stmt",
+     "children": [
+      {
+       "sym": "cond",
+       "children": [
+        {
+         "sym": "IF",
+         "token": {
+          "sym": "IF",
+          "lexeme": "if",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "LP",
+         "token": {
+          "sym": "LP",
+          "lexeme": "(",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "sum",
+         "children": [
+          {
+           "sym": "prod",
+           "children": [
+            {
+             "sym": "pow",
+             "children": [
+              {
+               "sym": "factor",
+               "children": [
+                {
+                 "sym": "ID",
+                 "token": {
+                  "sym": "ID",
+                  "lexeme": "x",
+                  "line": 1
+                 },
+                 "children": []
+                }
+               ],
+               "rhs": [
+                "ID"
+               ]
+              }
+             ],
+             "rhs": [
+              "factor"
+             ]
+            }
+           ],
+           "rhs": [
+            "pow"
+           ]
+          }
+         ],
+         "rhs": [
+          "prod"
+         ]
+        },
+        {
+         "sym": "RP",
+         "token": {
+          "sym": "RP",
+          "lexeme": ")",
+          "line": 1
+         },
+         "children": []
+        },
+        {
+         "sym": "stmt",
+         "children": [
+          {
+           "sym": "cond",
+           "children": [
+            {
+             "sym": "IF",
+             "token": {
+              "sym": "IF",
+              "lexeme": "if",
+              "line": 2
+             },
+             "children": []
+            },
+            {
+             "sym": "LP",
+             "token": {
+              "sym": "LP",
+              "lexeme": "(",
+              "line": 2
+             },
+             "children": []
+            },
+            {
+             "sym": "sum",
+             "children": [
+              {
+               "sym": "prod",
+               "children": [
+                {
+                 "sym": "pow",
+                 "children": [
+                  {
+                   "sym": "factor",
+                   "children": [
+                    {
+                     "sym": "ID",
+                     "token": {
+                      "sym": "ID",
+                      "lexeme": "y",
+                      "line": 2
+                     },
+                     "children": []
+                    }
+                   ],
+                   "rhs": [
+                    "ID"
+                   ]
+                  }
+                 ],
+                 "rhs": [
+                  "factor"
+                 ]
+                }
+               ],
+               "rhs": [
+                "pow"
+               ]
+              }
+             ],
+             "rhs": [
+              "prod"
+             ]
+            },
+            {
+             "sym": "RP",
+             "token": {
+              "sym": "RP",
+              "lexeme": ")",
+              "line": 2
+             },
+             "children": []
+            },
+            {
+             "sym": "stmt",
+             "children": [
+              {
+               "sym": "func",
+               "children": [
+                {
+                 "sym": "ID",
+                 "token": {
+                  "sym": "ID",
+                  "lexeme": "foo",
+                  "line": 3
+                 },
+                 "children": []
+                },
+                {
+                 "sym": "LP",
+                 "token": {
+                  "sym": "LP",
+                  "lexeme": "(",
+                  "line": 3
+                 },
+                 "children": []
+                },
+                {
+                 "sym": "plist",
+                 "children": [
+                  {
+                   "sym": "sum",
+                   "children": [
+                    {
+                     "sym": "sum",
+                     "children": [
+                      {
+                       "sym": "prod",
+                       "children": [
+                        {
+                         "sym": "pow",
+                         "children": [
+                          {
+                           "sym": "factor",
+                           "children": [
+                            {
+                             "sym": "NUM",
+                             "token": {
+                              "sym": "NUM",
+                              "lexeme": "1",
+                              "line": 3
+                             },
+                             "children": []
+                            }
+                           ],
+                           "rhs": [
+                            "NUM"
+                           ]
+                          }
+                         ],
+                         "rhs": [
+                          "factor"
+                         ]
+                        }
+                       ],
+                       "rhs": [
+                        "pow"
+                       ]
+                      }
+                     ],
+                     "rhs": [
+                      "prod"
+                     ]
+                    },
+                    {
+                     "sym": "ADDOP",
+                     "token": {
+                      "sym": "ADDOP",
+                      "lexeme": "+",
+                      "line": 3
+                     },
+                     "children": []
+                    },
+                    {
+                     "sym": "prod",
+                     "children": [
+                      {
+                       "sym": "prod",
+                       "children": [
+                        {
+                         "sym": "pow",
+                         "children": [
+                          {
+                           "sym": "factor",
+                           "children": [
+                            {
+                             "sym": "NUM",
+                             "token": {
+                              "sym": "NUM",
+                              "lexeme": "2",
+                              "line": 3
+                             },
+                             "children": []
+                            }
+                           ],
+                           "rhs": [
+                            "NUM"
+                           ]
+                          }
+                         ],
+                         "rhs": [
+                          "factor"
+                         ]
+                        }
+                       ],
+                       "rhs": [
+                        "pow"
+                       ]
+                      },
+                      {
+                       "sym": "MULOP",
+                       "token": {
+                        "sym": "MULOP",
+                        "lexeme": "*",
+                        "line": 3
+                       },
+                       "children": []
+                      },
+                      {
+                       "sym": "pow",
+                       "children": [
+                        {
+                         "sym": "factor",
+                         "children": [
+                          {
+                           "sym": "NUM",
+                           "token": {
+                            "sym": "NUM",
+                            "lexeme": "3",
+                            "line": 3
+                           },
+                           "children": []
+                          }
+                         ],
+                         "rhs": [
+                          "NUM"
+                         ]
+                        }
+                       ],
+                       "rhs": [
+                        "factor"
+                       ]
+                      }
+                     ],
+                     "rhs": [
+                      "prod",
+                      "MULOP",
+                      "pow"
+                     ]
+                    }
+                   ],
+                   "rhs": [
+                    "sum",
+                    "ADDOP",
+                    "prod"
+                   ]
+                  }
+                 ],
+                 "rhs": [
+                  "sum"
+                 ]
+                },
+                {
+                 "sym": "RP",
+                 "token": {
+                  "sym": "RP",
+                  "lexeme": ")",
+                  "line": 3
+                 },
+                 "children": []
+                }
+               ],
+               "rhs": [
+                "ID",
+                "LP",
+                "plist",
+                "RP"
+               ]
+              },
+              {
+               "sym": "SEMI",
+               "token": {
+                "sym": "SEMI",
+                "lexeme": ";",
+                "line": 3
+               },
+               "children": []
+              }
+             ],
+             "rhs": [
+              "func",
+              "SEMI"
+             ]
+            },
+            {
+             "sym": "ELSE",
+             "token": {
+              "sym": "ELSE",
+              "lexeme": "else",
+              "line": 4
+             },
+             "children": []
+            },
+            {
+             "sym": "stmt",
+             "children": [
+              {
+               "sym": "func",
+               "children": [
+                {
+                 "sym": "ID",
+                 "token": {
+                  "sym": "ID",
+                  "lexeme": "bar",
+                  "line": 5
+                 },
+                 "children": []
+                },
+                {
+                 "sym": "LP",
+                 "token": {
+                  "sym": "LP",
+                  "lexeme": "(",
+                  "line": 5
+                 },
+                 "children": []
+                },
+                {
+                 "sym": "plist",
+                 "children": [],
+                 "rhs": []
+                },
+                {
+                 "sym": "RP",
+                 "token": {
+                  "sym": "RP",
+                  "lexeme": ")",
+                  "line": 5
+                 },
+                 "children": []
+                }
+               ],
+               "rhs": [
+                "ID",
+                "LP",
+                "plist",
+                "RP"
+               ]
+              },
+              {
+               "sym": "SEMI",
+               "token": {
+                "sym": "SEMI",
+                "lexeme": ";",
+                "line": 5
+               },
+               "children": []
+              }
+             ],
+             "rhs": [
+              "func",
+              "SEMI"
+             ]
+            }
+           ],
+           "rhs": [
+            "IF",
+            "LP",
+            "sum",
+            "RP",
+            "stmt",
+            "ELSE",
+            "stmt"
+           ]
+          }
+         ],
+         "rhs": [
+          "cond"
+         ]
+        }
+       ],
+       "rhs": [
+        "IF",
+        "LP",
+        "sum",
+        "RP",
+        "stmt"
+       ]
+      }
+     ],
+     "rhs": [
+      "cond"
+     ]
     }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    }
-   },
-   {
-    "x": {
-     "action": "s",
-     "num": 9
-    }
-   },
-   {
-    "x": {
-     "action": "s",
-     "num": 8
-    }
-   },
-   {
-    "x": {
-     "action": "s",
-     "num": 6
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S"
-    }
-   },
-   {
-    "y": {
-     "action": "s",
-     "num": 7
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 2,
-     "sym": "C"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 2,
-     "sym": "S"
-    }
-   }
-  ]
- },
- {
-  "name": "sr.txt",
-  "grammar": "x -> x\n\nS -> x S x | x\n",
-  "expectedReturn": 1,
-  "expectedTable": [
-   {
-    "S": {
-     "action": "s",
-     "num": 1
-    },
-    "x": {
-     "action": "s",
-     "num": 2
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S'"
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 1,
-     "sym": "S"
-    },
-    "x": {
-     "action": "s",
-     "num": 2
-    },
-    "S": {
-     "action": "s",
-     "num": 3
-    }
-   },
-   {
-    "x": {
-     "action": "s",
-     "num": 4
-    }
-   },
-   {
-    "$": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    },
-    "x": {
-     "action": "r",
-     "num": 3,
-     "sym": "S"
-    }
-   }
-  ]
+   ],
+   "rhs": [
+    "stmt"
+   ]
+  }
  }
 ]

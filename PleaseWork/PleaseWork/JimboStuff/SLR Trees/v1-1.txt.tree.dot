@@ -1,0 +1,24 @@
+digraph d{
+node [fontname="Helvetica",shape=box];
+n0 [label=<S>];
+n1 [label=<stmt>];
+n2 [label=<assign>];
+n3 [label=<ID<br/>x>];
+n4 [label=<EQ<br/>=>];
+n5 [label=<sum>];
+n6 [label=<prod>];
+n7 [label=<pow>];
+n8 [label=<factor>];
+n9 [label=<NUM<br/>42>];
+n10 [label=<SEMI<br/>;>];
+n0 -> n1;
+n1 -> n2;
+n1 -> n10;
+n2 -> n3;
+n2 -> n4;
+n2 -> n5;
+n5 -> n6;
+n6 -> n7;
+n7 -> n8;
+n8 -> n9;
+}
