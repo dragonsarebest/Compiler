@@ -282,7 +282,8 @@ export function makeTable(grammarSpec: string)
     //console.log(gg);
     //console.log(gg.follow);
 
-    //console.log(nfa);
+    console.log(nfa);
+    //console.log(dfa);
 
     let shiftReduceError: boolean = false;
     let reduceReduceError: boolean = false;

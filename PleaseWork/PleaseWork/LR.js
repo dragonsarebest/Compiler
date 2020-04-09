@@ -233,7 +233,8 @@ function makeTable(grammarSpec) {
     //since "S'" is not in the grammar but added by the nfa class to prevent loop backs to the start
     //console.log(gg);
     //console.log(gg.follow);
-    //console.log(nfa);
+    console.log(exports.nfa);
+    //console.log(dfa);
     let shiftReduceError = false;
     let reduceReduceError = false;
     //this is for reducing!
