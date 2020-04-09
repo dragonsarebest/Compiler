@@ -46,7 +46,7 @@ function parse(grammarString, programString) {
     let SLR_Table;
     let tokenizer;
     let results = LR_1.makeTable(grammarString);
-    console.log(grammarString);
+    //console.log(grammarString);
     //console.log(gg.terminalProductions);
     //console.log(gg.nonTerminalProductions);
     {
@@ -65,15 +65,17 @@ function parse(grammarString, programString) {
         //    }
         //}
     }
-    console.log(results);
+    //console.log(results);
     SLR_Table = results[0];
     tokenizer = new Tokenizer_1.Tokenizer(LR_2.gg);
     tokenizer.setInput(programString);
+    /*
     {
         //debugging
         console.log("programString: ", programString);
-        let tempToke = new Tokenizer_1.Tokenizer(LR_2.gg);
+        let tempToke = new Tokenizer(gg);
         tempToke.setInput(programString);
+
         while (true) {
             let current = tempToke.next();
             if (current.sym == "$")
@@ -81,12 +83,13 @@ function parse(grammarString, programString) {
             console.log("Current Token: ", current);
         }
     }
+    */
     return makeTree(SLR_Table, tokenizer);
 }
 exports.parse = parse;
 function makeTree(SLR_Table, tokenizer) {
     let stateStack;
-    //let nodeStack: TreeNode[];
+    let nodeStack;
     {
         //debugging
         //for (let i = 0; i < SLR_Table.length; i++) {
@@ -94,18 +97,14 @@ function makeTree(SLR_Table, tokenizer) {
         //    console.log("\t", SLR_Table[i]);
         //}
     }
-    //nodeStack = [];        //starts off empty
+    nodeStack = []; //starts off empty
     stateStack = [0]; //0 = initial state
     while (true) {
         let s = stateStack[stateStack.length - 1];
         let t = tokenizer.peek().sym;
+        console.log("current symbol: ", t);
         console.log("\nnumber, slr_table[s]");
         console.log(s, SLR_Table[s]);
-        console.log("current symbol: ", t);
-        if (SLR_Table[s] == undefined) {
-            console.log("Whole map: ");
-            console.log(SLR_Table);
-        }
         if (!SLR_Table[s].has(t)) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s;
             console.log("\tError: " + errorMsg);
@@ -115,8 +114,8 @@ function makeTree(SLR_Table, tokenizer) {
         if (a.action == "s") {
             stateStack.push(a.num);
             let tempToken = tokenizer.next();
-            //let newNode = new TreeNode(tempToken.sym, tempToken);
-            //nodeStack.push(newNode);
+            let newNode = new TreeNode(tempToken.sym, tempToken);
+            nodeStack.push(newNode);
             //? jimbo used tokenizer.get() which isnt a function...
         }
         else if (a.action == "r") {
@@ -125,18 +124,18 @@ function makeTree(SLR_Table, tokenizer) {
                 break;
             }
             else {
-                //let newNode = new TreeNode(undefined, undefined);
-                //newNode.sym = a.lhs;
+                let newNode = new TreeNode(undefined, undefined);
+                newNode.sym = a.lhs;
                 for (let i = 0; i < a.num; i++) {
                     stateStack.pop();
-                    //let newChild: TreeNode = nodeStack.pop();
-                    //let tempStack = [newChild];
-                    //newNode.children = tempStack.concat(newNode.children);
+                    let newChild = nodeStack.pop();
+                    let tempStack = [newChild];
+                    newNode.children = tempStack.concat(newNode.children);
                 }
                 s = stateStack[stateStack.length - 1];
                 let a2 = SLR_Table[s].get(a.lhs);
                 stateStack.push(a2.num);
-                //nodeStack.push(newNode);
+                nodeStack.push(newNode);
             }
         }
         else {
@@ -144,7 +143,7 @@ function makeTree(SLR_Table, tokenizer) {
             throw new Error("Error: Found an action that is neither a shift nor a reduce!" + a);
         }
     }
-    //return nodeStack[0].toString();
-    return "";
+    return nodeStack[0].toString();
+    //return "";
 }
 //# sourceMappingURL=parser.js.map

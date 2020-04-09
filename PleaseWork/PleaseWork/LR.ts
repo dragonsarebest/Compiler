@@ -66,11 +66,10 @@ export class DFAState {
 
 let lastInput: string;
 function setUp(input: string) {
-    if (lastInput == undefined || lastInput != input) {
-        lastInput = input;
-        gg = new Grammar(input);
-        dfaStateMap = new Map();
-    }
+    lastInput = input;
+    gg = new Grammar(input);
+    dfaStateMap = new Map();
+    
 }
 
 function getStateWithLabel(I2: LR0Item, allStates: NFAState[], toDo: number[], stateMap: Map<string, number>) {
@@ -275,6 +274,7 @@ export let nfa: NFAState[];
 export let dfa: DFAState[];
 export function makeTable(grammarSpec: string)
 {
+    setUp(grammarSpec);
     nfa = makeNFA(grammarSpec);
     dfa = makeDFA(grammarSpec);
     let table: Map<string, Action>[] = [];
@@ -282,7 +282,8 @@ export function makeTable(grammarSpec: string)
     //console.log(gg);
     //console.log(gg.follow);
 
-    console.log(nfa);
+    //console.log(grammarSpec);
+    //console.log(nfa);
     //console.log(dfa);
 
     let shiftReduceError: boolean = false;

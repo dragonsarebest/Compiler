@@ -54,11 +54,9 @@ class DFAState {
 exports.DFAState = DFAState;
 let lastInput;
 function setUp(input) {
-    if (lastInput == undefined || lastInput != input) {
-        lastInput = input;
-        exports.gg = new Grammar_1.Grammar(input);
-        dfaStateMap = new Map();
-    }
+    lastInput = input;
+    exports.gg = new Grammar_1.Grammar(input);
+    dfaStateMap = new Map();
 }
 function getStateWithLabel(I2, allStates, toDo, stateMap) {
     let I2s = I2.toString();
@@ -227,13 +225,15 @@ class Action {
 }
 exports.Action = Action;
 function makeTable(grammarSpec) {
+    setUp(grammarSpec);
     exports.nfa = makeNFA(grammarSpec);
     exports.dfa = makeDFA(grammarSpec);
     let table = [];
     //since "S'" is not in the grammar but added by the nfa class to prevent loop backs to the start
     //console.log(gg);
     //console.log(gg.follow);
-    console.log(exports.nfa);
+    //console.log(grammarSpec);
+    //console.log(nfa);
     //console.log(dfa);
     let shiftReduceError = false;
     let reduceReduceError = false;

@@ -59,7 +59,7 @@ export function parse(grammarString: string, programString: string) {
 
     let results = makeTable(grammarString);
 
-    console.log(grammarString);
+    //console.log(grammarString);
     //console.log(gg.terminalProductions);
     //console.log(gg.nonTerminalProductions);
 
@@ -81,12 +81,13 @@ export function parse(grammarString: string, programString: string) {
     }
 
 
-    console.log(results);
+    //console.log(results);
 
     SLR_Table = results[0];
     tokenizer = new Tokenizer(gg);
     tokenizer.setInput(programString);
 
+    /*
     {
         //debugging
         console.log("programString: ", programString);
@@ -100,13 +101,14 @@ export function parse(grammarString: string, programString: string) {
             console.log("Current Token: ", current);
         }
     }
+    */
 
     return makeTree(SLR_Table, tokenizer);
 }
 
 function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): string {
     let stateStack: number[];
-    //let nodeStack: TreeNode[];
+    let nodeStack: TreeNode[];
 
     {
         //debugging
@@ -116,20 +118,16 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         //}
     }
 
-    //nodeStack = [];        //starts off empty
+    nodeStack = [];        //starts off empty
     stateStack = [0];        //0 = initial state
     while (true) {
         let s: number = stateStack[stateStack.length - 1];
         let t = tokenizer.peek().sym;
 
+        console.log("current symbol: ", t);
         console.log("\nnumber, slr_table[s]");
         console.log(s, SLR_Table[s]);
-        console.log("current symbol: ", t);
-
-        if (SLR_Table[s] == undefined) {
-            console.log("Whole map: ");
-            console.log(SLR_Table);
-        }
+        
 
         if (!SLR_Table[s].has(t)) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s;
@@ -140,8 +138,8 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         if (a.action == "s") {
             stateStack.push(a.num);
             let tempToken = tokenizer.next();
-            //let newNode = new TreeNode(tempToken.sym, tempToken);
-            //nodeStack.push(newNode);
+            let newNode = new TreeNode(tempToken.sym, tempToken);
+            nodeStack.push(newNode);
             //? jimbo used tokenizer.get() which isnt a function...
         }
         else if (a.action == "r") {
@@ -149,18 +147,18 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
                 //accept input???
                 break;
             } else {
-                //let newNode = new TreeNode(undefined, undefined);
-                //newNode.sym = a.lhs;
+                let newNode = new TreeNode(undefined, undefined);
+                newNode.sym = a.lhs;
                 for (let i = 0; i < a.num; i++) {
                     stateStack.pop();
-                    //let newChild: TreeNode = nodeStack.pop();
-                    //let tempStack = [newChild];
-                    //newNode.children = tempStack.concat(newNode.children);
+                    let newChild: TreeNode = nodeStack.pop();
+                    let tempStack = [newChild];
+                    newNode.children = tempStack.concat(newNode.children);
                 }
                 s = stateStack[stateStack.length - 1];
                 let a2: Action = SLR_Table[s].get(a.lhs);
                 stateStack.push(a2.num);
-                //nodeStack.push(newNode);
+                nodeStack.push(newNode);
             }
         }
         else {
@@ -169,6 +167,6 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         }
     }
 
-    //return nodeStack[0].toString();
-    return "";
+    return nodeStack[0].toString();
+    //return "";
 }
