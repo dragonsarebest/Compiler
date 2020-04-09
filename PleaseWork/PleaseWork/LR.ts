@@ -1,9 +1,9 @@
 import { Grammar } from "./Grammar"
 import { union, setToString } from "./Untils"
 
-let gg: Grammar;
+export let gg: Grammar;
 
-class LR0Item {
+export class LR0Item {
     lhs: string;
     rhs: string[];
     dpos: number;
@@ -34,7 +34,7 @@ class LR0Item {
     }
 }
 
-class NFAState {
+export class NFAState {
     item: LR0Item;
     //key=symbol, value = unique number for an NFAState
     closure: Set<number>;
@@ -50,7 +50,7 @@ class NFAState {
     }
 }
 
-class DFAState {
+export class DFAState {
     label: Set<number>;
     transitions: Map<string, number>;
     constructor(label: Set<number>) {
@@ -259,7 +259,7 @@ export function makeDFA(input: string) {
     return dfa;
 }
 
-class Action {
+export class Action {
     action: string; //'s' or 'r'
     num: number;    //state number for shift, rhs length for reduce
     //the following are only used for reduce
@@ -271,21 +271,10 @@ class Action {
     }
 }
 
-class FAState
-{
-    state: DFAState;
-    dfaIndex: number;
-    constructor(dfa: DFAState, index: number)
-    {
-        this.state = dfa;
-        this.dfaIndex = index;
-    }
-}
-
+export let nfa: NFAState[];
+export let dfa: DFAState[];
 export function makeTable(grammarSpec: string)
 {
-    let nfa: NFAState[];
-    let dfa: DFAState[];
     nfa = makeNFA(grammarSpec);
     dfa = makeDFA(grammarSpec);
     let table: Map<string, Action>[] = [];
@@ -297,8 +286,6 @@ export function makeTable(grammarSpec: string)
 
     let shiftReduceError: boolean = false;
     let reduceReduceError: boolean = false;
-
-    
 
     //this is for reducing!
     dfa.forEach((q: DFAState, idx: number) =>
@@ -359,6 +346,9 @@ export function makeTable(grammarSpec: string)
     });
     //all shifts are now done
 
+    if (table.length == 1) {
+        table.push(new Map());
+    }
     table[1].set("$", new Action("r", 1, "S'"));
 
     //console.log("Table so far + reducing: ", table);

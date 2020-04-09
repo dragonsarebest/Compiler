@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Grammar_1 = require("./Grammar");
 const Untils_1 = require("./Untils");
-let gg;
 class LR0Item {
     constructor(lhs, rhs, dpos) {
         this.lhs = lhs;
@@ -28,6 +27,7 @@ class LR0Item {
         return false;
     }
 }
+exports.LR0Item = LR0Item;
 class NFAState {
     constructor(lr0item) {
         this.item = lr0item;
@@ -39,6 +39,7 @@ class NFAState {
         this.transitions.get(sym).push(stateIndex);
     }
 }
+exports.NFAState = NFAState;
 class DFAState {
     constructor(label) {
         this.label = label;
@@ -50,11 +51,12 @@ class DFAState {
         this.transitions.set(sym, stateIndex);
     }
 }
+exports.DFAState = DFAState;
 let lastInput;
 function setUp(input) {
     if (lastInput == undefined || lastInput != input) {
         lastInput = input;
-        gg = new Grammar_1.Grammar(input);
+        exports.gg = new Grammar_1.Grammar(input);
         dfaStateMap = new Map();
     }
 }
@@ -96,7 +98,7 @@ function makeTransitions(currentState, allStates, toDo, stateMap, gg) {
 function makeNFA(input) {
     setUp(input);
     let allStates = [];
-    let startState = new NFAState(new LR0Item("S'", [gg.startNodeLabel], 0));
+    let startState = new NFAState(new LR0Item("S'", [exports.gg.startNodeLabel], 0));
     allStates.push(startState);
     let stateMap = new Map();
     //list of indices in allStates: The states we need to process
@@ -104,7 +106,7 @@ function makeNFA(input) {
     while (toDo.length > 0) {
         let qi = toDo.pop();
         let q = allStates[qi];
-        makeTransitions(q, allStates, toDo, stateMap, gg);
+        makeTransitions(q, allStates, toDo, stateMap, exports.gg);
     }
     //console.log("ALL DONE:", allStates);
     return allStates;
@@ -223,17 +225,10 @@ class Action {
         this.lhs = sym; //might be <undefined>
     }
 }
-class FAState {
-    constructor(dfa, index) {
-        this.state = dfa;
-        this.dfaIndex = index;
-    }
-}
+exports.Action = Action;
 function makeTable(grammarSpec) {
-    let nfa;
-    let dfa;
-    nfa = makeNFA(grammarSpec);
-    dfa = makeDFA(grammarSpec);
+    exports.nfa = makeNFA(grammarSpec);
+    exports.dfa = makeDFA(grammarSpec);
     let table = [];
     //since "S'" is not in the grammar but added by the nfa class to prevent loop backs to the start
     //console.log(gg);
@@ -242,16 +237,16 @@ function makeTable(grammarSpec) {
     let shiftReduceError = false;
     let reduceReduceError = false;
     //this is for reducing!
-    dfa.forEach((q, idx) => {
+    exports.dfa.forEach((q, idx) => {
         table.push(new Map());
         //if dpos is at the end & the next token is in the follow of that productions lhs
         //next token = transitions 
         q.label.forEach((entry) => {
             //for every nfa/production that makes up this dfa
-            let production = nfa[entry].item;
+            let production = exports.nfa[entry].item;
             if (production.dposAtEnd()) {
                 //console.log(production.lhs);
-                let follow = gg.follow.get(production.lhs);
+                let follow = exports.gg.follow.get(production.lhs);
                 //get the follow for the lhs of this production
                 //console.log(production.lhs, follow);
                 if (follow != undefined) {
@@ -268,16 +263,14 @@ function makeTable(grammarSpec) {
                             reduceReduceError = true;
                         }
                         else {
-                            //supposed to go here but fails "sr,rr.txt" if we do put it here...
                             table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
                         }
-                        //table[idx].set(sym, new Action("r", production.rhs.length, production.lhs));
                     });
                 }
             }
         });
     });
-    dfa.forEach((q, idx) => {
+    exports.dfa.forEach((q, idx) => {
         //q.transitions is a map: string -> number
         for (let sym of q.transitions.keys()) {
             let inThere = table[idx].get(sym);
@@ -289,6 +282,9 @@ function makeTable(grammarSpec) {
         }
     });
     //all shifts are now done
+    if (table.length == 1) {
+        table.push(new Map());
+    }
     table[1].set("$", new Action("r", 1, "S'"));
     //console.log("Table so far + reducing: ", table);
     let error = 0;

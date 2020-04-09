@@ -24,7 +24,8 @@ function main(){
             }
             fs.writeFileSync( t.name+".tree.dot", root );
         } catch( e ){
-            if( t.expectedTree !== undefined ){
+            if (t.expectedTree !== undefined) {
+                console.log(e);
                 console.log("Signaled error on "+t.name);
                 return false;
             }

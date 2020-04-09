@@ -1,33 +1,26 @@
-import { makeTable } from "./LR"
-import { Action } from "./LR"
-import { gg } from "./LR"
-import { nfa } from "./LR"
-import { dfa } from "./LR"
-import { Tokenizer } from "./Tokenizer"
-import { Token } from "./Token"
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const LR_1 = require("./LR");
+const LR_2 = require("./LR");
+const Tokenizer_1 = require("./Tokenizer");
 class TreeNode {
-    sym: string;    //token's sym or production's lhs
-    token: Token;   //might be <undefined>
-    rhs: string[];   //rhs of production; might be <undefined>
-    children: TreeNode[];
-    constructor(sym: string, token: Token) {
+    constructor(sym, token) {
         this.sym = sym;
         this.token = token;
         this.children = [];
     }
     toString() {
-        function walk(n: any, callback: any) {
+        function walk(n, callback) {
             callback(n);
-            n.children.forEach((x: any) => {
+            n.children.forEach((x) => {
                 walk(x, callback);
             });
         }
-        let L: string[] = [];
+        let L = [];
         L.push("digraph d{");
         L.push(`node [fontname="Helvetica",shape=box];`);
         let counter = 0;
-        walk(this, (n: any) => {
+        walk(this, (n) => {
             n.NUMBER = "n" + (counter++);
             let tmp = n.sym;
             if (n.token) {
@@ -38,11 +31,10 @@ class TreeNode {
             tmp = tmp.replace(/</g, "&lt;");
             tmp = tmp.replace(/>/g, "&gt;");
             tmp = tmp.replace(/\n/g, "<br/>");
-
             L.push(`${n.NUMBER} [label=<${tmp}>];`);
         });
-        walk(this, (n: any) => {
-            n.children.forEach((x: any) => {
+        walk(this, (n) => {
+            n.children.forEach((x) => {
                 L.push(`${n.NUMBER} -> ${x.NUMBER};`);
             });
         });
@@ -50,19 +42,13 @@ class TreeNode {
         return L.join("\n");
     }
 }
-
-
-
-export function parse(grammarString: string, programString: string) {
-    let SLR_Table: Map<string, any>[];
-    let tokenizer: Tokenizer;
-
-    let results = makeTable(grammarString);
-
+function parse(grammarString, programString) {
+    let SLR_Table;
+    let tokenizer;
+    let results = LR_1.makeTable(grammarString);
     console.log(grammarString);
     //console.log(gg.terminalProductions);
     //console.log(gg.nonTerminalProductions);
-
     {
         //if (results[1] != 0) {
         //    if (results[1] == 1) {
@@ -79,20 +65,15 @@ export function parse(grammarString: string, programString: string) {
         //    }
         //}
     }
-
-
     console.log(results);
-
     SLR_Table = results[0];
-    tokenizer = new Tokenizer(gg);
+    tokenizer = new Tokenizer_1.Tokenizer(LR_2.gg);
     tokenizer.setInput(programString);
-
     {
         //debugging
         console.log("programString: ", programString);
-        let tempToke = new Tokenizer(gg);
+        let tempToke = new Tokenizer_1.Tokenizer(LR_2.gg);
         tempToke.setInput(programString);
-
         while (true) {
             let current = tempToke.next();
             if (current.sym == "$")
@@ -100,14 +81,12 @@ export function parse(grammarString: string, programString: string) {
             console.log("Current Token: ", current);
         }
     }
-
     return makeTree(SLR_Table, tokenizer);
 }
-
-function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): string {
-    let stateStack: number[];
+exports.parse = parse;
+function makeTree(SLR_Table, tokenizer) {
+    let stateStack;
     //let nodeStack: TreeNode[];
-
     {
         //debugging
         //for (let i = 0; i < SLR_Table.length; i++) {
@@ -115,28 +94,24 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         //    console.log("\t", SLR_Table[i]);
         //}
     }
-
     //nodeStack = [];        //starts off empty
-    stateStack = [0];        //0 = initial state
+    stateStack = [0]; //0 = initial state
     while (true) {
-        let s: number = stateStack[stateStack.length - 1];
+        let s = stateStack[stateStack.length - 1];
         let t = tokenizer.peek().sym;
-
         console.log("\nnumber, slr_table[s]");
         console.log(s, SLR_Table[s]);
         console.log("current symbol: ", t);
-
         if (SLR_Table[s] == undefined) {
             console.log("Whole map: ");
             console.log(SLR_Table);
         }
-
         if (!SLR_Table[s].has(t)) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s;
             console.log("\tError: " + errorMsg);
             throw new Error(errorMsg);
         }
-        let a: Action = SLR_Table[s].get(t);
+        let a = SLR_Table[s].get(t);
         if (a.action == "s") {
             stateStack.push(a.num);
             let tempToken = tokenizer.next();
@@ -148,7 +123,8 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
             if (a.lhs == "S'") {
                 //accept input???
                 break;
-            } else {
+            }
+            else {
                 //let newNode = new TreeNode(undefined, undefined);
                 //newNode.sym = a.lhs;
                 for (let i = 0; i < a.num; i++) {
@@ -158,7 +134,7 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
                     //newNode.children = tempStack.concat(newNode.children);
                 }
                 s = stateStack[stateStack.length - 1];
-                let a2: Action = SLR_Table[s].get(a.lhs);
+                let a2 = SLR_Table[s].get(a.lhs);
                 stateStack.push(a2.num);
                 //nodeStack.push(newNode);
             }
@@ -168,7 +144,7 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
             throw new Error("Error: Found an action that is neither a shift nor a reduce!" + a);
         }
     }
-
     //return nodeStack[0].toString();
     return "";
 }
+//# sourceMappingURL=parser.js.map

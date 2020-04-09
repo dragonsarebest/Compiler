@@ -23,9 +23,39 @@ export class Tokenizer {
         //console.log("got this data for tokenization: " + inputData);
     }
 
+    peek(): Token {
+        let currentLine = this.currentLine;
+        let idx = this.idx;
+        let current = this.current;
+        let previous = this.previous;
+
+        //console.log("\tprevious");
+        //console.log("\tcurrentLine: ", currentLine);
+        //console.log("\tidx:         ", idx);
+        //console.log("\tcurrent:     ", current);
+        //console.log("\tprevious:    ", previous);
+
+        let returnVal: Token = this.next();
+
+        this.currentLine = currentLine;
+        this.idx = idx;
+        this.current = current;
+        this.previous = previous;
+
+        //console.log("\tnow");
+        //console.log("\tcurrentLine: ", this.currentLine);
+        //console.log("\tidx:         ", this.idx);
+        //console.log("\tcurrent:     ", this.current);
+        //console.log("\tprevious:    ", this.previous);
+
+        //console.log("\t", returnVal);
+
+        return returnVal;
+    }
+
     next(): Token {
 
-        console.log(this.grammar.terminals);
+        //console.log(this.grammar.terminals);
 
         //console.log("next");
         if (this.idx >= this.inputData.length - 1) {
