@@ -6,7 +6,7 @@ import { dfa } from "./LR"
 import { Tokenizer } from "./Tokenizer"
 import { Token } from "./Token"
 
-class TreeNode {
+export class TreeNode {
     sym: string;    //token's sym or production's lhs
     token: Token;   //might be <undefined>
     rhs: string[];   //rhs of production; might be <undefined>
@@ -52,71 +52,31 @@ class TreeNode {
 }
 
 
+export let nodeStack: TreeNode[];
 
-export function parse(grammarString: string, programString: string) {
+export function parse(grammarString: string, programString?: string) {
     let SLR_Table: Map<string, any>[];
     let tokenizer: Tokenizer;
 
-    let results = makeTable(grammarString);
-
-    //console.log(grammarString);
-    //console.log(gg.terminalProductions);
-    //console.log(gg.nonTerminalProductions);
-
-    {
-        //if (results[1] != 0) {
-        //    if (results[1] == 1) {
-        //        console.log("\tError: Shift-Reduce error in grammar");
-        //        throw new Error("Error: Shift-Reduce error in grammar");
-        //    }
-        //    if (results[1] == 2) {
-        //        console.log("\tError: Reduce-Reduce error in grammar");
-        //        throw new Error("Error: Reduce-Reduce error in grammar");
-        //    }
-        //    if (results[1] == 3) {
-        //        console.log("\tError: Shift-Reduce & Reduce-Reduce error in grammar");
-        //        throw new Error("Error: Shift-Reduce & Reduce-Reduce error in grammar");
-        //    }
-        //}
+    if (programString == undefined) {
+        //means we have to supply our own grammar
+        let fs = require("fs");
+        programString = fs.readFileSync("./myGrammar.txt");
     }
 
 
-    //console.log(results);
+    let results = makeTable(grammarString);
 
     SLR_Table = results[0];
     tokenizer = new Tokenizer(gg);
     tokenizer.setInput(programString);
 
-    /*
-    {
-        //debugging
-        console.log("programString: ", programString);
-        let tempToke = new Tokenizer(gg);
-        tempToke.setInput(programString);
-
-        while (true) {
-            let current = tempToke.next();
-            if (current.sym == "$")
-                break;
-            console.log("Current Token: ", current);
-        }
-    }
-    */
 
     return makeTree(SLR_Table, tokenizer);
 }
 
 function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): string {
     let stateStack: number[];
-    let nodeStack: TreeNode[];
-
-    {
-        //debugging
-        //for (let i = 0; i < SLR_Table.length; i++) {
-        //    console.log(i);
-        //    console.log("\t", SLR_Table[i]);
-        //}
-    }
 
     nodeStack = [];        //starts off empty
     stateStack = [0];        //0 = initial state
@@ -168,5 +128,4 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
     }
 
     return nodeStack[0].toString();
-    //return "";
 }
