@@ -12,8 +12,8 @@ NUM -> -?\d+
 program -> braceblock
 stmts -> stmt stmts | lambda
 stmt -> cond | loop | return-stmt SEMI
+loop -> WHILE LP expr RP braceblock
 cond -> IF LP expr RP braceblock | IF LP expr RP braceblock ELSE braceblock
 braceblock -> LBR stmts RBR
 expr -> NUM
 return-stmt -> RETURN expr
-loop -> WHILE LP cond RP braceblock

@@ -75,7 +75,7 @@ function makeTree(SLR_Table, tokenizer) {
         //console.log(s, SLR_Table[s]);
         if (!SLR_Table[s].has(t)) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s + "::";
-            console.log("\tError: " + errorMsg);
+            console.log("\nError: " + errorMsg);
             console.log(SLR_Table[s]);
             throw new Error(errorMsg);
         }
@@ -108,7 +108,7 @@ function makeTree(SLR_Table, tokenizer) {
             }
         }
         else {
-            console.log("\tError: Found an action that is neither a shift nor a reduce!" + a);
+            console.log("\nError: Found an action that is neither a shift nor a reduce!" + a);
             throw new Error("Error: Found an action that is neither a shift nor a reduce!" + a);
         }
     }
