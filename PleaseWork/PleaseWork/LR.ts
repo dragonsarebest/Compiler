@@ -283,6 +283,9 @@ export function makeTable(grammarSpec: string)
     //console.log(gg.follow);
 
     //console.log(grammarSpec);
+    //nfa.forEach((entry: NFAState) => {
+    //    console.log(entry);
+    //});
     //console.log(nfa);
     //console.log(dfa);
 

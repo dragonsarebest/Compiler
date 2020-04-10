@@ -87,14 +87,15 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         let s: number = stateStack[stateStack.length - 1];
         let t = tokenizer.peek().sym;
 
-        console.log("current symbol: ", t);
-        console.log("\nnumber, slr_table[s]");
-        console.log(s, SLR_Table[s]);
+        //console.log("current symbol: ", t);
+        //console.log("\nnumber, slr_table[s]");
+        //console.log(s, SLR_Table[s]);
         
 
         if (!SLR_Table[s].has(t)) {
-            let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s;
+            let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s + "::";
             console.log("\tError: " + errorMsg);
+            console.log(SLR_Table[s]);
             throw new Error(errorMsg);
         }
         let a: Action = SLR_Table[s].get(t);
