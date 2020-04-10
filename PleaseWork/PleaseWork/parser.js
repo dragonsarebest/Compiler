@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const LR_1 = require("./LR");
 const LR_2 = require("./LR");
+const LR_3 = require("./LR");
+const LR_4 = require("./LR");
 const Tokenizer_1 = require("./Tokenizer");
 class TreeNode {
     constructor(sym, token) {
@@ -56,15 +58,16 @@ function parse(grammarString, programString) {
     let results = LR_1.makeTable(grammarString);
     SLR_Table = results[0];
     tokenizer = new Tokenizer_1.Tokenizer(LR_2.gg);
+    //console.log(programString);
     tokenizer.setInput(programString);
     return makeTree(SLR_Table, tokenizer);
 }
 exports.parse = parse;
 function makeTree(SLR_Table, tokenizer) {
     let stateStack;
-    SLR_Table.forEach((value, idx) => {
-        console.log("[" + idx + "] ", value);
-    });
+    //SLR_Table.forEach((value: Map<string, any>, idx: number) => {
+    //    console.log("[" + idx + "] ", value);
+    //});
     exports.nodeStack = []; //starts off empty
     stateStack = [0]; //0 = initial state
     while (true) {
@@ -77,6 +80,10 @@ function makeTree(SLR_Table, tokenizer) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s + "::";
             console.log("\nError: " + errorMsg);
             console.log(SLR_Table[s]);
+            let L = LR_4.dfa[s];
+            L.label.forEach((nfaStateNum) => {
+                console.log(LR_3.nfa[nfaStateNum]);
+            });
             throw new Error(errorMsg);
         }
         let a = SLR_Table[s].get(t);

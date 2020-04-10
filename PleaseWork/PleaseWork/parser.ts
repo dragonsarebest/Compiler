@@ -72,6 +72,7 @@ export function parse(grammarString: string, programString?: string) {
 
     SLR_Table = results[0];
     tokenizer = new Tokenizer(gg);
+    //console.log(programString);
     tokenizer.setInput(programString);
 
 
@@ -81,9 +82,9 @@ export function parse(grammarString: string, programString?: string) {
 function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): string {
     let stateStack: number[];
 
-    SLR_Table.forEach((value: Map<string, any>, idx: number) => {
-        console.log("[" + idx + "] ", value);
-    });
+    //SLR_Table.forEach((value: Map<string, any>, idx: number) => {
+    //    console.log("[" + idx + "] ", value);
+    //});
 
     nodeStack = [];        //starts off empty
     stateStack = [0];        //0 = initial state
@@ -95,11 +96,14 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         //console.log("\nnumber, slr_table[s]");
         //console.log(s, SLR_Table[s]);
         
-
         if (!SLR_Table[s].has(t)) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s + "::";
             console.log("\nError: " + errorMsg);
             console.log(SLR_Table[s]);
+            let L = dfa[s];
+            L.label.forEach((nfaStateNum: number) => {
+                console.log(nfa[nfaStateNum]);
+            });
             throw new Error(errorMsg);
         }
         let a: Action = SLR_Table[s].get(t);

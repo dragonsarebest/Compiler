@@ -31,11 +31,11 @@ export class Tokenizer {
 
         //console.log("\tprevious");
         //console.log("\tcurrentLine: ", currentLine);
-        //console.log("\tidx:         ", idx);
+        console.log("\tidx:         ", idx);
         //console.log("\tcurrent:     ", current);
         //console.log("\tprevious:    ", previous);
 
-        let returnVal: Token = this.next();
+        let returnVal: Token = this.next(true);
 
         this.currentLine = currentLine;
         this.idx = idx;
@@ -44,22 +44,28 @@ export class Tokenizer {
 
         //console.log("\tnow");
         //console.log("\tcurrentLine: ", this.currentLine);
-        //console.log("\tidx:         ", this.idx);
+        console.log("\tidx:         ", this.idx);
         //console.log("\tcurrent:     ", this.current);
         //console.log("\tprevious:    ", this.previous);
 
         //console.log("\t", returnVal);
 
+        console.log("inputLength: ", this.inputData.length);
+
         return returnVal;
     }
 
-    next(): Token {
+    next(printStuff: boolean = false): Token {
 
         //console.log(this.grammar.terminals);
 
         //console.log("next");
         if (this.idx >= this.inputData.length - 1) {
             //special "end of file" metatoken
+            console.log("END");
+            console.log("inputLength: ", this.inputData.length);
+            console.log("idx: ", this.idx);
+            console.log("END2");
             return new Token("$", undefined, this.currentLine);
         }
 
@@ -86,6 +92,9 @@ export class Tokenizer {
                     let token = new Token(sym, lexeme, temp);
                     this.previous = this.current;
                     this.current = token;
+                    if (printStuff)
+                        console.log(token);
+                    
                     return token;
                 } else {
                     //skip whitespace and get next real token
