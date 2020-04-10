@@ -1,27 +1,19 @@
-POWOP -> [*][*]
-ADDOP -> [-+]
-MULOP -> [*/%]
-ID -> [A-Za-z_]+
-NUM -> \d+
-TYPE -> \b(int|double)\b
-WHILE -> \bwhile\\b
+SEMI -> ;
+WHILE -> \bwhile\b
+LP -> [(]
+RP -> [)]
 IF -> \bif\b
 ELSE -> \belse\b
-CMA -> ,
-EQ -> =
-RP -> [)]
-LP -> [(]
-RBR -> [}]
+RETURN -> \breturn\b
 LBR -> [{]
-SEMI -> ;
-BITNOT -> [~]
+RBR -> [}]
+NUM -> -?\d+
 
-S -> expr | assign | FUNCCALL
-expr -> expr ADDOP term
-expr -> term
-term -> term MULOP factor
-term -> factor
-factor -> ID
-factor -> LP expr RP
-assign -> ID EQ NUM
-FUNCCALL -> ID LP expr RP
+program -> braceblock
+stmts -> stmt stmts | lambda
+stmt -> cond | loop | return-stmt SEMI
+cond -> IF LP expr RP braceblock | IF LP expr RP braceblock ELSE braceblock
+braceblock -> LBR stmts RBR
+expr -> NUM
+return-stmt -> RETURN expr
+loop -> WHILE LP cond RP braceblock

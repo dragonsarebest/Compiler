@@ -42,62 +42,27 @@ class TreeNode {
         return L.join("\n");
     }
 }
+exports.TreeNode = TreeNode;
 function parse(grammarString, programString) {
     let SLR_Table;
     let tokenizer;
-    let results = LR_1.makeTable(grammarString);
-    //console.log(grammarString);
-    //console.log(gg.terminalProductions);
-    //console.log(gg.nonTerminalProductions);
-    {
-        //if (results[1] != 0) {
-        //    if (results[1] == 1) {
-        //        console.log("\tError: Shift-Reduce error in grammar");
-        //        throw new Error("Error: Shift-Reduce error in grammar");
-        //    }
-        //    if (results[1] == 2) {
-        //        console.log("\tError: Reduce-Reduce error in grammar");
-        //        throw new Error("Error: Reduce-Reduce error in grammar");
-        //    }
-        //    if (results[1] == 3) {
-        //        console.log("\tError: Shift-Reduce & Reduce-Reduce error in grammar");
-        //        throw new Error("Error: Shift-Reduce & Reduce-Reduce error in grammar");
-        //    }
-        //}
+    if (programString == undefined) {
+        //means we have to supply our own grammar
+        let fs = require("fs");
+        programString = grammarString;
+        grammarString = fs.readFileSync("./myGrammar.txt", 'utf8');
+        //console.log(grammarString);
     }
-    //console.log(results);
+    let results = LR_1.makeTable(grammarString);
     SLR_Table = results[0];
     tokenizer = new Tokenizer_1.Tokenizer(LR_2.gg);
     tokenizer.setInput(programString);
-    /*
-    {
-        //debugging
-        console.log("programString: ", programString);
-        let tempToke = new Tokenizer(gg);
-        tempToke.setInput(programString);
-
-        while (true) {
-            let current = tempToke.next();
-            if (current.sym == "$")
-                break;
-            console.log("Current Token: ", current);
-        }
-    }
-    */
     return makeTree(SLR_Table, tokenizer);
 }
 exports.parse = parse;
 function makeTree(SLR_Table, tokenizer) {
     let stateStack;
-    let nodeStack;
-    {
-        //debugging
-        //for (let i = 0; i < SLR_Table.length; i++) {
-        //    console.log(i);
-        //    console.log("\t", SLR_Table[i]);
-        //}
-    }
-    nodeStack = []; //starts off empty
+    exports.nodeStack = []; //starts off empty
     stateStack = [0]; //0 = initial state
     while (true) {
         let s = stateStack[stateStack.length - 1];
@@ -115,7 +80,7 @@ function makeTree(SLR_Table, tokenizer) {
             stateStack.push(a.num);
             let tempToken = tokenizer.next();
             let newNode = new TreeNode(tempToken.sym, tempToken);
-            nodeStack.push(newNode);
+            exports.nodeStack.push(newNode);
             //? jimbo used tokenizer.get() which isnt a function...
         }
         else if (a.action == "r") {
@@ -128,14 +93,14 @@ function makeTree(SLR_Table, tokenizer) {
                 newNode.sym = a.lhs;
                 for (let i = 0; i < a.num; i++) {
                     stateStack.pop();
-                    let newChild = nodeStack.pop();
+                    let newChild = exports.nodeStack.pop();
                     let tempStack = [newChild];
                     newNode.children = tempStack.concat(newNode.children);
                 }
                 s = stateStack[stateStack.length - 1];
                 let a2 = SLR_Table[s].get(a.lhs);
                 stateStack.push(a2.num);
-                nodeStack.push(newNode);
+                exports.nodeStack.push(newNode);
             }
         }
         else {
@@ -143,7 +108,6 @@ function makeTree(SLR_Table, tokenizer) {
             throw new Error("Error: Found an action that is neither a shift nor a reduce!" + a);
         }
     }
-    return nodeStack[0].toString();
-    //return "";
+    return exports.nodeStack[0].toString();
 }
 //# sourceMappingURL=parser.js.map

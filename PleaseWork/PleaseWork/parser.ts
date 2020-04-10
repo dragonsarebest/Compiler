@@ -61,7 +61,10 @@ export function parse(grammarString: string, programString?: string) {
     if (programString == undefined) {
         //means we have to supply our own grammar
         let fs = require("fs");
-        programString = fs.readFileSync("./myGrammar.txt");
+        programString = grammarString;
+        grammarString = fs.readFileSync("./myGrammar.txt", 'utf8');
+
+        //console.log(grammarString);
     }
 
 
