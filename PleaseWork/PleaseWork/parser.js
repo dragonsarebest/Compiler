@@ -62,6 +62,9 @@ function parse(grammarString, programString) {
 exports.parse = parse;
 function makeTree(SLR_Table, tokenizer) {
     let stateStack;
+    SLR_Table.forEach((value, idx) => {
+        console.log("[" + idx + "] ", value);
+    });
     exports.nodeStack = []; //starts off empty
     stateStack = [0]; //0 = initial state
     while (true) {
