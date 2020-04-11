@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-let asmCode;
 let labelCounter = 0;
 function makeAsm(root) {
-    asmCode = [];
+    exports.asmCode = [];
     labelCounter = 0;
     emit("default rel");
     emit("section .text");
@@ -12,8 +11,9 @@ function makeAsm(root) {
     programNodeCode(root);
     emit("ret");
     emit("section .data");
-    return asmCode.join("\n");
+    return exports.asmCode.join("\n");
 }
+exports.makeAsm = makeAsm;
 function ICE() {
     //internal compiler error
     let errorMsg = "\tInternal Compiler Error!";
@@ -21,7 +21,7 @@ function ICE() {
     throw new Error(errorMsg);
 }
 function emit(instr) {
-    asmCode.push(instr);
+    exports.asmCode.push(instr);
 }
 function programNodeCode(n) {
     //program -> braceblock
@@ -73,7 +73,7 @@ function loopNodeCode(n) {
     var endWhileLabel = label();
     emit(`${startWhileLabel}:`);
     exprNodeCode(n.children[2]);
-    emit("cmp rax, 1");
+    emit("cmp rax, 0");
     emit(`je ${endWhileLabel}`);
     //if the comparison is false then we break out of while loop
     braceblockNodeCode(n.children[4]);
@@ -102,8 +102,8 @@ function condNodeCode(n) {
         emit(`je ${endIf}`);
         //this is the if block
         braceblockNodeCode(n.children[4]);
-        emit(`${endIf}:`);
         emit(`jmp ${endElse}`);
+        emit(`${endIf}:`);
         //this is the else block
         braceblockNodeCode(n.children[6]);
         emit(`${endElse}:`);

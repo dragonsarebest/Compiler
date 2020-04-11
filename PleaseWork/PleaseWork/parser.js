@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const LR_1 = require("./LR");
 const LR_2 = require("./LR");
-const LR_3 = require("./LR");
-const LR_4 = require("./LR");
 const Tokenizer_1 = require("./Tokenizer");
+const assembleTheAssembly_1 = require("./assembleTheAssembly");
+const assembleTheAssembly_2 = require("./assembleTheAssembly");
 class TreeNode {
     constructor(sym, token) {
         this.sym = sym;
@@ -79,11 +79,11 @@ function makeTree(SLR_Table, tokenizer) {
         if (!SLR_Table[s].has(t)) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s + "::";
             console.log("\nError: " + errorMsg);
-            console.log(SLR_Table[s]);
-            let L = LR_4.dfa[s];
-            L.label.forEach((nfaStateNum) => {
-                console.log(LR_3.nfa[nfaStateNum]);
-            });
+            //console.log(SLR_Table[s]);
+            //let L = dfa[s];
+            //L.label.forEach((nfaStateNum: number) => {
+            //    console.log(nfa[nfaStateNum]);
+            //});
             throw new Error(errorMsg);
         }
         let a = SLR_Table[s].get(t);
@@ -119,6 +119,7 @@ function makeTree(SLR_Table, tokenizer) {
             throw new Error("Error: Found an action that is neither a shift nor a reduce!" + a);
         }
     }
-    return exports.nodeStack[0].toString();
+    assembleTheAssembly_1.makeAsm(exports.nodeStack[0]);
+    return assembleTheAssembly_2.asmCode.join("\n");
 }
 //# sourceMappingURL=parser.js.map

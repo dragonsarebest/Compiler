@@ -1,9 +1,9 @@
 import { TreeNode } from "./parser";
 
-let asmCode: string[];
+export let asmCode: string[];
 let labelCounter = 0;
 
-function makeAsm(root: TreeNode) {
+export function makeAsm(root: TreeNode) {
     asmCode = [];
     labelCounter = 0;
     emit("default rel");
@@ -81,7 +81,7 @@ function loopNodeCode(n: TreeNode) {
 
     emit(`${startWhileLabel}:`);
     exprNodeCode(n.children[2]);
-    emit("cmp rax, 1");
+    emit("cmp rax, 0");
     emit(`je ${endWhileLabel}`);
     //if the comparison is false then we break out of while loop
     braceblockNodeCode(n.children[4]);
@@ -113,8 +113,8 @@ function condNodeCode(n: TreeNode) {
         emit(`je ${endIf}`);
         //this is the if block
         braceblockNodeCode(n.children[4]);
-        emit(`${endIf}:`);
         emit(`jmp ${endElse}`);
+        emit(`${endIf}:`);
 
         //this is the else block
         braceblockNodeCode(n.children[6]);

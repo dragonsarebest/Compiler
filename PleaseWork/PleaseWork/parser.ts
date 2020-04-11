@@ -5,6 +5,8 @@ import { nfa } from "./LR"
 import { dfa } from "./LR"
 import { Tokenizer } from "./Tokenizer"
 import { Token } from "./Token"
+import { makeAsm } from "./assembleTheAssembly"
+import { asmCode } from "./assembleTheAssembly"
 
 export class TreeNode {
     sym: string;    //token's sym or production's lhs
@@ -99,11 +101,11 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         if (!SLR_Table[s].has(t)) {
             let errorMsg = "Syntax error, table doesn't contain a rule for shift/reduce on: " + t + " for state: " + s + "::";
             console.log("\nError: " + errorMsg);
-            console.log(SLR_Table[s]);
-            let L = dfa[s];
-            L.label.forEach((nfaStateNum: number) => {
-                console.log(nfa[nfaStateNum]);
-            });
+            //console.log(SLR_Table[s]);
+            //let L = dfa[s];
+            //L.label.forEach((nfaStateNum: number) => {
+            //    console.log(nfa[nfaStateNum]);
+            //});
             throw new Error(errorMsg);
         }
         let a: Action = SLR_Table[s].get(t);
@@ -139,5 +141,7 @@ function makeTree(SLR_Table: Map < string, any > [], tokenizer: Tokenizer): stri
         }
     }
 
-    return nodeStack[0].toString();
+    makeAsm(nodeStack[0]);
+
+    return asmCode.join("\n");
 }
