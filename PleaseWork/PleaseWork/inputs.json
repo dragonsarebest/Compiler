@@ -1,7 +1,590 @@
 [
-
+  {
+    "code": ''
+int x;
+int y;
+int z;
 {
-"code": ''
+    //simple addition test
+    x = 42;
+    y = 10;
+    z = x+y;
+    return z;
+}
+'',
+    "syntaxOK": true,
+    "returns": 52,
+    "bonus": false
+  },
+  {
+    "code": ''
+int x;
+string y;
+{
+    x = 42;
+    y = "bar";
+    return 1;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+string x;
+int y;
+int z;
+{
+    //tries to do addition between string and
+    //number: Should fail
+    x = "foo";
+    y = 42;
+    z = x+y;
+}
+'',
+    "syntaxOK": false,
+    "returns": null,
+    "bonus": false
+  },
+  {
+    "code": ''
+//tries to do subtraction between string and
+    //number: Should fail
+    string x;
+    int y;
+    int z;
+{    
+    x = "foo";
+    y = 42;
+    z = x-y;
+}
+'',
+    "syntaxOK": false,
+    "returns": null,
+    "bonus": false
+  },
+  {
+    "code": ''
+string x;
+string y;
+string z;
+{
+    //tries to do addition between string and
+    //string: Should fail
+    x = "foo";
+    y = "bar";
+    z = x+y;
+}
+'',
+    "syntaxOK": false,
+    "returns": null,
+    "bonus": false
+  },
+  {
+    "code": ''
+string x;
+{
+    //undeclared variable y
+    x = "foo";
+    y = 42;
+}
+'',
+    "syntaxOK": false,
+    "returns": null,
+    "bonus": false
+  },
+  {
+    "code": ''
+int x;
+int y;
+int z;
+int w;
+{
+    w = -42;
+    x = -w;
+    y = 10;
+    z = x+y;
+    x = z*y/x;
+    return x;
+}
+'',
+    "syntaxOK": true,
+    "returns": 12,
+    "bonus": false
+  },
+  {
+    "code": ''
+int x;
+int y;
+int z;
+int main;
+{
+    x=4;
+    y=5;
+    z=6;
+    return x+y+z;
+}
+'',
+    "syntaxOK": true,
+    "returns": 15,
+    "bonus": false
+  },
+  {
+    "code": ''
+int x;
+int y;
+int z;
+int w;
+int main;
+{
+    w=1;
+    x=2;
+    y=3;
+    z=4;
+    return x * (y + z ) * (y + w) ;
+}
+'',
+    "syntaxOK": true,
+    "returns": 56,
+    "bonus": false
+  },
+  {
+    "code": ''
+//fibonacci sequence: Compute fib(10)
+int i;
+int v0;
+int v1;
+int tmp;
+{
+    i=0;
+    v0=0;
+    v1=1;
+    while(i<10){
+        tmp = v0+v1;
+        v1=v0;
+        v0=tmp;
+        i = i+1;
+    }
+    return v0;
+}
+'',
+    "syntaxOK": true,
+    "returns": 55,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2+4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 6,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1+2*3-4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 3,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2+2 and 0 or 7*4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2+2 or 0 or 7*4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2+2 and 0 and 7*4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2 or 4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 0 or 4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 4 or 0;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 0 or 0;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 3 and 5;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 0 and 5;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 5 and 0;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 0 and 0;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return not 5;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return not 0;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return not 2+3;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return not 0+0;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 3+4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 7,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 5+6;
+}
+'',
+    "syntaxOK": true,
+    "returns": 11,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 3+4 and 5+6;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 > 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2 > 1;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 < 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2 < 1;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 == 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 == 1;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 != 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 != 1;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 >= 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2 >= 1;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 1 <= 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 1,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2 <= 1;
+}
+'',
+    "syntaxOK": true,
+    "returns": 0,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 3 + 4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 7,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 5 - 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 3,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 3 * 4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 12,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 3 * 5 + 2;
+}
+'',
+    "syntaxOK": true,
+    "returns": 17,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 2 + 3*5;
+}
+'',
+    "syntaxOK": true,
+    "returns": 17,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 3*5-4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 11,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 20-3*4;
+}
+'',
+    "syntaxOK": true,
+    "returns": 8,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return 12/6;
+}
+'',
+    "syntaxOK": true,
+    "returns": 2,
+    "bonus": false
+  },
+  {
+    "code": ''
+{
+return -(1-4);
+}
+'',
+    "syntaxOK": true,
+    "returns": 3,
+    "bonus": false
+  },
+  {
+    "code": ''
 {
     if( 12 ){
         return 34;
@@ -11,13 +594,12 @@
     return 56;
 }
 '',
-"output":"",
-"syntaxOK":true,
-"returns": 34
-},
-
-{
-"code": ''
+    "syntaxOK": true,
+    "returns": 34,
+    "bonus": false
+  },
+  {
+    "code": ''
 {
     if( 0 ){
         return 34;
@@ -27,13 +609,12 @@
     return 56;
 }
 '',
-"output":"",
-"syntaxOK":true,
-"returns": 78
-},
-
-{
-"code": ''
+    "syntaxOK": true,
+    "returns": 78,
+    "bonus": false
+  },
+  {
+    "code": ''
 {
     if( 0 ){
         return 34;
@@ -41,13 +622,12 @@
     return 56;
 }
 '',
-"output":"",
-"syntaxOK":true,
-"returns": 56
-},
-
-{
-"code": ''
+    "syntaxOK": true,
+    "returns": 56,
+    "bonus": false
+  },
+  {
+    "code": ''
 {
     while( 123 ){
         return 12;
@@ -55,13 +635,12 @@
     return 34;
 }
 '',
-"output":"",
-"syntaxOK":true,
-"returns": 12
-},
-
-{
-"code": ''
+    "syntaxOK": true,
+    "returns": 12,
+    "bonus": false
+  },
+  {
+    "code": ''
 {
     while( 0 ){
         return 12;
@@ -69,13 +648,12 @@
     return 34;
 }
 '',
-"output":"",
-"syntaxOK":true,
-"returns": 34
-},
-
-{
-"code": ''
+    "syntaxOK": true,
+    "returns": 34,
+    "bonus": false
+  },
+  {
+    "code": ''
 {
     while( 1 ){
         if( 0 ) {
@@ -84,9 +662,216 @@
     }
 }
 '',
-"output":"",
-"syntaxOK": true,
-"returns": null
+    "syntaxOK": true,
+    "returns": null,
+    "bonus": false
+  },
+  
+  
+  
+  
+  
+  
+  
+  
+  {
+    "code": ''
+int x,y,z;
+{
+    //simple addition test
+    x = 42;
+    y = 10;
+    z = x+y;
+    return z;
 }
-
+'',
+    "syntaxOK": true,
+    "returns": 52,
+    "bonus": 1
+  },
+  
+  
+  {
+    "code": ''
+int x,y;
+int z;
+{
+    //simple addition test
+    x = 42;
+    y = 10;
+    z = x+y;
+    return z;
+}
+'',
+    "syntaxOK": true,
+    "returns": 52,
+    "bonus": 1
+  },
+  
+  
+  {
+    "code": ''
+int x;
+int y,z,w,q,r,s,p;
+{
+    //simple addition test
+    x = 42;
+    y = 10;
+    z = x+y;
+    return z;
+}
+'',
+    "syntaxOK": true,
+    "returns": 52,
+    "bonus": 1
+  },
+  
+  
+  
+  {
+    "code": ''
+int x;
+int y,z,x;
+{
+    //simple addition test
+    x = 42;
+    y = 10;
+    z = x+y;
+    return z;
+}
+'',
+    "syntaxOK": false,
+    "bonus": 1
+  },
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  {
+    "code": ''
+int x=42;
+int y=10;
+{
+    //simple addition test
+    z = x+y;
+    return z;
+}
+'',
+    "syntaxOK": false,
+    "bonus": 2
+  },
+  
+  
+   
+  
+  
+  {
+    "code": ''
+int x=42;
+int y=10;
+int z;
+{
+    //simple addition test
+    z = x+y;
+    return z;
+}
+'',
+    "syntaxOK": true,
+    "returns": 52,
+    "bonus": 2
+  },
+  
+  {
+    "code": ''
+int x=42;
+int y=10;
+int z=3;
+{
+    return z;
+}
+'',
+    "syntaxOK": true,
+    "returns": 3,
+    "bonus": 2
+  },
+  
+  
+  
+  
+  
+  {
+    "code": ''
+int x=42;
+int y=10;
+int z=3;
+{
+    if( z ){
+        return x+y;
+    } else {
+        return x-y;
+    }
+}
+'',
+    "syntaxOK": true,
+    "returns": 52,
+    "bonus": 2
+  },
+  
+  
+  
+  
+    
+  
+  {
+    "code": ''
+int x=42;
+int y=10;
+int z=0;
+{
+    if( z ){
+        return x+y;
+    } else {
+        return x-y;
+    }
+}
+'',
+    "syntaxOK": true,
+    "returns": 32,
+    "bonus": 2
+  },
+  
+  
+   
+  
+  {
+    "code": ''
+int x=42;
+int y=10;
+int z=0;
+{
+    if( z ){
+        return x+y;
+    } else {
+        return x-y;
+    }
+}
+'',
+    "syntaxOK": true,
+    "returns": 32,
+    "bonus": 2
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
 ]

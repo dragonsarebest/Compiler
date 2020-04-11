@@ -1,10 +1,82 @@
 import { TreeNode } from "./parser";
 
 export let asmCode: string[];
-let labelCounter = 0;
+let labelCounter: number;
+let symtable: SymbolTable;
+
+class VarType {
+    
+}
+
+class VarInfo {
+    type: VarType;
+    location: string;  //asm label
+    //also the line number, if you want
+    constructor(t: VarType, location: string) {
+        this.location = location;
+        this.type = t;
+    }
+}
+
+class SymbolTable {
+    table: Map<string, VarInfo>;
+    constructor() {
+        this.table = new Map();
+    }
+    get(name: string) {
+        if (!this.table.has(name))
+            throw new Error("Tried to use: " + name + ", but that variable does not exist.");
+        return this.table.get(name);
+    }
+    set(name: string, v: VarInfo) {
+        if (this.table.has(name))
+            throw new Error("Redeclaration of variable: " + name);
+        this.table.set(name, v);
+    }
+    has(name: string) {
+        return this.table.has(name);
+    }
+}
+
+
+function typeNodeCode(n: TreeNode): VarType {
+    /*
+        typeNodeCode is pretty simple
+        Gets a node that has a TYPE token
+
+        Return one of
+        VarType.INTEGER
+        VarType.STRING
+     */
+}
+
+
+function vardeclNodeCode(n: TreeNode) {
+    //var-decl -> TYPE ID
+    let vname = n.children[1].token.lexeme;
+    let vtype = typeNodeCode(n.children[0]);
+    symtable.set(vname, new VarInfo(vtype, label()));
+}
+
+function moveBytesFromStackToLocation(loc: string) {
+    emit("pop rax");
+    emit(`mov [${loc}], rax`);
+}
+
+function assignNodeCode(n: TreeNode) {
+    // assign -> ID EQ expr
+    let t: VarType = exprNodeCode(n.children[2]);
+    let vname = n.children[0].token.lexeme;
+    if (symtable.get(vname).type !== t)
+        throw new Error("Type mismatch, was expecting " + t + ", but got type " + symtable.get(vname).type);
+    moveBytesFromStackToLocation(symtable.get(vname).location);
+}
 
 export function makeAsm(root: TreeNode) {
     asmCode = [];
+    labelCounter = 0;
+    symtable = new SymbolTable();
+
     labelCounter = 0;
     emit("default rel");
     emit("section .text");

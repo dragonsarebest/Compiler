@@ -8,12 +8,19 @@ RETURN -> \breturn\b
 LBR -> [{]
 RBR -> [}]
 NUM -> -?\d+
+TYPE ? \b(int|string|double)\b
+STRING-CONSTANT ? "(\\"|\\n|\\\\|[^"])*"
+ID -> [A-Za-z_]\w*
 
-program -> braceblock
+program -> var-decl-list braceblock 
+var-decl-list -> var-decl SEMI var-decl-list | lambda
+var-decl -> TYPE ID
 stmts -> stmt stmts | lambda
-stmt -> cond | loop | return-stmt SEMI
+stmt -> cond | loop | return-stmt SEMI | assign SEMI
+assign -> ID EQ expr
 loop -> WHILE LP expr RP braceblock
 cond -> IF LP expr RP braceblock | IF LP expr RP braceblock ELSE braceblock
 braceblock -> LBR stmts RBR
 expr -> NUM
 return-stmt -> RETURN expr
+factor -> NUM | LP expr RP | STRING-CONSTANT | ID 
