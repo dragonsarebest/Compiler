@@ -8,6 +8,8 @@ RETURN -> \breturn\b
 LBR -> [{]
 RBR -> [}]
 NUM -> -?\d+
+FPNUM ? d+[.]d*(Ee[-+]?d+)?
+STRING ? “[^”]*”
 
 program -> braceblock
 stmts -> stmt stmts | lambda
@@ -15,5 +17,6 @@ stmt -> cond | loop | return-stmt SEMI
 loop -> WHILE LP expr RP braceblock
 cond -> IF LP expr RP braceblock | IF LP expr RP braceblock ELSE braceblock
 braceblock -> LBR stmts RBR
-expr -> NUM
+expr -> factor | expr PLUS factor | expr MINUS factor 
+factor -> NUM | FPNUM | STRING | LP expr RP 
 return-stmt -> RETURN expr

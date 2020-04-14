@@ -65,13 +65,14 @@ function stmtNodeCode(n: TreeNode) {
 function returnstmtNodeCode(n: TreeNode) {
     //return-stmt -> RETURN expr
     exprNodeCode(n.children[1]);
+    emit("pop rax");
     emit("ret");
 }
 
 function exprNodeCode(n: TreeNode) {
     //expr -> NUM
     let d = parseInt(n.children[0].token.lexeme, 10);
-    emit(`mov rax, ${d}`);
+    emit(`push qword, ${d}`);
 }
 
 function loopNodeCode(n: TreeNode) {
@@ -81,6 +82,7 @@ function loopNodeCode(n: TreeNode) {
 
     emit(`${startWhileLabel}:`);
     exprNodeCode(n.children[2]);
+    emit("pop rax");
     emit("cmp rax, 0");
     emit(`je ${endWhileLabel}`);
     //if the comparison is false then we break out of while loop
@@ -97,6 +99,7 @@ function condNodeCode(n: TreeNode) {
     if (n.children.length === 5) {
         //no 'else'
         exprNodeCode(n.children[2]);    //leaves result in rax
+        emit("pop rax");
         emit("cmp rax, 0");
         var endifLabel = label();
         emit(`je ${endifLabel}`);
@@ -108,6 +111,7 @@ function condNodeCode(n: TreeNode) {
         var endElse = label();
 
         exprNodeCode(n.children[2]);    //leaves result in rax
+        emit("pop rax");
         emit("cmp rax, 0");
         //if comparison == false, then jump to else block
         emit(`je ${endIf}`);
