@@ -64,9 +64,9 @@ export class DFAState {
     }
 }
 
-let lastInput: string;
+//et lastInput: string;
 function setUp(input: string) {
-    lastInput = input;
+    //lastInput = input;
     gg = new Grammar(input);
     dfaStateMap = new Map();
     

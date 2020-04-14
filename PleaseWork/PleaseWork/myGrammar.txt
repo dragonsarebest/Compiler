@@ -1,3 +1,4 @@
+
 SEMI -> ;
 WHILE -> \bwhile\b
 LP -> [(]
@@ -7,9 +8,14 @@ ELSE -> \belse\b
 RETURN -> \breturn\b
 LBR -> [{]
 RBR -> [}]
-NUM -> -?\d+
-FPNUM ? d+[.]d*(Ee[-+]?d+)?
-STRING ? “[^”]*”
+NUM -> \d+
+OR -> \bor\b
+AND -> \band\b
+NOT -> \bnot\b
+RELOP -> >=|<=|>|<|!=|==
+PLUS -> [+]
+MULOP -> [*/%]
+MINUS -> -
 
 program -> braceblock
 stmts -> stmt stmts | lambda
@@ -17,6 +23,13 @@ stmt -> cond | loop | return-stmt SEMI
 loop -> WHILE LP expr RP braceblock
 cond -> IF LP expr RP braceblock | IF LP expr RP braceblock ELSE braceblock
 braceblock -> LBR stmts RBR
-expr -> factor | expr PLUS factor | expr MINUS factor 
-factor -> NUM | FPNUM | STRING | LP expr RP 
 return-stmt -> RETURN expr
+expr -> orexp
+orexp -> orexp OR andexp | andexp
+andexp -> andexp AND notexp | notexp
+notexp -> NOT notexp | rel
+rel -> sum RELOP sum | sum
+sum -> sum PLUS term | sum MINUS term | term
+term -> term MULOP neg | neg
+neg -> MINUS neg | factor
+factor -> NUM | LP expr RP

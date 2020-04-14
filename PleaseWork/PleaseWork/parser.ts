@@ -1,8 +1,6 @@
 import { makeTable } from "./LR"
 import { Action } from "./LR"
 import { gg } from "./LR"
-import { nfa } from "./LR"
-import { dfa } from "./LR"
 import { Tokenizer } from "./Tokenizer"
 import { Token } from "./Token"
 import { makeAsm } from "./assembleTheAssembly"

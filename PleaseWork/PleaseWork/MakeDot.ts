@@ -15,10 +15,10 @@ class DFAState {
 }
 
 
-class Test {
-    name: string;
-    grammar: string;
-}
+//class Test {
+//    name: string;
+//    grammar: string;
+//}
 
 function main() {
 

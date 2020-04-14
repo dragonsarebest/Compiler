@@ -1,5 +1,3 @@
-import { copyFileSync } from "fs";
-import { stringify } from "querystring";
 import { union } from "./Untils";
 
 const CHECK_GRAMMAR_ERRORS: boolean = false;
@@ -101,7 +99,7 @@ export class Grammar
                     this.terminals.push(new terminal(left, regex))
 
                     let node = new NodeType(left);
-                    let right = match[3].trim();
+                    //let right = match[3].trim();
                     this.terminalProductions.push(node);
                     this.nonTerminalProductions.set(left, new Set<string[]>());
                     
