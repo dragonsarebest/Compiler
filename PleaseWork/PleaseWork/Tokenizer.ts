@@ -58,7 +58,7 @@ export class Tokenizer {
         //console.log(this.grammar.terminals);
 
         //console.log("next");
-        if (this.idx >= this.inputData.length - 1) {
+        if (this.idx > this.inputData.length - 1) {
             //special "end of file" metatoken
             return new Token("$", undefined, this.currentLine);
         }
