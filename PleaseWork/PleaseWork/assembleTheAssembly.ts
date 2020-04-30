@@ -3,7 +3,8 @@ import { TreeNode } from "./parser";
 export let asmCode: string[];
 let labelCounter = 0;
 
-let printProgress = true;
+let printProgress = false;
+let printOther = true;
 
 export function makeAsm(root: TreeNode) {
     asmCode = [];
@@ -26,7 +27,8 @@ function ICE() {
 }
 
 enum VarType {
-    INTEGER
+    INTEGER,
+    FLOAT
 }
 
 function emit(instr: string) {
@@ -35,9 +37,9 @@ function emit(instr: string) {
 
 function programNodeCode(n: TreeNode) {
     //program -> braceblock
-    if (printProgress) {
-        console.log(n);
-    }
+    //if (printProgress) {
+    //    console.log(n); n.children.forEach((child) => { console.log("\n", child);});
+    //}
     if (n.sym != "program")
         ICE();
     braceblockNodeCode(n.children[0]);
@@ -45,17 +47,17 @@ function programNodeCode(n: TreeNode) {
 
 function braceblockNodeCode(n: TreeNode) {
     //braceblock -> LBR stmts RBR
-    if (printProgress) {
-        console.log(n);
-    }
+    //if (printProgress) {
+    //    console.log(n); n.children.forEach((child) => { console.log("\n", child);});
+    //}
     stmtsNodeCode(n.children[1]);
 }
 
 function stmtsNodeCode(n: TreeNode) {
     //stmts -> stmt stmts | lambda
-    if (printProgress) {
-        console.log(n);
-    }
+    //if (printProgress) {
+    //    console.log(n); n.children.forEach((child) => { console.log("\n", child);});
+    //}
     if (n.children.length == 0)
         return;
     stmtNodeCode(n.children[0]);
@@ -64,9 +66,9 @@ function stmtsNodeCode(n: TreeNode) {
 
 function stmtNodeCode(n: TreeNode) {
     //stmt -> cond | loop | return-stmt SEMI
-    if (printProgress) {
-        console.log(n);
-    }
+    //if (printProgress) {
+    //    console.log(n); n.children.forEach((child) => { console.log("\n", child);});
+    //}
     let c = n.children[0];
     switch (c.sym) {
         case "cond":
@@ -82,9 +84,9 @@ function stmtNodeCode(n: TreeNode) {
 
 function returnstmtNodeCode(n: TreeNode) {
     //return-stmt -> RETURN expr
-    if (printProgress) {
-        console.log(n);
-    }
+    //if (printProgress) {
+    //    console.log(n); n.children.forEach((child) => { console.log("\n", child);});
+    //}
     exprNodeCode(n.children[1]);
     emit("pop rax");
     emit("ret");
@@ -93,14 +95,34 @@ function returnstmtNodeCode(n: TreeNode) {
 function factorNodeCode(n: TreeNode): VarType {
     //factor -> NUM | LP expr RP
     if (printProgress) {
-        console.log(n);
+        console.log("FACTOR");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     let child = n.children[0];
+
+    //console.log("FACTOR");
+    //console.log(n);
+    //console.log(n.children[0]);
+    //console.log(n.children[0].sym);
+    if (child == undefined) {
+        console.log("undefined child in factor");
+    }
+
     switch (child.sym) {
         case "NUM":
             let v = parseInt(child.token.lexeme, 10);
+            if (printOther) {
+                console.log("pushing ", v, " to memory");
+            }
             emit(`push qword ${v}`)
             return VarType.INTEGER;
+        case "FPNUM":
+            let v2 = parseFloat(child.token.lexeme);
+            if (printOther) {
+                console.log("pushing ", v2, " to memory");
+            }
+            emit(`push qword ${v2}`)
+            return VarType.FLOAT;
         case "LP":
             return exprNodeCode(n.children[1]);
         default:
@@ -113,25 +135,50 @@ function factorNodeCode(n: TreeNode): VarType {
 function sumNodeCode(n: TreeNode): VarType {
     //sum -> sum PLUS term | sum MINUS term | term
     if (printProgress) {
-        console.log(n);
+        console.log("SUM");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
-    if (n.children.length === 1)
+    if (n.children.length === 1) {
         //sum -> term
+        //console.log("SUM");
+        //console.log(n);
         return termNodeCode(n.children[0]);
+    }
     else {
+        //console.log("SUM 2");
+        //console.log(n);
+        //console.log("\t\tsummation first");
         let sumType = sumNodeCode(n.children[0]);
+        //console.log("\t\ttermintion first");
         let termType = termNodeCode(n.children[2]);
-        if (sumType !== termType || termType != VarType.INTEGER) {
+        if (sumType != termType || termType != VarType.INTEGER && termType != VarType.FLOAT) {
             throw new Error("Tried to add or subtract two items of differnt types: " + sumType + " and " + termType + " @line number " + n.token.line);
         }
         emit("pop rbx");    //second operand
         emit("pop rax");    //first operand
         switch (n.children[1].sym) {
             case "PLUS":
-                emit("add rax, rbx");
+                if (printOther) {
+                    console.log("adding");
+                }
+                if (termType == VarType.INTEGER) {
+                    emit("add rax, rbx");
+                }
+                else if (termType == VarType.FLOAT) {
+                    emit("fadd rax, rbx");
+                }
+                
                 break;
             case "MINUS":
-                emit("sub rax, rbx");
+                if (printOther) {
+                    console.log("subtracting");
+                }
+                if (termType == VarType.INTEGER) {
+                    emit("sub rax, rbx");
+                }
+                else if (termType == VarType.FLOAT) {
+                    emit("fsub rax, rbx");
+                }
                 break;
             default:
                 ICE();
@@ -143,12 +190,17 @@ function sumNodeCode(n: TreeNode): VarType {
 
 function exprNodeCode(n: TreeNode): VarType {
     if (printProgress) {
-        console.log(n);
+        console.log("EXPR");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     return orexpNodeCode(n.children[0]);
 }
 
 function convertStackTopToZeroOrOneInteger(type: VarType, invert: number = 0) {
+    if (printOther) {
+        console.log("CONVERSION");
+        console.log(invert);
+    }
     if (type == VarType.INTEGER) {
         emit("cmp qword [rsp], " + invert);
         emit("setne al");
@@ -162,11 +214,18 @@ function convertStackTopToZeroOrOneInteger(type: VarType, invert: number = 0) {
 function orexpNodeCode(n: TreeNode): VarType {
     //orexp ? orexp OR andexp | andexp
     if (printProgress) {
-        console.log(n);
+        console.log("OR");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     if (n.children.length === 1) {
+        //andexp
         return andexpNodeCode(n.children[0]);
     } else {
+        //orexp OR andexp
+        //if (printOther) {
+        //    console.log("OR");
+        //    console.log(n);
+        //}
         let orexpType = orexpNodeCode(n.children[0]);
         convertStackTopToZeroOrOneInteger(orexpType);
         //is the first part of the or expressin true
@@ -185,13 +244,18 @@ function orexpNodeCode(n: TreeNode): VarType {
 function andexpNodeCode(n: TreeNode): VarType {
     //andexp ? andexp AND notexp | notexp
     if (printProgress) {
-        console.log(n);
+        console.log("AND");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     if (n.children.length === 1) {
         //notexp
         return notexpNodeCode(n.children[0]);
     } else {
         //andexp AND notexp
+        //if (printOther) {
+        //    console.log("AND");
+        //    console.log(n);
+        //}
         let andExpressionType = andexpNodeCode(n.children[0]);
         convertStackTopToZeroOrOneInteger(andExpressionType);
         let endOfComp = label();
@@ -199,7 +263,7 @@ function andexpNodeCode(n: TreeNode): VarType {
         emit(`jne ${endOfComp}`);
         //if it was False then we dont need to evaluate the rest
         emit("add rsp,8");      //discard left result (0)
-        let andExpressionType2 = andexpNodeCode(n.children[2]);
+        let andExpressionType2 = notexpNodeCode(n.children[2]);
         convertStackTopToZeroOrOneInteger(andExpressionType2);
         emit(`${endOfComp}:`);
         return VarType.INTEGER;
@@ -209,7 +273,7 @@ function andexpNodeCode(n: TreeNode): VarType {
 function notexpNodeCode(n: TreeNode): VarType {
     //notexp ? NOT notexp | rel
     if (printProgress) {
-        console.log(n);
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     if (n.children.length === 1) {
         //rel
@@ -228,14 +292,20 @@ function notexpNodeCode(n: TreeNode): VarType {
 function negNodeCode(n: TreeNode): VarType {
     //neg -> MINUS neg | factor
     if (printProgress) {
-        console.log(n);
+        console.log("NEGATION");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     if (n.children.length == 1) {
         //factor
+        //console.log("NEGATE");
+        //console.log(n);
         return factorNodeCode(n.children[0]);
     }
     else {
         //MINUS neg
+        if (printOther) {
+            console.log("negating");
+        }
         negNodeCode(n.children[1]);
         emit("pop rax");    //first operand
         emit("imul rax, -1");
@@ -245,18 +315,25 @@ function negNodeCode(n: TreeNode): VarType {
 }
 
 function relNodeCode(n: TreeNode): VarType {
-    //rel ? sum RELOP sum | sum
+    //rel -> sum RELOP sum | sum
     if (printProgress) {
-        console.log(n);
+        console.log("RELATION");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
-    if (n.children.length === 1)
+    if (n.children.length === 1) {
         //rel -> sum
+        //console.log("RELATION");
+        //console.log(n);
         return sumNodeCode(n.children[0]);
+    }
     else {
         //rel -> sum RELOP sum
+        //console.log("RELATION 2");
+        //console.log(n);
+        //console.log(n.children);
         let sum1Type = sumNodeCode(n.children[0]);
         let sum2Type = sumNodeCode(n.children[2]);
-        if (sum1Type !== VarType.INTEGER || sum2Type != VarType.INTEGER) {
+        if (sum1Type !== VarType.INTEGER || sum2Type != VarType.INTEGER && sum2Type != VarType.FLOAT) {
             throw new Error("Tried to to compare two items that weren't integers: " + sum1Type + " and " + sum2Type + " @line number " + n.token.line);
         }
         emit("pop rax");    //second operand
@@ -281,22 +358,52 @@ function relNodeCode(n: TreeNode): VarType {
 function termNodeCode(n: TreeNode): VarType {
     //term -> term MULOP neg | neg
     if (printProgress) {
-        console.log(n);
+        console.log("TERM");
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     if (n.children.length == 1) {
+        //neg
+        //console.log("TERM");
+        //console.log(n);
         return negNodeCode(n.children[0]);
     }
     else {
-        let termType = sumNodeCode(n.children[0]);
-        let negType = termNodeCode(n.children[2]);
-        if (termType !== negType || termType != VarType.INTEGER) {
-            throw new Error("Tried to multiply two items that weren't integers: " + termType + " and " + negType + " @line number " + n.token.line);
+        //term MULOP neg
+        let termType = termNodeCode(n.children[0]);
+        let negType = negNodeCode(n.children[2]);
+        if (termType !== negType || termType != VarType.INTEGER && termType != VarType.FLOAT) {
+            throw new Error("Tried to multiply/divide two items that weren't integers: " + termType + " and " + negType + " @line number " + n.token.line);
         }
         emit("pop rbx");    //second operand
         emit("pop rax");    //first operand
         switch (n.children[1].sym) {
             case "MULOP":
-                emit("mul rax, rbx");
+                if (n.children[1].token.lexeme == "/") {
+                    if (printOther) {
+                        console.log("dividing");
+                        //console.log(n.children[0].children[0].children[0]);
+                        //console.log(n.children[2].children[0].children[0]);
+                    }
+                    emit("mov rdx, 0");
+                    emit("idiv rbx");
+                }
+                else if (n.children[1].token.lexeme == "*") {
+                    if (printOther) {
+                        console.log("multiplying");
+                    }
+                    emit("imul rbx");
+                }
+                else  {
+                    //(n.children[1].token.lexeme == "%")
+                    if (printOther) {
+                        console.log("remainder");
+                    }
+                    emit("mov rdx, 0");
+                    emit("idiv rbx");
+                    emit("mov rax, rdx");
+                    //emit("move rax, rdx ;quotient => rax, remainder => rdx");
+                }
+                
                 break;
             default:
                 ICE();
@@ -310,7 +417,7 @@ function termNodeCode(n: TreeNode): VarType {
 function loopNodeCode(n: TreeNode) {
     //loop -> WHILE LP cond RP braceblock
     if (printProgress) {
-        console.log(n);
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     var startWhileLabel = label();
     var endWhileLabel = label();
@@ -331,7 +438,7 @@ function condNodeCode(n: TreeNode) {
     //cond -> IF LP expr RP braceblock |
     //IF LP expr RP braceblock ELSE braceblock
     if (printProgress) {
-        console.log(n);
+        console.log(n); n.children.forEach((child) => { console.log("\n", child);});
     }
     if (n.children.length === 5) {
         //no 'else'

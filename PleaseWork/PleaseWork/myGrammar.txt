@@ -1,4 +1,3 @@
-
 SEMI -> ;
 WHILE -> \bwhile\b
 LP -> [(]
@@ -8,6 +7,7 @@ ELSE -> \belse\b
 RETURN -> \breturn\b
 LBR -> [{]
 RBR -> [}]
+FPNUM -> (\d+\.\d*|\.\d+)([Ee][-+]?\d+)?|-?\d+[Ee][-+]?\d+
 NUM -> \d+
 OR -> \bor\b
 AND -> \band\b
@@ -32,4 +32,4 @@ rel -> sum RELOP sum | sum
 sum -> sum PLUS term | sum MINUS term | term
 term -> term MULOP neg | neg
 neg -> MINUS neg | factor
-factor -> NUM | LP expr RP
+factor -> NUM | FPNUM | LP expr RP

@@ -64,6 +64,8 @@ export function parse(grammarString: string, programString?: string) {
         programString = grammarString;
         grammarString = fs.readFileSync("./myGrammar.txt", 'utf8');
 
+        //console.log("Program:\n", programString);
+
         //console.log(grammarString);
     }
 
